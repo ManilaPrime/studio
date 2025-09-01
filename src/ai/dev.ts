@@ -1,1 +1,5 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/smart-conflict-detection.ts';
+import '@/ai/flows/booking-summary-and-pricing.ts';
