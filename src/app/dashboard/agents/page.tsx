@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { AgentsList } from '@/components/dashboard/agents/agents-list';
 import { AddAgentDialog } from '@/components/dashboard/agents/add-agent-dialog';
 
@@ -19,12 +18,12 @@ export default function AgentsPage() {
           open={isAddAgentOpen}
           onOpenChange={setIsAddAgentOpen}
         >
-          <Button
+          <button
             onClick={() => setIsAddAgentOpen(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add
-          </Button>
+          </button>
         </AddAgentDialog>
       </div>
       <AgentsList />

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { InvestorsList } from '@/components/dashboard/investors/investors-list';
 import { AddInvestorDialog } from '@/components/dashboard/investors/add-investor-dialog';
 
@@ -19,12 +18,12 @@ export default function InvestorsPage() {
           open={isAddInvestorOpen}
           onOpenChange={setIsAddInvestorOpen}
         >
-          <Button
+          <button
             onClick={() => setIsAddInvestorOpen(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add
-          </Button>
+          </button>
         </AddInvestorDialog>
       </div>
       <InvestorsList />

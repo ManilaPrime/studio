@@ -1,23 +1,5 @@
 'use client';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { units } from '@/lib/data';
 
 export function AddUnitDialog({
@@ -42,99 +24,68 @@ export function AddUnitDialog({
       status: 'available' as const,
     };
     units.push(newUnit);
-    // In a real app, you'd probably call an API and then refetch the data.
-    // For now, we'll just close the dialog. A page refresh would show the new unit.
     onOpenChange(false);
   };
+  
+  if (!open) {
+    return children || null;
+  }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      {children}
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add New Unit</DialogTitle>
-        </DialogHeader>
-        <form id="unitForm" className="space-y-4" onSubmit={handleSubmit}>
-          <div>
-            <Label htmlFor="unitName" className="mb-1">
-              Unit Name
-            </Label>
-            <Input name="unitName" id="unitName" className="prime-input" required />
-          </div>
-
-          <div>
-            <Label htmlFor="unitType" className="mb-1">
-              Unit Type
-            </Label>
-            <Select name="unitType" required>
-              <SelectTrigger className="prime-input">
-                <SelectValue placeholder="Select Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Studio">Studio</SelectItem>
-                <SelectItem value="1BR">1 Bedroom</SelectItem>
-                <SelectItem value="2BR">2 Bedroom</SelectItem>
-                <SelectItem value="3BR">3 Bedroom</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label htmlFor="unitRate" className="mb-1">
-              Nightly Rate (₱)
-            </Label>
-            <Input
-              name="unitRate"
-              id="unitRate"
-              type="number"
-              min="0"
-              step="100"
-              className="prime-input"
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="maxOccupancy" className="mb-1">
-              Maximum Occupancy
-            </Label>
-            <Input
-              name="maxOccupancy"
-              id="maxOccupancy"
-              type="number"
-              min="1"
-              defaultValue="4"
-              className="prime-input"
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="unitDescription" className="mb-1">
-              Description
-            </Label>
-            <Textarea
-              name="unitDescription"
-              id="unitDescription"
-              rows={3}
-              className="prime-input"
-              placeholder="Unit features and amenities..."
-            />
-          </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => onOpenChange(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="prime-button">
-              Add Unit
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <>
+    {children}
+    <div id="addUnitModal" className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-xl p-6 w-full max-w-md">
+            <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-800">Add New Unit</h3>
+                <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
+                    <span className="text-2xl">×</span>
+                </button>
+            </div>
+            
+            <form id="unitForm" className="space-y-4" onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="unitName" className="block text-sm font-medium text-gray-700 mb-1">Unit Name</label>
+                    <input type="text" name="unitName" id="unitName" className="prime-input" required />
+                </div>
+                
+                <div>
+                    <label htmlFor="unitType" className="block text-sm font-medium text-gray-700 mb-1">Unit Type</label>
+                    <select name="unitType" id="unitType" className="prime-input" required>
+                        <option value="">Select Type</option>
+                        <option value="Studio">Studio</option>
+                        <option value="1BR">1 Bedroom</option>
+                        <option value="2BR">2 Bedroom</option>
+                        <option value="3BR">3 Bedroom</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label htmlFor="unitRate" className="block text-sm font-medium text-gray-700 mb-1">Nightly Rate (₱)</label>
+                    <input type="number" name="unitRate" id="unitRate" min="0" step="100" className="prime-input" required />
+                </div>
+                
+                <div>
+                    <label htmlFor="maxOccupancy" className="block text-sm font-medium text-gray-700 mb-1">Maximum Occupancy</label>
+                    <input type="number" name="maxOccupancy" id="maxOccupancy" min="1" defaultValue="4" className="prime-input" required />
+                </div>
+                
+                <div>
+                    <label htmlFor="unitDescription" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea name="unitDescription" id="unitDescription" rows={3} className="prime-input" placeholder="Unit features and amenities..."></textarea>
+                </div>
+                
+                <div className="flex space-x-3">
+                    <button type="button" onClick={() => onOpenChange(false)} className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold">
+                        Cancel
+                    </button>
+                    <button type="submit" className="flex-1 prime-button py-3 rounded-lg font-semibold">
+                        Add Unit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </>
   );
 }

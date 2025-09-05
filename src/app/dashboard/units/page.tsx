@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { UnitsList } from '@/components/dashboard/units/units-list';
 import { AddUnitDialog } from '@/components/dashboard/units/add-unit-dialog';
 
@@ -16,12 +15,12 @@ export default function UnitsPage() {
           <p className="text-sm text-gray-500">Manage rental properties</p>
         </div>
         <AddUnitDialog open={isAddUnitOpen} onOpenChange={setIsAddUnitOpen}>
-          <Button
+          <button
             onClick={() => setIsAddUnitOpen(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add
-          </Button>
+          </button>
         </AddUnitDialog>
       </div>
       <UnitsList />

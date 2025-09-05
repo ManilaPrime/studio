@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { ExpensesList } from '@/components/dashboard/expenses/expenses-list';
 import { AddExpenseDialog } from '@/components/dashboard/expenses/add-expense-dialog';
 
@@ -19,12 +18,12 @@ export default function ExpensesPage() {
           open={isAddExpenseOpen}
           onOpenChange={setIsAddExpenseOpen}
         >
-          <Button
+          <button
             onClick={() => setIsAddExpenseOpen(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add
-          </Button>
+          </button>
         </AddExpenseDialog>
       </div>
       <ExpensesList />

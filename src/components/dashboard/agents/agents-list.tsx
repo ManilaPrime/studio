@@ -2,24 +2,21 @@
 
 import { useState } from 'react';
 import { agents } from '@/lib/data';
-import { Button } from '@/components/ui/button';
 import type { Agent } from '@/lib/types';
 import { AddAgentDialog } from './add-agent-dialog';
 import { formatDate } from '@/lib/utils';
 
 export function AgentsList() {
-    const [isAddAgentOpen, setIsAddAgentOpen] = useState(false);
-    const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [isAddAgentOpen, setIsAddAgentOpen] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
 
-    const handleEditAgent = (agent: Agent) => {
-        setSelectedAgent(agent);
-        setIsAddAgentOpen(true);
-    }
+  const handleEditAgent = (agent: Agent) => {
+    setSelectedAgent(agent);
+    setIsAddAgentOpen(true);
+  };
 
   if (agents.length === 0) {
-    return (
-      <p className="text-gray-500 text-center py-8">No agents found.</p>
-    );
+    return <p className="text-gray-500 text-center py-8">No agents found.</p>;
   }
 
   return (
@@ -43,25 +40,44 @@ export function AgentsList() {
           </div>
           <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
             <div>
-              <p><strong>Commission Rate:</strong> {agent.commissionRate}%</p>
-              <p><strong>Total Bookings:</strong> {agent.totalBookings}</p>
+              <p>
+                <strong>Commission Rate:</strong> {agent.commissionRate}%
+              </p>
+              <p>
+                <strong>Total Bookings:</strong> {agent.totalBookings}
+              </p>
             </div>
             <div>
-              <p><strong>Total Commissions:</strong> ₱{agent.totalCommissions.toLocaleString()}</p>
-              <p><strong>Joined:</strong> {formatDate(agent.joinDate)}</p>
+              <p>
+                <strong>Total Commissions:</strong> ₱
+                {agent.totalCommissions.toLocaleString()}
+              </p>
+              <p>
+                <strong>Joined:</strong> {formatDate(agent.joinDate)}
+              </p>
             </div>
           </div>
           <div className="flex space-x-2">
-            <Button onClick={() => handleEditAgent(agent)} className="flex-1 bg-blue-500 text-white py-2 px-3 rounded-lg text-sm font-semibold hover:bg-blue-600">
+            <button
+              onClick={() => handleEditAgent(agent)}
+              className="flex-1 fb-btn bg-blue-500 text-white hover:bg-blue-600"
+            >
               Edit
-            </Button>
-            <Button onClick={() => alert('Removing agent soon!')} className="flex-1 bg-red-500 text-white py-2 px-3 rounded-lg text-sm font-semibold hover:bg-red-600">
+            </button>
+            <button
+              onClick={() => alert('Removing agent soon!')}
+              className="flex-1 fb-btn bg-red-500 text-white hover:bg-red-600"
+            >
               Remove
-            </Button>
+            </button>
           </div>
         </div>
       ))}
-      <AddAgentDialog open={isAddAgentOpen} onOpenChange={setIsAddAgentOpen} agent={selectedAgent} />
+      <AddAgentDialog
+        open={isAddAgentOpen}
+        onOpenChange={setIsAddAgentOpen}
+        agent={selectedAgent}
+      />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { RemindersList } from '@/components/dashboard/reminders/reminders-list';
 import { AddReminderDialog } from '@/components/dashboard/reminders/add-reminder-dialog';
 
@@ -19,12 +18,12 @@ export default function RemindersPage() {
           open={isAddReminderOpen}
           onOpenChange={setIsAddReminderOpen}
         >
-          <Button
+          <button
             onClick={() => setIsAddReminderOpen(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add
-          </Button>
+          </button>
         </AddReminderDialog>
       </div>
       <RemindersList />
