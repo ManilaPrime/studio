@@ -28,7 +28,7 @@ export default function ReportsPage() {
                 <p className="text-sm text-gray-600">Total Expenses</p>
             </div>
             <div className="text-center">
-                <p className="text-2xl font-bold text-prime-gold">₱{netProfit.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-yellow-600">₱{netProfit.toLocaleString()}</p>
                 <p className="text-sm text-gray-600">Net Profit</p>
             </div>
             <div className="text-center">

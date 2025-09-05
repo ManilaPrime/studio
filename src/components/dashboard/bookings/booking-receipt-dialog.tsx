@@ -42,15 +42,28 @@ export function BookingReceiptDialog({
                   <script src="https://cdn.tailwindcss.com"></script>
                   <style>
                       body { font-family: Arial, sans-serif; padding: 20px; }
+                      .gradient-bg {
+                          background: linear-gradient(135deg, #FFD700 0%, #F4C430 100%);
+                      }
+                      .prime-button {
+                        background: #FFD700;
+                        color: #000000;
+                        border: none;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        padding: 12px;
+                        transition: all 0.2s ease;
+                      }
                   </style>
               </head>
               <body>
                   ${receiptContent}
+                  <button onclick="window.print()" class="prime-button">Print</button>
               </body>
           </html>
       `);
       printWindow.document.close();
-      printWindow.print();
+      //
     }
   };
 
