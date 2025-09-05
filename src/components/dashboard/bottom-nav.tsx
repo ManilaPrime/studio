@@ -2,14 +2,7 @@
 
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { useState } from 'react';
 import { QuickActions } from './quick-actions';
 
 interface NavItem {
@@ -24,6 +17,7 @@ interface BottomNavProps {
 }
 
 const BottomNav = ({ navItems, pathname }: BottomNavProps) => {
+  const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
   return (
     <nav className="bottom-nav">
       <div className="flex items-center justify-around py-2">
@@ -41,23 +35,18 @@ const BottomNav = ({ navItems, pathname }: BottomNavProps) => {
           </Link>
         ))}
 
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              variant="default"
-              className="quick-action-btn"
-              aria-label="Quick Actions"
-            >
-              <Plus className="text-2xl font-bold" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Quick Actions</DialogTitle>
-            </DialogHeader>
-            <QuickActions />
-          </DialogContent>
-        </Dialog>
+        <button
+          onClick={() => setIsQuickActionsOpen(true)}
+          className="quick-action-btn"
+          aria-label="Quick Actions"
+        >
+          <Plus className="text-2xl font-bold" />
+        </button>
+
+        <QuickActions
+          open={isQuickActionsOpen}
+          onOpenChange={setIsQuickActionsOpen}
+        />
 
         {navItems.slice(2).map((item) => (
           <Link

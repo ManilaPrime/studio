@@ -49,18 +49,11 @@ const actionComponents = [
   },
 ];
 
-export function QuickActions() {
+export function QuickActions({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void}) {
   const [openDialog, setOpenDialog] = React.useState<string | null>(null);
 
   const handleOpenDialog = (label: string) => {
-    // We must close the current dialog before opening a new one
-    // when chaining dialogs from the QuickActions menu.
-    const quickActionsDialogTrigger = document.querySelector(
-      '[aria-label="Quick Actions"]'
-    ) as HTMLElement | null;
-    if (quickActionsDialogTrigger) {
-      quickActionsDialogTrigger.click();
-    }
+    onOpenChange(false); // Close the quick actions modal
     // A short delay is needed to allow the parent dialog to close first
     setTimeout(() => setOpenDialog(label), 150); 
   };
@@ -74,28 +67,45 @@ export function QuickActions() {
     'Add Agent': 'bg-indigo-50 hover:bg-indigo-100 text-indigo-800',
   }
 
+  if(!open) return null;
+
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <>
+      <div id="quickActionsModal" className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+        <div className="bg-white rounded-xl p-6 w-full max-w-sm">
+            <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-gray-800">Quick Actions</h3>
+                <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
+                    <span className="text-2xl">×</span>
+                </button>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {actionComponents.map((item) => (
+                  <button
+                    key={item.label}
+                    onClick={() => handleOpenDialog(item.label)}
+                    className={`flex flex-col items-center p-4 rounded-lg transition-colors ${colorClasses[item.label as keyof typeof colorClasses]}`}
+                  >
+                    <item.icon className="text-3xl mb-2" />
+                    <span className="font-semibold">{item.label}</span>
+                  </button>
+              ))}
+            </div>
+        </div>
+      </div>
+
       {actionComponents.map((item) => {
-        const Dialog = item.DialogComponent;
-        return (
-          <Dialog
-            key={item.label}
-            open={openDialog === item.label}
-            onOpenChange={(isOpen) =>
-              setOpenDialog(isOpen ? item.label : null)
-            }
-          >
-            <button
-              onClick={() => handleOpenDialog(item.label)}
-              className={`flex flex-col items-center p-4 rounded-lg transition-colors ${colorClasses[item.label as keyof typeof colorClasses]}`}
-            >
-              <item.icon className="text-3xl mb-2" />
-              <span className="font-semibold">{item.label}</span>
-            </button>
-          </Dialog>
-        );
+          const Dialog = item.DialogComponent;
+          return (
+            <Dialog
+              key={item.label}
+              open={openDialog === item.label}
+              onOpenChange={(isOpen) =>
+                setOpenDialog(isOpen ? item.label : null)
+              }
+            />
+          );
       })}
-    </div>
+    </>
   );
 }

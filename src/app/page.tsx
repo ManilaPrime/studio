@@ -2,8 +2,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
 export default function Home() {
     const router = useRouter();
@@ -41,16 +39,16 @@ export default function Home() {
           
           <form id="loginForm" className="space-y-4" onSubmit={handleLogin}>
               <div>
-                  <Input type="email" id="loginEmail" className="prime-input" placeholder="Email address" defaultValue="primestaycation24@gmail.com" />
+                  <input type="email" id="loginEmail" name="loginEmail" className="prime-input" placeholder="Email address" defaultValue="primestaycation24@gmail.com" />
               </div>
               
               <div>
-                  <Input type="password" id="loginPassword" className="prime-input" placeholder="Password" defaultValue="Prime2025" />
+                  <input type="password" id="loginPassword" name="loginPassword" className="prime-input" placeholder="Password" defaultValue="Prime2025" />
               </div>
               
-              <Button type="submit" className="prime-button">
+              <button type="submit" className="prime-button w-full py-3">
                   Log In
-              </Button>
+              </button>
           </form>
           
           <div className="mt-6">
@@ -63,9 +61,9 @@ export default function Home() {
                   </div>
               </div>
               
-              <Button type="button" onClick={quickLogin} className="mt-4 w-full bg-yellow-500 text-black py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors">
+              <button type="button" onClick={quickLogin} className="mt-4 w-full bg-yellow-500 text-black py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors">
                   Quick Demo Login
-              </Button>
+              </button>
           </div>
       </div>
       
