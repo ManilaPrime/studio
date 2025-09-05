@@ -12,6 +12,10 @@ import React from 'react';
 import { AddBookingDialog } from './bookings/add-booking-dialog';
 import { AddUnitDialog } from './units/add-unit-dialog';
 import { AddReminderDialog } from './reminders/add-reminder-dialog';
+import { AddExpenseDialog } from './expenses/add-expense-dialog';
+import { AddInvestorDialog } from './investors/add-investor-dialog';
+import { AddAgentDialog } from './agents/add-agent-dialog';
+
 
 const actionComponents = [
   {
@@ -36,61 +40,57 @@ const actionComponents = [
     label: 'Add Expense',
     icon: CircleDollarSign,
     color: 'red',
-    action: () => alert('Add Expense'),
+    DialogComponent: AddExpenseDialog,
   },
   {
     label: 'Add Investor',
     icon: User,
     color: 'purple',
-    action: () => alert('Add Investor'),
+    DialogComponent: AddInvestorDialog,
   },
   {
     label: 'Add Agent',
     icon: Handshake,
     color: 'indigo',
-    action: () => alert('Add Agent'),
+    DialogComponent: AddAgentDialog,
   },
 ];
 
 export function QuickActions() {
   const [openDialog, setOpenDialog] = React.useState<string | null>(null);
 
+  const handleOpenDialog = (label: string) => {
+    // We must close the current dialog before opening a new one
+    // when chaining dialogs from the QuickActions menu.
+    const quickActionsDialogTrigger = document.querySelector('[aria-label="Quick Actions"]') as HTMLElement | null;
+    if(quickActionsDialogTrigger) {
+      quickActionsDialogTrigger.click();
+    }
+    setTimeout(() => setOpenDialog(label), 100);
+  }
+
   return (
     <div className="grid grid-cols-2 gap-4">
       {actionComponents.map((item) => {
-        if (item.DialogComponent) {
-          const Dialog = item.DialogComponent;
-          return (
-            <Dialog
-              key={item.label}
-              open={openDialog === item.label}
-              onOpenChange={(isOpen) =>
-                setOpenDialog(isOpen ? item.label : null)
-              }
-            >
-              <button
-                onClick={() => setOpenDialog(item.label)}
-                className={`flex flex-col items-center p-4 bg-${item.color}-50 rounded-lg hover:bg-${item.color}-100 transition-colors`}
-              >
-                <item.icon className={`text-3xl mb-2 text-${item.color}-800`} />
-                <span className={`font-semibold text-${item.color}-800`}>
-                  {item.label}
-                </span>
-              </button>
-            </Dialog>
-          );
-        }
+        const Dialog = item.DialogComponent;
         return (
-          <button
+          <Dialog
             key={item.label}
-            onClick={item.action}
-            className={`flex flex-col items-center p-4 bg-${item.color}-50 rounded-lg hover:bg-${item.color}-100 transition-colors`}
+            open={openDialog === item.label}
+            onOpenChange={(isOpen) =>
+              setOpenDialog(isOpen ? item.label : null)
+            }
           >
-            <item.icon className={`text-3xl mb-2 text-${item.color}-800`} />
-            <span className={`font-semibold text-${item.color}-800`}>
-              {item.label}
-            </span>
-          </button>
+            <button
+              onClick={() => handleOpenDialog(item.label)}
+              className={`flex flex-col items-center p-4 bg-${item.color}-50 rounded-lg hover:bg-${item.color}-100 transition-colors`}
+            >
+              <item.icon className={`text-3xl mb-2 text-${item.color}-800`} />
+              <span className={`font-semibold text-${item.color}-800`}>
+                {item.label}
+              </span>
+            </button>
+          </Dialog>
         );
       })}
     </div>
