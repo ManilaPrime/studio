@@ -11,6 +11,7 @@ import {
 import React from 'react';
 import { AddBookingDialog } from './bookings/add-booking-dialog';
 import { AddUnitDialog } from './units/add-unit-dialog';
+import { AddReminderDialog } from './reminders/add-reminder-dialog';
 
 const actionComponents = [
   {
@@ -29,7 +30,7 @@ const actionComponents = [
     label: 'Add Reminder',
     icon: ClipboardList,
     color: 'yellow',
-    action: () => alert('Add Reminder'),
+    DialogComponent: AddReminderDialog,
   },
   {
     label: 'Add Expense',
