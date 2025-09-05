@@ -1,12 +1,19 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { bookings } from '@/lib/data';
 
 const Calendar = () => {
   const [date, setDate] = useState(new Date());
+  const [today, setToday] = useState<Date | null>(null);
   const currentMonth = date.getMonth();
   const currentYear = date.getFullYear();
+
+  useEffect(() => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    setToday(now);
+  }, []);
 
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -37,9 +44,7 @@ const Calendar = () => {
         statusClass = dayBookings[0].paymentStatus === 'paid' ? 'status-booked' : 'status-pending';
       }
 
-      const today = new Date();
-      today.setHours(0,0,0,0);
-      const isToday = new Date(dateStr).getTime() === today.getTime();
+      const isToday = today ? new Date(dateStr).getTime() === today.getTime() : false;
 
       grid.push(
         <div key={day} className={`calendar-day w-8 h-8 flex items-center justify-center text-sm font-semibold rounded-lg cursor-pointer transition-all duration-200 ${statusClass} ${isToday ? 'shadow-[0_0_0_2px_#3B82F6]' : ''}`}>
@@ -48,7 +53,7 @@ const Calendar = () => {
       );
     }
     return grid;
-  }, [currentYear, currentMonth, firstDay, daysInMonth]);
+  }, [currentYear, currentMonth, firstDay, daysInMonth, today]);
 
   const previousMonth = () => {
     setDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1));
