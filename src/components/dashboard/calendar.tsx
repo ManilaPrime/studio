@@ -6,14 +6,18 @@ import { bookings } from '@/lib/data';
 const Calendar = () => {
   const [date, setDate] = useState(new Date());
   const [today, setToday] = useState<Date | null>(null);
-  const currentMonth = date.getMonth();
-  const currentYear = date.getFullYear();
 
   useEffect(() => {
+    // This effect runs only on the client, after the initial render.
+    // This avoids the hydration mismatch.
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     setToday(now);
   }, []);
+
+
+  const currentMonth = date.getMonth();
+  const currentYear = date.getFullYear();
 
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -24,6 +28,13 @@ const Calendar = () => {
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
   const calendarGrid = useMemo(() => {
+    if (!today) {
+        // Render placeholders or a loading state until the client-side `today` is set
+        return Array.from({ length: 35 }).map((_, i) => (
+            <div key={`placeholder-${i}`} className="w-8 h-8"></div>
+        ));
+    }
+
     const grid = [];
     for (let i = 0; i < firstDay; i++) {
       grid.push(<div key={`empty-${i}`} className="p-2"></div>);
@@ -39,15 +50,18 @@ const Calendar = () => {
         return checkin <= currentDate && checkout > currentDate;
       });
 
-      let statusClass = 'status-available';
+      let statusClass = 'bg-white border-2 border-gray-200 text-gray-800'; // Available
       if (dayBookings.length > 0) {
-        statusClass = dayBookings[0].paymentStatus === 'paid' ? 'status-booked' : 'status-pending';
+        statusClass = dayBookings[0].paymentStatus === 'paid' 
+          ? 'bg-yellow-400 text-black border-2 border-yellow-400' // Booked
+          : 'bg-yellow-200 text-black border-2 border-yellow-500'; // Pending
       }
 
       const isToday = today ? new Date(dateStr).getTime() === today.getTime() : false;
+      const todayClass = isToday ? 'shadow-[0_0_0_2px_#3B82F6]' : '';
 
       grid.push(
-        <div key={day} className={`calendar-day w-8 h-8 flex items-center justify-center text-sm font-semibold rounded-lg cursor-pointer transition-all duration-200 ${statusClass} ${isToday ? 'shadow-[0_0_0_2px_#3B82F6]' : ''}`}>
+        <div key={day} className={`calendar-day w-8 h-8 flex items-center justify-center text-sm font-semibold rounded-lg cursor-pointer transition-all duration-200 ${statusClass} ${todayClass}`}>
           {day}
         </div>
       );
@@ -87,7 +101,7 @@ const Calendar = () => {
             ))}
           </div>
           
-          <div id="calendarGrid" className="grid grid-cols-7 gap-1 mb-4">
+          <div id="calendarGrid" className="grid grid-cols-7 gap-1 place-items-center mb-4">
             {calendarGrid}
           </div>
           

@@ -41,7 +41,7 @@ const Header = () => {
           {/* Notification and Settings */}
           <div className="flex items-center space-x-2 flex-shrink-0">
             <button className="w-9 h-9 bg-white rounded-full flex items-center justify-center relative border border-gray-300 hover:border-yellow-600 transition-colors">
-              <span className="text-gray-600 text-sm">🔔</span>
+              <span className="text-gray-600 text-lg">🔔</span>
               {notificationCount > 0 && (
                 <span id="notificationBadge" className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
                   {notificationCount > 9 ? '9+' : notificationCount}
@@ -49,7 +49,7 @@ const Header = () => {
               )}
             </button>
             <button onClick={handleLogout} className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-300 hover:border-yellow-600 transition-colors">
-              <span className="text-gray-600 text-sm">⚙️</span>
+              <span className="text-gray-600 text-lg">⚙️</span>
             </button>
           </div>
         </div>

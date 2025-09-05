@@ -48,7 +48,15 @@ export default {
         ring: 'hsl(var(--ring))',
         'prime-yellow': '#FFD700',
         'prime-gold': '#FFA500',
-        'prime-dark': '#B8860B'
+        'prime-dark': '#B8860B',
+        'yellow-100': '#FEF9C3',
+        'yellow-600': '#CA8A04',
+        'green-100': '#D1FAE5',
+        'green-600': '#059669',
+        'orange-100': '#FFEDD5',
+        'orange-600': '#EA580C',
+        'blue-100': '#DBEAFE',
+        'blue-600': '#2563EB',
       },
       borderRadius: {
         lg: 'var(--radius)',
