@@ -19,12 +19,12 @@ export default function BookingsPage() {
           open={isAddBookingOpen}
           onOpenChange={setIsAddBookingOpen}
         >
-          <Button
+          <button
             onClick={() => setIsAddBookingOpen(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add
-          </Button>
+          </button>
         </AddBookingDialog>
       </div>
       <BookingsList />

@@ -1,23 +1,5 @@
 'use client';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { units, bookings } from '@/lib/data';
 import { useState, useEffect } from 'react';
 
@@ -58,6 +40,21 @@ export function AddBookingDialog({
     }
   }, [selectedUnitId, checkinDate, checkoutDate]);
 
+  useEffect(() => {
+    if (open) {
+      const unitSelect = document.getElementById('bookingUnit') as HTMLSelectElement;
+      if (unitSelect) {
+        unitSelect.innerHTML = '<option value="">Select Unit</option>' + 
+            units.map(unit => `<option value="${unit.id}">${unit.name} - ₱${unit.rate}/night</option>`).join('');
+      }
+      const today = new Date().toISOString().split('T')[0];
+      const checkinInput = document.getElementById('checkinDate') as HTMLInputElement;
+      const checkoutInput = document.getElementById('checkoutDate') as HTMLInputElement;
+      if(checkinInput) checkinInput.min = today;
+      if(checkoutInput) checkoutInput.min = today;
+    }
+  }, [open]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -79,210 +76,112 @@ export function AddBookingDialog({
       createdAt: new Date().toISOString(),
     };
     bookings.push(newBooking);
-    // In a real app, you'd probably call an API and then refetch the data.
-    // For now, we'll just close the dialog. A page refresh would show the new booking.
     onOpenChange(false);
   };
 
+  if (!open) {
+    return children || null;
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
       {children}
-      <DialogContent className="max-h-screen overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Add New Booking</DialogTitle>
-        </DialogHeader>
-        <form id="bookingForm" className="space-y-4" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="guestFirstName" className="mb-1">
-                First Name
-              </Label>
-              <Input
-                name="guestFirstName"
-                id="guestFirstName"
-                className="prime-input"
-                required
-              />
+      <div id="addBookingModal" className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-xl p-6 w-full max-w-md max-h-screen overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-800">Add New Booking</h3>
+                <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
+                    <span className="text-2xl">×</span>
+                </button>
             </div>
-            <div>
-              <Label htmlFor="guestLastName" className="mb-1">
-                Last Name
-              </Label>
-              <Input
-                name="guestLastName"
-                id="guestLastName"
-                className="prime-input"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="guestPhone" className="mb-1">
-              Phone Number
-            </Label>
-            <Input name="guestPhone" id="guestPhone" className="prime-input" required />
-          </div>
-
-          <div>
-            <Label htmlFor="guestEmail" className="mb-1">
-              Email
-            </Label>
-            <Input name="guestEmail" id="guestEmail" type="email" className="prime-input" />
-          </div>
-
-          <div>
-            <Label htmlFor="bookingUnit" className="mb-1">
-              Unit
-            </Label>
-            <Select
-              name="bookingUnit"
-              required
-              onValueChange={setSelectedUnitId}
-            >
-              <SelectTrigger className="prime-input">
-                <SelectValue placeholder="Select Unit" />
-              </SelectTrigger>
-              <SelectContent>
-                {units.map((unit) => (
-                  <SelectItem key={unit.id} value={String(unit.id)}>
-                    {unit.name} - ₱{unit.rate}/night
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="checkinDate" className="mb-1">
-                Check-in Date
-              </Label>
-              <Input
-                name="checkinDate"
-                id="checkinDate"
-                type="date"
-                className="prime-input"
-                required
-                onChange={(e) => setCheckinDate(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label htmlFor="checkoutDate" className="mb-1">
-                Check-out Date
-              </Label>
-              <Input
-                name="checkoutDate"
-                id="checkoutDate"
-                type="date"
-                className="prime-input"
-                required
-                onChange={(e) => setCheckoutDate(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="adults" className="mb-1">
-                Adults
-              </Label>
-              <Input
-                name="adults"
-                id="adults"
-                type="number"
-                min="1"
-                defaultValue="2"
-                className="prime-input"
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="children" className="mb-1">
-                Children
-              </Label>
-              <Input
-                name="children"
-                id="children"
-                type="number"
-                min="0"
-                defaultValue="0"
-                className="prime-input"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="nightlyRate" className="mb-1">
-                Nightly Rate
-              </Label>
-              <Input
-                name="nightlyRate"
-                id="nightlyRate"
-                type="number"
-                className="prime-input"
-                value={nightlyRate}
-                readOnly
-              />
-            </div>
-            <div>
-              <Label htmlFor="totalAmount" className="mb-1">
-                Total Amount
-              </Label>
-              <Input
-                name="totalAmount"
-                id="totalAmount"
-                type="number"
-                className="prime-input"
-                value={totalAmount}
-                readOnly
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="paymentStatus" className="mb-1">
-              Payment Status
-            </Label>
-            <Select name="paymentStatus" defaultValue="pending">
-              <SelectTrigger className="prime-input">
-                <SelectValue placeholder="Select Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="partial">Partial</SelectItem>
-                <SelectItem value="paid">Paid</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label htmlFor="specialRequests" className="mb-1">
-              Special Requests
-            </Label>
-            <Textarea
-              name="specialRequests"
-              id="specialRequests"
-              rows={3}
-              className="prime-input"
-              placeholder="Any special requests or notes..."
-            />
-          </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => onOpenChange(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="prime-button">
-              Add Booking
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+            
+            <form id="bookingForm" className="space-y-4" onSubmit={handleSubmit}>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="guestFirstName" className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                        <input name="guestFirstName" type="text" id="guestFirstName" className="prime-input" required />
+                    </div>
+                    <div>
+                        <label htmlFor="guestLastName" className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                        <input name="guestLastName" type="text" id="guestLastName" className="prime-input" required />
+                    </div>
+                </div>
+                
+                <div>
+                    <label htmlFor="guestPhone" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <input name="guestPhone" type="tel" id="guestPhone" className="prime-input" required />
+                </div>
+                
+                <div>
+                    <label htmlFor="guestEmail" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input name="guestEmail" type="email" id="guestEmail" className="prime-input" />
+                </div>
+                
+                <div>
+                    <label htmlFor="bookingUnit" className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+                    <select name="bookingUnit" id="bookingUnit" className="prime-input" required onChange={(e) => setSelectedUnitId(e.target.value)}>
+                        <option value="">Select Unit</option>
+                    </select>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="checkinDate" className="block text-sm font-medium text-gray-700 mb-1">Check-in Date</label>
+                        <input name="checkinDate" type="date" id="checkinDate" className="prime-input" required onChange={(e) => setCheckinDate(e.target.value)} />
+                    </div>
+                    <div>
+                        <label htmlFor="checkoutDate" className="block text-sm font-medium text-gray-700 mb-1">Check-out Date</label>
+                        <input name="checkoutDate" type="date" id="checkoutDate" className="prime-input" required onChange={(e) => setCheckoutDate(e.target.value)} />
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="adults" className="block text-sm font-medium text-gray-700 mb-1">Adults</label>
+                        <input name="adults" type="number" id="adults" min="1" defaultValue="2" className="prime-input" required />
+                    </div>
+                    <div>
+                        <label htmlFor="children" className="block text-sm font-medium text-gray-700 mb-1">Children</label>
+                        <input name="children" type="number" id="children" min="0" defaultValue="0" className="prime-input" />
+                    </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="nightlyRate" className="block text-sm font-medium text-gray-700 mb-1">Nightly Rate</label>
+                        <input name="nightlyRate" type="number" id="nightlyRate" className="prime-input" value={nightlyRate} readOnly />
+                    </div>
+                    <div>
+                        <label htmlFor="totalAmount" className="block text-sm font-medium text-gray-700 mb-1">Total Amount</label>
+                        <input name="totalAmount" type="number" id="totalAmount" className="prime-input" value={totalAmount} readOnly />
+                    </div>
+                </div>
+                
+                <div>
+                    <label htmlFor="paymentStatus" className="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
+                    <select name="paymentStatus" id="paymentStatus" className="prime-input" defaultValue="pending">
+                        <option value="pending">Pending</option>
+                        <option value="partial">Partial</option>
+                        <option value="paid">Paid</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label htmlFor="specialRequests" className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
+                    <textarea name="specialRequests" id="specialRequests" rows={3} className="prime-input" placeholder="Any special requests or notes..."></textarea>
+                </div>
+                
+                <div className="flex space-x-3">
+                    <button type="button" onClick={() => onOpenChange(false)} className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold">
+                        Cancel
+                    </button>
+                    <button type="submit" className="flex-1 prime-button py-3 rounded-lg font-semibold">
+                        Add Booking
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </>
   );
 }
