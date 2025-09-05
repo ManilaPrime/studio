@@ -78,23 +78,22 @@ const Calendar = () => {
   };
 
   return (
-    <div className="mb-6">
-      <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-        <div className="px-4 py-3 bg-yellow-400">
-          <div className="flex items-center justify-between">
-            <button onClick={previousMonth} className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 shadow-sm">
-              <span className="text-base text-black font-bold">‹</span>
+    <div className="fb-card">
+      <div className="fb-header">
+        <h4 id="currentMonth" className="text-base font-bold text-black professional-title">
+            {monthNames[currentMonth]} {currentYear}
+        </h4>
+        <div className="flex items-center">
+            <button onClick={previousMonth} className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 shadow-sm border">
+                <span className="text-base text-black font-bold">‹</span>
             </button>
-            <h4 id="currentMonth" className="text-base font-bold text-black professional-title">
-              {monthNames[currentMonth]} {currentYear}
-            </h4>
-            <button onClick={nextMonth} className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 shadow-sm">
-              <span className="text-base text-black font-bold">›</span>
+            <button onClick={nextMonth} className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 shadow-sm border ml-2">
+                <span className="text-base text-black font-bold">›</span>
             </button>
-          </div>
         </div>
+      </div>
         
-        <div className="p-4">
+      <div className="fb-content">
           <div className="grid grid-cols-7 gap-1 mb-3">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
               <div key={day} className="text-center text-xs font-bold text-gray-600 py-1">{day}</div>
@@ -119,7 +118,6 @@ const Calendar = () => {
               <span className="text-gray-600">Pending</span>
             </div>
           </div>
-        </div>
       </div>
     </div>
   );
