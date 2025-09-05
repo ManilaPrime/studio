@@ -43,14 +43,14 @@ export function BookingsList() {
 
         return (
           <Card key={booking.id} className="fb-card">
-            <CardHeader className="fb-header flex-row items-center justify-between">
+            <CardHeader className="fb-header">
               <div className="flex items-center">
-                <Avatar className="fb-avatar mr-3">
-                  <AvatarFallback>
+                <div className="fb-avatar">
+                  <span>
                     {booking.guestFirstName.charAt(0)}
                     {booking.guestLastName.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
+                  </span>
+                </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-800">
                     {booking.guestFirstName} {booking.guestLastName}

@@ -37,7 +37,7 @@ const BottomNav = ({ navItems, pathname }: BottomNavProps) => {
             id={`nav-${item.label.toLowerCase()}`}
           >
             <item.icon className="fb-nav-icon" size={24} />
-            <div className="fb-nav-text">{item.label}</div>
+            <span className="fb-nav-text">{item.label}</span>
           </Link>
         ))}
 
@@ -69,7 +69,7 @@ const BottomNav = ({ navItems, pathname }: BottomNavProps) => {
             id={`nav-${item.label.toLowerCase()}`}
           >
             <item.icon className="fb-nav-icon" size={24} />
-            <div className="fb-nav-text">{item.label}</div>
+            <span className="fb-nav-text">{item.label}</span>
           </Link>
         ))}
       </div>

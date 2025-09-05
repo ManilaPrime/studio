@@ -15,8 +15,8 @@ const RecentActivity = () => {
         <div className="space-y-3">
           {activities.map((activity, index) => (
             <div key={index} className="flex items-center space-x-3">
-              <div className={`fb-avatar w-10 h-10`}>
-                <span className={`text-${activity.color}-600`}>{activity.icon}</span>
+              <div className={`fb-avatar`}>
+                <span>{activity.icon}</span>
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-900">{activity.title}</p>

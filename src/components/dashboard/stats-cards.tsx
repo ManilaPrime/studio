@@ -34,7 +34,7 @@ const StatsCards = () => {
                                 </p>
                             </div>
                             <div className={`w-12 h-12 bg-${stat.color}-100 rounded-full flex items-center justify-center`}>
-                                <span className={`text-${stat.color}-600 text-xl`}>{stat.icon}</span>
+                                <span className={`text-xl`}>{stat.icon}</span>
                             </div>
                         </div>
                     </div>
