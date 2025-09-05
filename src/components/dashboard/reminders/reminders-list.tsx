@@ -11,16 +11,6 @@ export function RemindersList() {
   const [filter, setFilter] = useState<FilterType>('all');
   const [, setForceUpdate] = useState({}); // To force re-render on data change
 
-  const handleFilterChange = (newFilter: FilterType, event: React.MouseEvent<HTMLButtonElement>) => {
-    setFilter(newFilter);
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('prime-button');
-        btn.classList.add('bg-gray-200', 'text-gray-700');
-    });
-    event.currentTarget.classList.add('prime-button');
-    event.currentTarget.classList.remove('bg-gray-200', 'text-gray-700');
-  };
-
   const handleStatusChange = (
     reminderId: number,
     newStatus: 'pending' | 'completed'
@@ -93,7 +83,7 @@ export function RemindersList() {
     <div>
       <div className="flex space-x-2 mb-4 overflow-x-auto pb-2">
         <button
-          onClick={(e) => handleFilterChange('all', e)}
+          onClick={() => setFilter('all')}
           className="filter-btn prime-button whitespace-nowrap px-4 py-2 rounded-lg font-semibold"
         >
           All
@@ -102,7 +92,7 @@ export function RemindersList() {
           (f) => (
             <button
               key={f}
-              onClick={(e) => handleFilterChange(f, e)}
+              onClick={() => setFilter(f)}
               className="filter-btn whitespace-nowrap px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-semibold"
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
