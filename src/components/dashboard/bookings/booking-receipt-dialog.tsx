@@ -34,22 +34,24 @@ export function BookingReceiptDialog({
     const receiptContent =
       document.getElementById('receiptContent')?.innerHTML || '';
     const printWindow = window.open('', '_blank');
-    printWindow?.document.write(`
-        <html>
-            <head>
-                <title>Booking Receipt</title>
-                <script src="https://cdn.tailwindcss.com"></script>
-                <style>
-                    body { font-family: Arial, sans-serif; padding: 20px; }
-                </style>
-            </head>
-            <body>
-                ${receiptContent}
-            </body>
-        </html>
-    `);
-    printWindow?.document.close();
-    printWindow?.print();
+    if (printWindow) {
+      printWindow.document.write(`
+          <html>
+              <head>
+                  <title>Booking Receipt</title>
+                  <script src="https://cdn.tailwindcss.com"></script>
+                  <style>
+                      body { font-family: Arial, sans-serif; padding: 20px; }
+                  </style>
+              </head>
+              <body>
+                  ${receiptContent}
+              </body>
+          </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
   };
 
   return (
@@ -153,10 +155,10 @@ export function BookingReceiptDialog({
             </div>
             
             <div className="mt-6 flex space-x-3">
-                <button onClick={handlePrint} className="flex-1 bg-blue-500 text-white py-3 rounded-lg font-semibold">
+                <button onClick={handlePrint} className="flex-1 prime-button py-3 rounded-lg font-semibold">
                     🖨️ Print
                 </button>
-                <button onClick={() => onOpenChange(false)} className="flex-1 prime-button py-3 rounded-lg font-semibold">
+                <button onClick={() => onOpenChange(false)} className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold">
                     Close
                 </button>
             </div>
