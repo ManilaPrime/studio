@@ -52,7 +52,7 @@ const bookingSummaryPrompt = ai.definePrompt({
 
   Adjust pricing dynamically based on the following search rate data:
   {{#each searchRateData}}
-  - Date: {{key}}, Search Rate: {{value}}
+  - Date: {{@key}}, Search Rate: {{this}}
   {{/each}}
 
   Increase prices on dates with high search rates and decrease prices when search rates are low to optimize revenue.
