@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { expenses, units } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import type { Expense } from '@/lib/types';
 import { AddExpenseDialog } from './add-expense-dialog';
 import { formatDate } from '@/lib/utils';
@@ -38,7 +36,7 @@ export function ExpensesList() {
       {expenses.map((expense) => {
         const unit = expense.unitId ? units.find(u => u.id === expense.unitId) : null;
         return (
-          <Card key={expense.id} className="prime-card p-4">
+          <div key={expense.id} className="prime-card p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-3">
                 <span className="text-2xl">{categoryIcons[expense.category] || '💸'}</span>
@@ -49,15 +47,15 @@ export function ExpensesList() {
               </div>
               <div className="text-right">
                 <p className="text-lg font-bold text-red-600">₱{expense.amount.toLocaleString()}</p>
-                 <Badge
-                    className={
+                 <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
                         expense.status === 'paid'
                         ? 'bg-green-100 text-green-800'
                         : 'bg-yellow-100 text-yellow-800'
-                    }
+                    }`}
                     >
                     {expense.status.charAt(0).toUpperCase() + expense.status.slice(1)}
-                </Badge>
+                </span>
               </div>
             </div>
             <div className="mb-3">
@@ -79,7 +77,7 @@ export function ExpensesList() {
                 Delete
               </Button>
             </div>
-          </Card>
+          </div>
         );
       })}
       <AddExpenseDialog open={isAddExpenseOpen} onOpenChange={setIsAddExpenseOpen} expense={selectedExpense} />

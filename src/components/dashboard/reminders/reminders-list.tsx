@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { reminders } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
 import type { Reminder } from '@/lib/types';
 
@@ -105,7 +103,7 @@ export function RemindersList() {
           filteredReminders.map((reminder) => {
             const isOverdue = new Date(reminder.dueDate) < new Date() && reminder.status === 'pending';
             return (
-              <Card key={reminder.id} className={`prime-card ${priorityBorder[reminder.priority]}`}>
+              <div key={reminder.id} className={`prime-card ${priorityBorder[reminder.priority]}`}>
                 <div className="p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-3">
@@ -115,9 +113,9 @@ export function RemindersList() {
                         <p className="text-sm text-gray-600">{reminder.category.charAt(0).toUpperCase() + reminder.category.slice(1)}</p>
                       </div>
                     </div>
-                    <Badge className={`px-2 py-1 ${priorityVariant[reminder.priority]}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${priorityVariant[reminder.priority]}`}>
                       {reminder.priority.toUpperCase()}
-                    </Badge>
+                    </span>
                   </div>
 
                   <p className="text-sm text-gray-600 mb-3">{reminder.description}</p>
@@ -152,7 +150,7 @@ export function RemindersList() {
                     </Button>
                   </div>
                 </div>
-              </Card>
+              </div>
             );
           })
         )}

@@ -1,6 +1,5 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { bookings, expenses } from "@/lib/data";
 
 export default function ReportsPage() {
@@ -17,31 +16,27 @@ export default function ReportsPage() {
         <p className="text-sm text-gray-500">Financial performance overview</p>
       </div>
 
-      <Card className="prime-card p-4 mb-4">
-        <CardHeader>
-            <CardTitle>Monthly Overview</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                    <p className="text-2xl font-bold text-green-600">₱{totalRevenue.toLocaleString()}</p>
-                    <p className="text-sm text-gray-600">Total Revenue</p>
-                </div>
-                <div className="text-center">
-                    <p className="text-2xl font-bold text-red-600">₱{totalExpenses.toLocaleString()}</p>
-                    <p className="text-sm text-gray-600">Total Expenses</p>
-                </div>
-                <div className="text-center">
-                    <p className="text-2xl font-bold text-prime-gold">₱{netProfit.toLocaleString()}</p>
-                    <p className="text-sm text-gray-600">Net Profit</p>
-                </div>
-                <div className="text-center">
-                    <p className="text-2xl font-bold text-blue-600">{profitMargin.toFixed(0)}%</p>
-                    <p className="text-sm text-gray-600">Profit Margin</p>
-                </div>
+      <div className="prime-card p-4 mb-4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Monthly Overview</h3>
+        <div className="grid grid-cols-2 gap-4">
+            <div className="text-center">
+                <p className="text-2xl font-bold text-green-600">₱{totalRevenue.toLocaleString()}</p>
+                <p className="text-sm text-gray-600">Total Revenue</p>
             </div>
-        </CardContent>
-      </Card>
+            <div className="text-center">
+                <p className="text-2xl font-bold text-red-600">₱{totalExpenses.toLocaleString()}</p>
+                <p className="text-sm text-gray-600">Total Expenses</p>
+            </div>
+            <div className="text-center">
+                <p className="text-2xl font-bold text-prime-gold">₱{netProfit.toLocaleString()}</p>
+                <p className="text-sm text-gray-600">Net Profit</p>
+            </div>
+            <div className="text-center">
+                <p className="text-2xl font-bold text-blue-600">{profitMargin.toFixed(0)}%</p>
+                <p className="text-sm text-gray-600">Profit Margin</p>
+            </div>
+        </div>
+      </div>
     </div>
   );
 }

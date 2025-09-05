@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { investors, profitPayments } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { PayProfitDialog } from './pay-profit-dialog';
 import { AddInvestorDialog } from './add-investor-dialog';
 import type { Investor } from '@/lib/types';
@@ -43,21 +41,21 @@ export function InvestorsList() {
             .reduce((sum, p) => sum + p.amount, 0);
 
         return (
-          <Card key={investor.id} className="prime-card p-4">
+          <div key={investor.id} className="prime-card p-4">
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h3 className="font-semibold text-gray-800">{investor.name}</h3>
                 <p className="text-sm text-gray-600">{investor.email}</p>
               </div>
-              <Badge
-                className={
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${
                   investor.status === 'active'
                     ? 'bg-green-100 text-green-800'
                     : 'bg-gray-100 text-gray-800'
-                }
+                }`}
               >
                 {investor.status.charAt(0).toUpperCase() + investor.status.slice(1)}
-              </Badge>
+              </span>
             </div>
 
             <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
@@ -107,7 +105,7 @@ export function InvestorsList() {
                 Remove
               </Button>
             </div>
-          </Card>
+          </div>
         );
       })}
       <PayProfitDialog open={isPayProfitOpen} onOpenChange={setIsPayProfitOpen} investor={selectedInvestor} />

@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { agents } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import type { Agent } from '@/lib/types';
 import { AddAgentDialog } from './add-agent-dialog';
 import { formatDate } from '@/lib/utils';
@@ -27,21 +25,21 @@ export function AgentsList() {
   return (
     <div className="space-y-4">
       {agents.map((agent) => (
-        <Card key={agent.id} className="prime-card p-4">
+        <div key={agent.id} className="prime-card p-4">
           <div className="flex items-center justify-between mb-3">
             <div>
               <h3 className="font-semibold text-gray-800">{agent.name}</h3>
               <p className="text-sm text-gray-600">{agent.email}</p>
             </div>
-            <Badge
-              className={
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${
                 agent.status === 'active'
                   ? 'bg-green-100 text-green-800'
                   : 'bg-gray-100 text-gray-800'
-              }
+              }`}
             >
               {agent.status.charAt(0).toUpperCase() + agent.status.slice(1)}
-            </Badge>
+            </span>
           </div>
           <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
             <div>
@@ -61,7 +59,7 @@ export function AgentsList() {
               Remove
             </Button>
           </div>
-        </Card>
+        </div>
       ))}
       <AddAgentDialog open={isAddAgentOpen} onOpenChange={setIsAddAgentOpen} agent={selectedAgent} />
     </div>
