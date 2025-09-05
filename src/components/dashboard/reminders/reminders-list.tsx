@@ -78,27 +78,25 @@ export function RemindersList() {
     medium: 'border-l-4 border-yellow-400',
     low: 'border-l-4 border-green-400',
   };
+  
+  const filters: FilterType[] = ['all', 'pending', 'overdue', 'today', 'completed'];
 
   return (
     <div>
       <div className="flex space-x-2 mb-4 overflow-x-auto pb-2">
-        <button
-          onClick={() => setFilter('all')}
-          className="filter-btn prime-button whitespace-nowrap px-4 py-2 rounded-lg font-semibold"
-        >
-          All
-        </button>
-        {(['pending', 'overdue', 'today', 'completed'] as FilterType[]).map(
-          (f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className="filter-btn whitespace-nowrap px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-semibold"
-            >
-              {f.charAt(0).toUpperCase() + f.slice(1)}
-            </button>
-          )
-        )}
+        {filters.map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`whitespace-nowrap px-4 py-2 rounded-lg font-semibold ${
+              filter === f
+                ? 'prime-button'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {f.charAt(0).toUpperCase() + f.slice(1)}
+          </button>
+        ))}
       </div>
 
       <div className="space-y-4">

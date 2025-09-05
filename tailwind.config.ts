@@ -57,6 +57,8 @@ export default {
         'orange-600': '#EA580C',
         'blue-100': '#DBEAFE',
         'blue-600': '#2563EB',
+        'red-100': '#FEE2E2',
+        'red-800': '#991B1B'
       },
       borderRadius: {
         lg: 'var(--radius)',

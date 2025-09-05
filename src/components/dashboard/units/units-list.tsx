@@ -37,7 +37,7 @@ export function UnitsList() {
             </div>
             <div className="fb-content">
               <div className="mb-3">
-                <p className="text-2xl font-bold text-prime-gold">
+                <p className="text-2xl font-bold text-yellow-600">
                   ₱{unit.rate.toLocaleString()}
                 </p>
                 <p className="text-sm text-gray-600">per night</p>

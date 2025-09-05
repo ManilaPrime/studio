@@ -1,8 +1,6 @@
 'use client';
 
 import { bookings, units } from '@/lib/data';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
 import { BookingReceiptDialog } from './booking-receipt-dialog';
 import { useState } from 'react';

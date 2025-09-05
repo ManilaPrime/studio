@@ -146,7 +146,7 @@ export function BookingReceiptDialog({
                             </div>
                             <div className="flex justify-between mt-1">
                                 <span>Payment Status:</span>
-                                <span className={`px-2 py-1 rounded text-xs ${statusVariant[booking.paymentStatus]}`}>
+                                <span className={`px-2 py-1 rounded text-xs font-semibold ${statusVariant[booking.paymentStatus]}`}>
                                     {booking.paymentStatus.charAt(0).toUpperCase() + booking.paymentStatus.slice(1)}
                                 </span>
                             </div>
