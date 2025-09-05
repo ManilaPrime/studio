@@ -2,14 +2,7 @@
 
 import { bookings, units } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { formatDate } from '@/lib/utils';
 import { BookingReceiptDialog } from './booking-receipt-dialog';
 import { useState } from 'react';
@@ -42,8 +35,8 @@ export function BookingsList() {
         };
 
         return (
-          <Card key={booking.id} className="fb-card">
-            <CardHeader className="fb-header">
+          <div key={booking.id} className="fb-card">
+            <div className="fb-header">
               <div className="flex items-center">
                 <div className="fb-avatar">
                   <span>
@@ -60,16 +53,16 @@ export function BookingsList() {
                   </p>
                 </div>
               </div>
-              <Badge
+              <span
                 className={`px-3 py-1 rounded-full text-xs font-semibold ${
                   statusVariant[booking.paymentStatus]
                 }`}
               >
                 {booking.paymentStatus.charAt(0).toUpperCase() +
                   booking.paymentStatus.slice(1)}
-              </Badge>
-            </CardHeader>
-            <CardContent className="fb-content">
+              </span>
+            </div>
+            <div className="fb-content">
               <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
                 <div>
                   <p>
@@ -89,28 +82,28 @@ export function BookingsList() {
                   </p>
                 </div>
               </div>
-            </CardContent>
-            <CardFooter className="fb-actions">
-              <Button
+            </div>
+            <div className="fb-actions">
+              <button
                 onClick={() => handleShowReceipt(booking.id)}
                 className="fb-btn fb-btn-primary"
               >
                 Receipt
-              </Button>
-              <Button
+              </button>
+              <button
                 onClick={() => alert('Edit feature coming soon!')}
                 className="fb-btn fb-btn-secondary"
               >
                 Edit
-              </Button>
-              <Button
+              </button>
+              <button
                 onClick={() => alert('Delete feature coming soon!')}
                 className="fb-btn fb-btn-secondary"
               >
                 Delete
-              </Button>
-            </CardFooter>
-          </Card>
+              </button>
+            </div>
+          </div>
         );
       })}
       <BookingReceiptDialog
