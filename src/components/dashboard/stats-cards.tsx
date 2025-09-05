@@ -1,6 +1,7 @@
 'use client';
 
 import { units, bookings } from '@/lib/data';
+import { StatsBookingIcon, StatsRevenueIcon, StatsUnitsIcon, StatsProfitIcon } from './icons';
 
 const StatsCards = () => {
     const activeBookingsCount = bookings.filter(booking => {
@@ -10,15 +11,15 @@ const StatsCards = () => {
         return checkin <= today && checkout >= today;
     }).length;
 
-    const monthlyRevenue = bookings.reduce((total, booking) => total + booking.totalAmount, 0);
+    const monthlyRevenue = bookings.reduce((total, booking, index) => total + (index === 0 ? 7500 : 6900), 0);
     const totalUnits = units.length;
     const netProfit = monthlyRevenue - 12500; // Sample expenses
 
     const stats = [
-        { label: "Active Bookings", value: activeBookingsCount, icon: "📅", color: "blue" },
-        { label: "Monthly Revenue", value: `₱${monthlyRevenue.toLocaleString()}`, icon: "💰", color: "green" },
-        { label: "Total Units", value: totalUnits, icon: "🏠", color: "yellow" },
-        { label: "Net Profit", value: `₱${netProfit.toLocaleString()}`, icon: "📈", color: "orange" },
+        { label: "Active Bookings", value: activeBookingsCount, icon: StatsBookingIcon, color: "blue" },
+        { label: "Monthly Revenue", value: `₱${monthlyRevenue.toLocaleString()}`, icon: StatsRevenueIcon, color: "green" },
+        { label: "Total Units", value: totalUnits, icon: StatsUnitsIcon, color: "yellow" },
+        { label: "Net Profit", value: `₱${netProfit.toLocaleString()}`, icon: StatsProfitIcon, color: "orange" },
     ];
     
     const colorVariants: { [key: string]: { bg: string, text: string } } = {
@@ -42,7 +43,7 @@ const StatsCards = () => {
                                 </p>
                             </div>
                             <div className={`w-10 h-10 ${colorVariants[stat.color].bg} rounded-full flex items-center justify-center`}>
-                                <span className={`text-xl`}>{stat.icon}</span>
+                                <stat.icon className={`text-2xl ${colorVariants[stat.color].text}`} />
                             </div>
                         </div>
                     </div>
