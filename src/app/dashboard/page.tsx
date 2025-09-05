@@ -1,10 +1,16 @@
-// This file is intentionally left blank for now.
-// We will build the dashboard page in subsequent steps.
+'use client';
+
+import React from 'react';
+import Calendar from '@/components/dashboard/calendar';
+import StatsCards from '@/components/dashboard/stats-cards';
+import RecentActivity from '@/components/dashboard/recent-activity';
+
 export default function DashboardPage() {
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <p>Welcome to the main application!</p>
+    <div id="dashboardSection" className="section p-4">
+      <Calendar />
+      <StatsCards />
+      <RecentActivity />
     </div>
   );
 }
