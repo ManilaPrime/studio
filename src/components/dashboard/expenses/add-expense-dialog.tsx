@@ -137,11 +137,11 @@ export function AddExpenseDialog({
                     <textarea name="expenseDescription" id="expenseDescription" rows={3} className="prime-input" placeholder="Additional details..." defaultValue={expense?.description}></textarea>
                 </div>
                 
-                <div className="flex space-x-3">
-                    <button type="button" onClick={() => onOpenChange(false)} className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold">
+                <div className="flex space-x-3 pt-2">
+                    <button type="button" onClick={() => onOpenChange(false)} className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
                         Cancel
                     </button>
-                    <button type="submit" className="flex-1 prime-button py-3 rounded-lg font-semibold">
+                    <button type="submit" className="w-full prime-button py-3">
                         {expense ? 'Save Changes' : 'Add Expense'}
                     </button>
                 </div>

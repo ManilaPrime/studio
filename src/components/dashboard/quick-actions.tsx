@@ -71,8 +71,8 @@ export function QuickActions({ open, onOpenChange }: { open: boolean, onOpenChan
 
   return (
     <>
-      <div id="quickActionsModal" className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl p-6 w-full max-w-sm">
+      <div id="quickActionsModal" className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4" onClick={() => onOpenChange(false)}>
+        <div className="bg-white rounded-xl p-6 w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-gray-800">Quick Actions</h3>
                 <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
