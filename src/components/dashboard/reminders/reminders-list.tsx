@@ -124,9 +124,9 @@ export function RemindersList() {
             return (
               <div
                 key={reminder.id}
-                className={`prime-card ${priorityBorder[reminder.priority]}`}
+                className={`fb-card ${priorityBorder[reminder.priority]}`}
               >
-                <div className="p-4">
+                <div className="fb-content p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-3">
                       <span className="text-2xl">
@@ -178,14 +178,14 @@ export function RemindersList() {
                       </p>
                     </div>
                   )}
-
-                  <div className="flex space-x-2">
+                  </div>
+                  <div className="fb-actions">
                     {reminder.status === 'pending' ? (
                       <button
                         onClick={() =>
                           handleStatusChange(reminder.id, 'completed')
                         }
-                        className="flex-1 fb-btn bg-green-500 hover:bg-green-600 text-white"
+                        className="fb-btn fb-btn-primary"
                       >
                         Mark Complete
                       </button>
@@ -194,19 +194,18 @@ export function RemindersList() {
                         onClick={() =>
                           handleStatusChange(reminder.id, 'pending')
                         }
-                        className="flex-1 fb-btn bg-blue-500 hover:bg-blue-600 text-white"
+                        className="fb-btn fb-btn-secondary"
                       >
                         Mark Pending
                       </button>
                     )}
                     <button
                       onClick={() => handleDelete(reminder.id)}
-                      className="flex-1 fb-btn bg-red-500 hover:bg-red-600 text-white"
+                      className="fb-btn fb-btn-secondary"
                     >
                       Delete
                     </button>
                   </div>
-                </div>
               </div>
             );
           })

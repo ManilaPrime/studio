@@ -37,8 +37,8 @@ export function ExpensesList() {
           ? units.find((u) => u.id === expense.unitId)
           : null;
         return (
-          <div key={expense.id} className="prime-card p-4">
-            <div className="flex items-center justify-between mb-3">
+          <div key={expense.id} className="fb-card">
+            <div className='fb-header'>
               <div className="flex items-center space-x-3">
                 <span className="text-2xl">
                   {categoryIcons[expense.category] || '💸'}
@@ -69,7 +69,7 @@ export function ExpensesList() {
                 </span>
               </div>
             </div>
-            <div className="mb-3">
+            <div className='fb-content'>
               <p className="text-sm text-gray-600 mb-2">
                 {expense.description}
               </p>
@@ -86,16 +86,16 @@ export function ExpensesList() {
                 </div>
               </div>
             </div>
-            <div className="flex space-x-2">
+            <div className="fb-actions">
               <button
                 onClick={() => handleEditExpense(expense)}
-                className="flex-1 fb-btn bg-blue-500 text-white hover:bg-blue-600"
+                className="fb-btn fb-btn-secondary"
               >
                 Edit
               </button>
               <button
                 onClick={() => alert('Deleting expense soon!')}
-                className="flex-1 fb-btn bg-red-500 text-white hover:bg-red-600"
+                className="fb-btn fb-btn-secondary"
               >
                 Delete
               </button>

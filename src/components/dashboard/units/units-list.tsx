@@ -17,27 +17,25 @@ export function UnitsList() {
         };
 
         return (
-          <div key={unit.id} className="prime-card">
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-gray-800 text-lg">
-                    {unit.name}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {unit.type} - Max {unit.maxOccupancy} guests
-                  </p>
-                </div>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    statusVariant[unit.status]
-                  }`}
-                >
-                  {unit.status.charAt(0).toUpperCase() + unit.status.slice(1)}
-                </span>
+          <div key={unit.id} className="fb-card">
+            <div className="fb-header">
+              <div>
+                <h3 className="font-semibold text-gray-800 text-lg">
+                  {unit.name}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {unit.type} - Max {unit.maxOccupancy} guests
+                </p>
               </div>
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  statusVariant[unit.status]
+                }`}
+              >
+                {unit.status.charAt(0).toUpperCase() + unit.status.slice(1)}
+              </span>
             </div>
-            <div className="p-4 pt-0">
+            <div className="fb-content">
               <div className="mb-3">
                 <p className="text-2xl font-bold text-prime-gold">
                   ₱{unit.rate.toLocaleString()}
@@ -46,16 +44,16 @@ export function UnitsList() {
               </div>
               <p className="text-sm text-gray-600 mb-3">{unit.description}</p>
             </div>
-            <div className="p-4 pt-0 flex space-x-2">
+            <div className="fb-actions">
               <button
                 onClick={() => alert(`Editing ${unit.name}`)}
-                className="flex-1 fb-btn bg-blue-500 text-white hover:bg-blue-600"
+                className="fb-btn fb-btn-secondary"
               >
                 Edit
               </button>
               <button
                 onClick={() => alert(`Deleting ${unit.name}`)}
-                className="flex-1 fb-btn bg-red-500 text-white hover:bg-red-600"
+                className="fb-btn fb-btn-secondary"
               >
                 Delete
               </button>

@@ -44,11 +44,16 @@ export function InvestorsList() {
           .reduce((sum, p) => sum + p.amount, 0);
 
         return (
-          <div key={investor.id} className="prime-card p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <h3 className="font-semibold text-gray-800">{investor.name}</h3>
-                <p className="text-sm text-gray-600">{investor.email}</p>
+          <div key={investor.id} className="fb-card">
+            <div className='fb-header'>
+              <div className='flex items-center'>
+                <div className='fb-avatar'>
+                  <span>{investor.name.charAt(0)}</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-800">{investor.name}</h3>
+                  <p className="text-sm text-gray-600">{investor.email}</p>
+                </div>
               </div>
               <span
                 className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -61,80 +66,82 @@ export function InvestorsList() {
                   investor.status.slice(1)}
               </span>
             </div>
-
-            <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
-              <div>
-                <p>
-                  <strong>Investment:</strong> ₱
-                  {investor.investmentAmount.toLocaleString()}
-                </p>
-                <p>
-                  <strong>Share:</strong> {investor.sharePercentage}%
-                </p>
+            
+            <div className='fb-content'>
+              <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+                <div>
+                  <p>
+                    <strong>Investment:</strong> ₱
+                    {investor.investmentAmount.toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>Share:</strong> {investor.sharePercentage}%
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <strong>Dec Share:</strong> ₱{investorShare.toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>Total Received:</strong> ₱
+                    {totalPayments.toLocaleString()}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p>
-                  <strong>Dec Share:</strong> ₱{investorShare.toLocaleString()}
-                </p>
-                <p>
-                  <strong>Total Received:</strong> ₱
-                  {totalPayments.toLocaleString()}
-                </p>
-              </div>
-            </div>
 
-            <div
-              className={`mb-3 p-2 rounded-lg ${
-                paymentStatus === 'paid'
-                  ? 'bg-green-50 border border-green-200'
-                  : 'bg-yellow-50 border border-yellow-200'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span
-                  className={`text-sm font-medium ${
-                    paymentStatus === 'paid'
-                      ? 'text-green-800'
-                      : 'text-yellow-800'
-                  }`}
-                >
-                  December 2024:{' '}
-                  {paymentStatus === 'paid' ? '✅ Paid' : '⏳ Pending'}
-                </span>
-                {paymentStatus === 'pending' ? (
-                  <button
-                    onClick={() => handlePayProfit(investor)}
-                    className="text-xs bg-yellow-500 text-white px-2 py-1 rounded font-semibold h-auto"
+              <div
+                className={`mb-3 p-2 rounded-lg ${
+                  paymentStatus === 'paid'
+                    ? 'bg-green-50 border border-green-200'
+                    : 'bg-yellow-50 border border-yellow-200'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span
+                    className={`text-sm font-medium ${
+                      paymentStatus === 'paid'
+                        ? 'text-green-800'
+                        : 'text-yellow-800'
+                    }`}
                   >
-                    Pay Now
-                  </button>
-                ) : (
-                  <span className="text-xs text-green-600">
-                    {new Date(currentPayment!.paymentDate).toLocaleDateString(
-                      'en-US',
-                      { month: 'short', day: 'numeric' }
-                    )}
+                    December 2024:{' '}
+                    {paymentStatus === 'paid' ? '✅ Paid' : '⏳ Pending'}
                   </span>
-                )}
+                  {paymentStatus === 'pending' ? (
+                    <button
+                      onClick={() => handlePayProfit(investor)}
+                      className="text-xs bg-yellow-500 text-white px-2 py-1 rounded font-semibold h-auto"
+                    >
+                      Pay Now
+                    </button>
+                  ) : (
+                    <span className="text-xs text-green-600">
+                      {new Date(currentPayment!.paymentDate).toLocaleDateString(
+                        'en-US',
+                        { month: 'short', day: 'numeric' }
+                      )}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
-            <div className="flex space-x-2">
+            <div className="fb-actions">
               <button
                 onClick={() => alert('Payment History Coming Soon!')}
-                className="flex-1 fb-btn bg-blue-500 text-white hover:bg-blue-600"
+                className="fb-btn fb-btn-primary"
               >
                 History
               </button>
               <button
                 onClick={() => handleEditInvestor(investor)}
-                className="flex-1 fb-btn bg-gray-500 text-white hover:bg-gray-600"
+                className="fb-btn fb-btn-secondary"
               >
                 Edit
               </button>
               <button
                 onClick={() => alert('Removing investor soon!')}
-                className="flex-1 fb-btn bg-red-500 text-white hover:bg-red-600"
+                className="fb-btn fb-btn-secondary"
               >
                 Remove
               </button>

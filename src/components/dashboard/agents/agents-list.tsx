@@ -22,11 +22,16 @@ export function AgentsList() {
   return (
     <div className="space-y-4">
       {agents.map((agent) => (
-        <div key={agent.id} className="prime-card p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <h3 className="font-semibold text-gray-800">{agent.name}</h3>
-              <p className="text-sm text-gray-600">{agent.email}</p>
+        <div key={agent.id} className="fb-card">
+          <div className='fb-header'>
+            <div className="flex items-center">
+              <div className='fb-avatar'>
+                <span>{agent.name.charAt(0)}</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-800">{agent.name}</h3>
+                <p className="text-sm text-gray-600">{agent.email}</p>
+              </div>
             </div>
             <span
               className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -38,35 +43,37 @@ export function AgentsList() {
               {agent.status.charAt(0).toUpperCase() + agent.status.slice(1)}
             </span>
           </div>
-          <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
-            <div>
-              <p>
-                <strong>Commission Rate:</strong> {agent.commissionRate}%
-              </p>
-              <p>
-                <strong>Total Bookings:</strong> {agent.totalBookings}
-              </p>
-            </div>
-            <div>
-              <p>
-                <strong>Total Commissions:</strong> ₱
-                {agent.totalCommissions.toLocaleString()}
-              </p>
-              <p>
-                <strong>Joined:</strong> {formatDate(agent.joinDate)}
-              </p>
+          <div className='fb-content'>
+            <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+              <div>
+                <p>
+                  <strong>Commission Rate:</strong> {agent.commissionRate}%
+                </p>
+                <p>
+                  <strong>Total Bookings:</strong> {agent.totalBookings}
+                </p>
+              </div>
+              <div>
+                <p>
+                  <strong>Total Commissions:</strong> ₱
+                  {agent.totalCommissions.toLocaleString()}
+                </p>
+                <p>
+                  <strong>Joined:</strong> {formatDate(agent.joinDate)}
+                </p>
+              </div>
             </div>
           </div>
-          <div className="flex space-x-2">
+          <div className="fb-actions">
             <button
               onClick={() => handleEditAgent(agent)}
-              className="flex-1 fb-btn bg-blue-500 text-white hover:bg-blue-600"
+              className="fb-btn fb-btn-secondary"
             >
               Edit
             </button>
             <button
               onClick={() => alert('Removing agent soon!')}
-              className="flex-1 fb-btn bg-red-500 text-white hover:bg-red-600"
+              className="fb-btn fb-btn-secondary"
             >
               Remove
             </button>
