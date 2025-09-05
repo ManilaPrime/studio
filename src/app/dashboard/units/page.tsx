@@ -3,6 +3,8 @@
 import React from 'react';
 import { UnitsList } from '@/components/dashboard/units/units-list';
 import { AddUnitDialog } from '@/components/dashboard/units/add-unit-dialog';
+import { units } from '@/lib/data';
+import { SmartSyncCard } from '@/components/dashboard/sync/smart-sync-card';
 
 export default function UnitsPage() {
   const [isAddUnitOpen, setIsAddUnitOpen] = React.useState(false);
@@ -23,7 +25,12 @@ export default function UnitsPage() {
           </button>
         </AddUnitDialog>
       </div>
-      <UnitsList />
+      <div className="space-y-6">
+        <UnitsList />
+        {units.map((unit) => (
+          <SmartSyncCard key={unit.id} unit={unit} />
+        ))}
+      </div>
     </div>
   );
 }

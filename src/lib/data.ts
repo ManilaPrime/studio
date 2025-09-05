@@ -1,9 +1,48 @@
 import type { Unit, Booking, Reminder, Investor, Agent, Expense, ProfitPayment } from './types';
 
 export const units: Unit[] = [
-    { id: 1, name: '1839 C2', type: '2BR', rate: 2500, maxOccupancy: 6, status: 'available', description: 'Spacious 2-bedroom condo with city view' },
-    { id: 2, name: '1586 C2', type: '2BR', rate: 2300, maxOccupancy: 6, status: 'available', description: 'Modern 2-bedroom unit with balcony' },
-    { id: 3, name: '1585 C2', type: '2BR', rate: 2400, maxOccupancy: 6, status: 'available', description: 'Fully furnished 2-bedroom condo' }
+    { 
+        id: 1, 
+        name: '1839 C2', 
+        type: '2BR', 
+        rate: 2500, 
+        maxOccupancy: 6, 
+        status: 'available', 
+        description: 'Spacious 2-bedroom condo with city view',
+        calendars: {
+            airbnb: 'https://example.com/airbnb-cal-1.ics',
+            bookingcom: 'https://example.com/bookingcom-cal-1.ics',
+            direct: 'https://example.com/direct-cal-1.ics',
+        }
+    },
+    { 
+        id: 2, 
+        name: '1586 C2', 
+        type: '2BR', 
+        rate: 2300, 
+        maxOccupancy: 6, 
+        status: 'available', 
+        description: 'Modern 2-bedroom unit with balcony',
+        calendars: {
+            airbnb: 'https://example.com/airbnb-cal-2.ics',
+            bookingcom: 'https://example.com/bookingcom-cal-2.ics',
+            direct: 'https://example.com/direct-cal-2.ics',
+        }
+    },
+    { 
+        id: 3, 
+        name: '1585 C2', 
+        type: '2BR', 
+        rate: 2400, 
+        maxOccupancy: 6, 
+        status: 'available', 
+        description: 'Fully furnished 2-bedroom condo',
+        calendars: {
+            airbnb: 'https://example.com/airbnb-cal-3.ics',
+            bookingcom: 'https://example.com/bookingcom-cal-3.ics',
+            direct: 'https://example.com/direct-cal-3.ics',
+        }
+    }
 ];
 
 export const bookings: Booking[] = [

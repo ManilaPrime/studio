@@ -6,6 +6,11 @@ export type Unit = {
   maxOccupancy: number;
   status: 'available' | 'occupied' | 'maintenance';
   description: string;
+  calendars: {
+    airbnb: string;
+    bookingcom: string;
+    direct: string;
+  };
 };
 
 export type Booking = {
@@ -97,3 +102,11 @@ export interface RentalUnit {
     direct: string;
   };
 }
+
+export type SyncedEvent = {
+  uid: string;
+  summary: string;
+  start: string;
+  end: string;
+  platform: Platform;
+};

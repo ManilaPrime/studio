@@ -1,6 +1,7 @@
 'use client';
 
-import { SmartConflictDetection } from '@/components/dashboard/sync/smart-conflict-detection';
+import { SmartSyncCard } from '@/components/dashboard/sync/smart-sync-card';
+import { units } from '@/lib/data';
 
 export default function SmartSyncPage() {
   return (
@@ -9,11 +10,15 @@ export default function SmartSyncPage() {
         <div>
           <h2 className="text-xl font-bold text-gray-900">Smart Sync</h2>
           <p className="text-sm text-gray-500">
-            Detect booking conflicts between calendars
+            Sync and view bookings across all platforms
           </p>
         </div>
       </div>
-      <SmartConflictDetection />
+      <div className="space-y-6">
+        {units.map((unit) => (
+          <SmartSyncCard key={unit.id} unit={unit} />
+        ))}
+      </div>
     </div>
   );
 }
