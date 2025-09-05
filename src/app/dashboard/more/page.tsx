@@ -7,6 +7,7 @@ import {
   Handshake,
   CircleDollarSign,
   LogOut,
+  ShieldCheck,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -25,6 +26,7 @@ const menuItems = [
     href: '/dashboard/agents',
   },
   { label: 'Expenses', icon: CircleDollarSign, href: '/dashboard/expenses' },
+  { label: 'Smart Sync', icon: ShieldCheck, href: '/dashboard/sync' },
 ];
 
 export default function MorePage() {
