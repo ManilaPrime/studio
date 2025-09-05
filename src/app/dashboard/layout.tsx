@@ -1,29 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Header from '@/components/dashboard/header';
 import BottomNav from '@/components/dashboard/bottom-nav';
+import {
+  Home,
+  CalendarDays,
+  ClipboardList,
+  MoreHorizontal,
+} from 'lucide-react';
+import Link from 'next/link';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [currentSection, setCurrentSection] = useState('dashboard');
+  const pathname = usePathname();
 
-  const showSection = (sectionName: string) => {
-    setCurrentSection(sectionName);
-    // In a real app with routing, this would navigate to the correct page.
-    // For this component-based display, we just need to re-render the children.
-  };
+  const navItems = [
+    { href: '/dashboard', label: 'Home', icon: Home },
+    { href: '/dashboard/bookings', label: 'Bookings', icon: CalendarDays },
+    { href: '/dashboard/reminders', label: 'Tasks', icon: ClipboardList },
+    { href: '/dashboard/more', label: 'More', icon: MoreHorizontal },
+  ];
 
   return (
     <div className="bg-gray-50 min-h-screen max-w-sm mx-auto flex flex-col">
       <Header />
-      <main className="flex-grow content-area">
-        {children}
-      </main>
-      <BottomNav currentSection={currentSection} showSection={showSection} />
+      <main className="flex-grow content-area">{children}</main>
+      <BottomNav navItems={navItems} pathname={pathname} />
     </div>
   );
 }

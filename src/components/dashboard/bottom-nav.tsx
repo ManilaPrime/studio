@@ -1,47 +1,76 @@
 'use client';
 
-interface BottomNavProps {
-  currentSection: string;
-  showSection: (section: string) => void;
+import { Plus } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { QuickActions } from './quick-actions';
+
+interface NavItem {
+  href: string;
+  label: string;
+  icon: React.ElementType;
 }
 
-const BottomNav = ({ currentSection, showSection }: BottomNavProps) => {
-  // In a full app, these would be Next.js <Link> components
-  // and would navigate to different routes.
-  const navItems = [
-    { id: 'dashboard', icon: '🏠', label: 'Home' },
-    { id: 'bookings', icon: '📅', label: 'Bookings' },
-    { id: 'reminders', icon: '⏰', label: 'Tasks' },
-    { id: 'more', icon: '⋯', label: 'More' },
-  ];
+interface BottomNavProps {
+  navItems: NavItem[];
+  pathname: string;
+}
 
+const BottomNav = ({ navItems, pathname }: BottomNavProps) => {
   return (
     <nav className="bottom-nav">
       <div className="flex items-center justify-around py-2">
         {navItems.slice(0, 2).map((item) => (
-          <button
+          <Link
+            href={item.href}
             key={item.id}
-            onClick={() => showSection(item.id)}
-            className={`fb-nav-item ${currentSection === item.id ? 'active' : ''}`}
-            id={`nav-${item.id}`}
+            className={`fb-nav-item ${
+              pathname === item.href ? 'active' : ''
+            }`}
+            id={`nav-${item.label.toLowerCase()}`}
           >
-            <div className="fb-nav-icon">{item.icon}</div>
+            <item.icon className="fb-nav-icon" size={24} />
             <div className="fb-nav-text">{item.label}</div>
-          </button>
+          </Link>
         ))}
-        <button className="quick-action-btn">
-          <span className="text-2xl font-bold">+</span>
-        </button>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              variant="default"
+              className="quick-action-btn"
+              aria-label="Quick Actions"
+            >
+              <Plus className="text-2xl font-bold" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Quick Actions</DialogTitle>
+            </DialogHeader>
+            <QuickActions />
+          </DialogContent>
+        </Dialog>
+
         {navItems.slice(2).map((item) => (
-          <button
+          <Link
+            href={item.href}
             key={item.id}
-            onClick={() => (item.id === 'more' ? {} : showSection(item.id))}
-            className={`fb-nav-item ${currentSection === item.id ? 'active' : ''}`}
-            id={`nav-${item.id}`}
+            className={`fb-nav-item ${
+              pathname === item.href ? 'active' : ''
+            }`}
+            id={`nav-${item.label.toLowerCase()}`}
           >
-            <div className="fb-nav-icon">{item.icon}</div>
+            <item.icon className="fb-nav-icon" size={24} />
             <div className="fb-nav-text">{item.label}</div>
-          </button>
+          </Link>
         ))}
       </div>
     </nav>
