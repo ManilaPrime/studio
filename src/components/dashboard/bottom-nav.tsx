@@ -30,7 +30,7 @@ const BottomNav = ({ navItems, pathname }: BottomNavProps) => {
         {navItems.slice(0, 2).map((item) => (
           <Link
             href={item.href}
-            key={item.id}
+            key={item.href}
             className={`fb-nav-item ${
               pathname === item.href ? 'active' : ''
             }`}
@@ -62,7 +62,7 @@ const BottomNav = ({ navItems, pathname }: BottomNavProps) => {
         {navItems.slice(2).map((item) => (
           <Link
             href={item.href}
-            key={item.id}
+            key={item.href}
             className={`fb-nav-item ${
               pathname === item.href ? 'active' : ''
             }`}
