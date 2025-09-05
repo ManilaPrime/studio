@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'Unified Booker',
-  description: 'Your all-in-one booking management solution.',
+  title: 'Manila Prime Staycation',
+  description: 'Professional Property Management System',
 };
 
 export default function RootLayout({
@@ -15,11 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
       </head>
-      <body className="font-body antialiased">
+      <body className="antialiased">
         {children}
         <Toaster />
       </body>

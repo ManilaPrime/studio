@@ -1,15 +1,10 @@
-import { MasterCalendar } from "@/components/dashboard/master-calendar";
-
+// This file is intentionally left blank for now.
+// We will build the dashboard page in subsequent steps.
 export default function DashboardPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-headline font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome back! Here's a unified view of your bookings.
-        </p>
-      </div>
-      <MasterCalendar />
+    <div>
+      <h1>Dashboard</h1>
+      <p>Welcome to the main application!</p>
     </div>
   );
 }
