@@ -6,6 +6,11 @@ const RecentActivity = () => {
     { icon: '📅', title: 'New booking', description: 'Michael Chen - Unit 1586 C2', time: '5h', color: 'blue' }
   ];
 
+  const colorVariants: { [key: string]: string } = {
+    green: 'bg-green-100',
+    blue: 'bg-blue-100',
+  };
+
   return (
     <div className="fb-card">
       <div className="fb-header">
@@ -15,7 +20,7 @@ const RecentActivity = () => {
         <div className="space-y-3">
           {activities.map((activity, index) => (
             <div key={index} className="flex items-center space-x-3">
-              <div className={`fb-avatar`}>
+              <div className={`fb-avatar ${colorVariants[activity.color]}`}>
                 <span>{activity.icon}</span>
               </div>
               <div className="flex-1">
