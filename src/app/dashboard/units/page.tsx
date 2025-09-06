@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { UnitsList } from '@/components/dashboard/units/units-list';
 import { AddUnitDialog } from '@/components/dashboard/units/add-unit-dialog';
 import { units } from '@/lib/data';
 import { SmartSyncCard } from '@/components/dashboard/sync/smart-sync-card';
@@ -14,7 +13,7 @@ export default function UnitsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-bold text-gray-900">Units</h2>
-          <p className="text-sm text-gray-500">Manage rental properties</p>
+          <p className="text-sm text-gray-500">Manage rental properties & sync calendars</p>
         </div>
         <AddUnitDialog open={isAddUnitOpen} onOpenChange={setIsAddUnitOpen}>
           <button
@@ -26,7 +25,6 @@ export default function UnitsPage() {
         </AddUnitDialog>
       </div>
       <div className="space-y-6">
-        <UnitsList />
         {units.map((unit) => (
           <SmartSyncCard key={unit.id} unit={unit} />
         ))}
