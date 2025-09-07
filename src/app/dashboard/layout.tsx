@@ -30,7 +30,7 @@ const BookingsIcon = () => (
     xmlns="http://www.w3.org/2000/svg"
     width="24"
     height="24"
-    viewBox="0 0 24 24"
+    viewBox="0 0 24"
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
@@ -114,11 +114,10 @@ export default function DashboardLayout({
   }
 
   if (!user) {
-    // This can happen briefly between the loading state and the redirect effect.
-    // Or if the auth state is somehow lost.
+    // The redirect in useEffect is asynchronous. This prevents a flash of the dashboard
+    // content before the redirect happens.
     return null;
   }
-
 
   return (
     <div className="bg-gray-50 min-h-screen max-w-sm mx-auto flex flex-col">
