@@ -21,6 +21,10 @@ const Header = () => {
     // In a real app, this would handle the logout logic
     window.location.href = '/';
   };
+  
+  const handleSettings = () => {
+    alert('Settings page coming soon!');
+  };
 
   return (
     <header className="mobile-header">
@@ -48,7 +52,7 @@ const Header = () => {
                 </span>
               )}
             </button>
-            <button onClick={handleLogout} className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-300 hover:border-yellow-600 transition-colors">
+            <button onClick={handleSettings} className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-300 hover:border-yellow-600 transition-colors">
               <span className="text-gray-600 text-lg">⚙️</span>
             </button>
           </div>
