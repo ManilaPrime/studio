@@ -50,9 +50,6 @@ const Header = () => {
     }).length;
   }, [reminders]);
   
-  const handleSettings = () => {
-    alert('Settings page coming soon!');
-  };
 
   return (
     <header className="mobile-header">
@@ -80,9 +77,9 @@ const Header = () => {
                 </span>
               )}
             </Link>
-            <button onClick={handleSettings} className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-300 hover:border-yellow-600 transition-colors">
+            <Link href="/dashboard/more" className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-300 hover:border-yellow-600 transition-colors">
               <span className="text-gray-600 text-lg">⚙️</span>
-            </button>
+            </Link>
           </div>
         </div>
       </div>
