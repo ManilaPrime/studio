@@ -8,10 +8,11 @@ import { useState } from 'react';
 interface BookingsListProps {
     bookings: Booking[];
     units: Unit[];
+    onEdit: (booking: Booking) => void;
     onDelete: (bookingId: string) => void;
 }
 
-export function BookingsList({ bookings, units, onDelete }: BookingsListProps) {
+export function BookingsList({ bookings, units, onEdit, onDelete }: BookingsListProps) {
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(
     null
   );
@@ -95,7 +96,7 @@ export function BookingsList({ bookings, units, onDelete }: BookingsListProps) {
                 Receipt
               </button>
               <button
-                onClick={() => alert('Edit feature coming soon!')}
+                onClick={() => onEdit(booking)}
                 className="fb-btn fb-btn-secondary"
               >
                 Edit

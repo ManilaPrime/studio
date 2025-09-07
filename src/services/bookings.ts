@@ -1,7 +1,7 @@
 'use client';
 
 import { db } from '@/lib/firebase';
-import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import type { Booking, Unit } from '@/lib/types';
 import { getUnit } from './units';
 import { sendDiscordNotification } from './discord';
@@ -28,6 +28,13 @@ export async function addBooking(bookingData: Omit<Booking, 'id'>): Promise<stri
     }
 
     return docRef.id;
+}
+
+export async function updateBooking(bookingData: Booking): Promise<void> {
+    const { id, ...data } = bookingData;
+    if (!id) throw new Error("Booking ID is required for update");
+    const bookingDoc = doc(db, 'bookings', id);
+    await updateDoc(bookingDoc, data);
 }
 
 export async function deleteBooking(bookingId: string): Promise<void> {

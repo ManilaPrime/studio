@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { BookingsList } from '@/components/dashboard/bookings/bookings-list';
 import { AddBookingDialog } from '@/components/dashboard/bookings/add-booking-dialog';
+import { EditBookingDialog } from '@/components/dashboard/bookings/edit-booking-dialog';
 import type { Booking, Unit } from '@/lib/types';
-import { getBookings, addBooking as addBookingService, deleteBooking as deleteBookingService } from '@/services/bookings';
+import { getBookings, addBooking as addBookingService, updateBooking as updateBookingService, deleteBooking as deleteBookingService } from '@/services/bookings';
 import { getUnits } from '@/services/units';
 
 
@@ -14,6 +15,8 @@ export default function BookingsPage() {
   const [units, setUnits] = useState<Unit[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddBookingOpen, setIsAddBookingOpen] = React.useState(false);
+  const [isEditBookingOpen, setIsEditBookingOpen] = React.useState(false);
+  const [selectedBooking, setSelectedBooking] = React.useState<Booking | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -26,6 +29,11 @@ export default function BookingsPage() {
     fetchData();
   }, []);
 
+  const handleOpenEditDialog = (booking: Booking) => {
+    setSelectedBooking(booking);
+    setIsEditBookingOpen(true);
+  };
+
   const addBooking = async (newBookingData: Omit<Booking, 'id' | 'createdAt'>) => {
     const newBooking: Omit<Booking, 'id'> = {
       ...newBookingData,
@@ -33,6 +41,14 @@ export default function BookingsPage() {
     };
     const id = await addBookingService(newBooking);
     setBookings((prev) => [...prev, { ...newBooking, id }]);
+  };
+
+  const updateBooking = async (updatedBooking: Booking) => {
+    await updateBookingService(updatedBooking);
+    setBookings((prev) => 
+        prev.map((b) => b.id === updatedBooking.id ? updatedBooking : b)
+    );
+    setSelectedBooking(null);
   };
 
   const deleteBooking = async (bookingId: string) => {
@@ -68,7 +84,22 @@ export default function BookingsPage() {
           </button>
         </AddBookingDialog>
       </div>
-      <BookingsList bookings={bookings} units={units} onDelete={deleteBooking} />
+      <BookingsList 
+        bookings={bookings} 
+        units={units} 
+        onEdit={handleOpenEditDialog}
+        onDelete={deleteBooking} 
+      />
+      {selectedBooking && (
+        <EditBookingDialog
+          key={selectedBooking.id}
+          open={isEditBookingOpen}
+          onOpenChange={setIsEditBookingOpen}
+          booking={selectedBooking}
+          onUpdateBooking={updateBooking}
+          units={units}
+        />
+      )}
     </div>
   );
 }
