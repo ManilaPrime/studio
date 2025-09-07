@@ -1,36 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { reminders } from '@/lib/data';
 import { formatDate } from '@/lib/utils';
 import type { Reminder } from '@/lib/types';
 
 type FilterType = 'all' | 'pending' | 'overdue' | 'today' | 'completed';
 
-export function RemindersList() {
+interface RemindersListProps {
+  reminders: Reminder[];
+  onUpdateStatus: (reminderId: number, status: 'pending' | 'completed') => void;
+  onDelete: (reminderId: number) => void;
+}
+
+export function RemindersList({ reminders, onUpdateStatus, onDelete }: RemindersListProps) {
   const [filter, setFilter] = useState<FilterType>('all');
-  const [, setForceUpdate] = useState({}); // To force re-render on data change
-
-  const handleStatusChange = (
-    reminderId: number,
-    newStatus: 'pending' | 'completed'
-  ) => {
-    const reminder = reminders.find((r) => r.id === reminderId);
-    if (reminder) {
-      reminder.status = newStatus;
-      setForceUpdate({}); // Force re-render
-    }
-  };
-
-  const handleDelete = (reminderId: number) => {
-    const index = reminders.findIndex((r) => r.id === reminderId);
-    if (index > -1) {
-      if(confirm('Are you sure you want to delete this reminder?')) {
-        reminders.splice(index, 1);
-        setForceUpdate({}); // Force re-render
-      }
-    }
-  };
 
   const getFilteredReminders = () => {
     const today = new Date();
@@ -171,7 +154,7 @@ export function RemindersList() {
                     {reminder.status === 'pending' ? (
                       <button
                         onClick={() =>
-                          handleStatusChange(reminder.id, 'completed')
+                          onUpdateStatus(reminder.id, 'completed')
                         }
                         className="fb-btn fb-btn-primary"
                       >
@@ -180,7 +163,7 @@ export function RemindersList() {
                     ) : (
                       <button
                         onClick={() =>
-                          handleStatusChange(reminder.id, 'pending')
+                          onUpdateStatus(reminder.id, 'pending')
                         }
                         className="fb-btn fb-btn-secondary"
                       >
@@ -188,7 +171,7 @@ export function RemindersList() {
                       </button>
                     )}
                     <button
-                      onClick={() => handleDelete(reminder.id)}
+                      onClick={() => onDelete(reminder.id)}
                       className="fb-btn fb-btn-secondary"
                     >
                       Delete

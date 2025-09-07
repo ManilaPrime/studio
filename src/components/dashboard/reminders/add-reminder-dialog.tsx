@@ -1,16 +1,18 @@
 'use client';
 
-import { reminders } from '@/lib/data';
+import type { Reminder } from '@/lib/types';
 import { useEffect } from 'react';
 
 export function AddReminderDialog({
   children,
   open,
   onOpenChange,
+  onAddReminder,
 }: {
   children?: React.ReactNode;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onAddReminder: (newReminder: Omit<Reminder, 'id' | 'createdAt' | 'status'>) => void;
 }) {
   useEffect(() => {
     if (open) {
@@ -28,25 +30,15 @@ export function AddReminderDialog({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const newReminder = {
-      id: Math.max(...reminders.map((r) => r.id), 0) + 1,
+    const newReminderData = {
       title: formData.get('reminderTitle') as string,
       description: formData.get('reminderDescription') as string,
-      category: formData.get('reminderCategory') as
-        | 'payment'
-        | 'maintenance'
-        | 'cleaning'
-        | 'booking'
-        | 'inspection'
-        | 'meeting'
-        | 'other',
-      priority: formData.get('reminderPriority') as 'high' | 'medium' | 'low',
+      category: formData.get('reminderCategory') as Reminder['category'],
+      priority: formData.get('reminderPriority') as Reminder['priority'],
       dueDate: formData.get('reminderDate') as string,
       dueTime: formData.get('reminderTime') as string,
-      status: 'pending' as const,
-      createdAt: new Date().toISOString(),
     };
-    reminders.push(newReminder);
+    onAddReminder(newReminderData);
     onOpenChange(false);
   };
   

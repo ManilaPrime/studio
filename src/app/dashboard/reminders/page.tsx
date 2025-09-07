@@ -3,9 +3,35 @@
 import React from 'react';
 import { RemindersList } from '@/components/dashboard/reminders/reminders-list';
 import { AddReminderDialog } from '@/components/dashboard/reminders/add-reminder-dialog';
+import { reminders as initialReminders } from '@/lib/data';
+import type { Reminder } from '@/lib/types';
 
 export default function RemindersPage() {
+  const [reminders, setReminders] = React.useState<Reminder[]>(initialReminders);
   const [isAddReminderOpen, setIsAddReminderOpen] = React.useState(false);
+
+  const addReminder = (newReminderData: Omit<Reminder, 'id' | 'createdAt' | 'status'>) => {
+    const newReminder: Reminder = {
+      ...newReminderData,
+      id: Math.max(0, ...reminders.map((r) => r.id)) + 1,
+      createdAt: new Date().toISOString(),
+      status: 'pending',
+    };
+    setReminders((prev) => [...prev, newReminder]);
+  };
+
+  const updateReminderStatus = (reminderId: number, status: 'pending' | 'completed') => {
+    setReminders((prev) =>
+      prev.map((r) => (r.id === reminderId ? { ...r, status } : r))
+    );
+  };
+
+  const deleteReminder = (reminderId: number) => {
+    if (confirm('Are you sure you want to delete this reminder?')) {
+        setReminders((prev) => prev.filter((r) => r.id !== reminderId));
+    }
+  };
+
 
   return (
     <div className="p-4">
@@ -17,6 +43,7 @@ export default function RemindersPage() {
         <AddReminderDialog
           open={isAddReminderOpen}
           onOpenChange={setIsAddReminderOpen}
+          onAddReminder={addReminder}
         >
           <button
             onClick={() => setIsAddReminderOpen(true)}
@@ -26,7 +53,11 @@ export default function RemindersPage() {
           </button>
         </AddReminderDialog>
       </div>
-      <RemindersList />
+      <RemindersList 
+        reminders={reminders}
+        onUpdateStatus={updateReminderStatus}
+        onDelete={deleteReminder}
+      />
     </div>
   );
 }
