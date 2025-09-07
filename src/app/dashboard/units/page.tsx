@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { AddUnitDialog } from '@/components/dashboard/units/add-unit-dialog';
+import { EditUnitDialog } from '@/components/dashboard/units/edit-unit-dialog';
 import { UnitsList } from '@/components/dashboard/units/units-list';
 import type { Unit } from '@/lib/types';
 import { getUnits, addUnit as addUnitService, updateUnit as updateUnitService, deleteUnit as deleteUnitService } from '@/services/units';
@@ -10,6 +11,8 @@ export default function UnitsPage() {
   const [units, setUnits] = React.useState<Unit[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddUnitOpen, setIsAddUnitOpen] = React.useState(false);
+  const [isEditUnitOpen, setIsEditUnitOpen] = React.useState(false);
+  const [selectedUnit, setSelectedUnit] = React.useState<Unit | null>(null);
 
   useEffect(() => {
     async function fetchUnits() {
@@ -19,6 +22,11 @@ export default function UnitsPage() {
     }
     fetchUnits();
   }, []);
+
+  const handleOpenEditDialog = (unit: Unit) => {
+    setSelectedUnit(unit);
+    setIsEditUnitOpen(true);
+  };
 
 
   const addUnit = async (newUnitData: Omit<Unit, 'id' | 'status' | 'calendars'>) => {
@@ -46,6 +54,7 @@ export default function UnitsPage() {
   const updateUnit = async (updatedUnit: Unit) => {
     await updateUnitService(updatedUnit);
     setUnits((prev) => prev.map((u) => u.id === updatedUnit.id ? updatedUnit : u));
+    setSelectedUnit(null);
   }
 
   if(loading) {
@@ -73,7 +82,16 @@ export default function UnitsPage() {
           </button>
         </AddUnitDialog>
       </div>
-      <UnitsList units={units} onDelete={deleteUnit} onUpdate={updateUnit} />
+      <UnitsList units={units} onEdit={handleOpenEditDialog} onDelete={deleteUnit} />
+      {selectedUnit && (
+        <EditUnitDialog
+          key={selectedUnit.id}
+          open={isEditUnitOpen}
+          onOpenChange={setIsEditUnitOpen}
+          unit={selectedUnit}
+          onUpdateUnit={updateUnit}
+        />
+      )}
     </div>
   );
 }

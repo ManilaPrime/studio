@@ -8,12 +8,12 @@ import { Calendar, Link as LinkIcon, List } from 'lucide-react';
 
 interface UnitsListProps {
   units: Unit[];
+  onEdit: (unit: Unit) => void;
   onDelete: (unitId: string) => void;
-  onUpdate: (unit: Unit) => void;
 }
 
 
-export function UnitsList({ units, onDelete, onUpdate }: UnitsListProps) {
+export function UnitsList({ units, onEdit, onDelete }: UnitsListProps) {
   if (units.length === 0) {
     return <p className="text-gray-500 text-center py-8">No units found. Click "+ Add" to create one.</p>;
   }
@@ -21,13 +21,13 @@ export function UnitsList({ units, onDelete, onUpdate }: UnitsListProps) {
   return (
     <div className="space-y-4">
       {units.map((unit) => (
-        <UnitCard key={unit.id} unit={unit} onDelete={onDelete} onUpdate={onUpdate} />
+        <UnitCard key={unit.id} unit={unit} onEdit={onEdit} onDelete={onDelete} />
       ))}
     </div>
   );
 }
 
-function UnitCard({ unit, onDelete, onUpdate }: { unit: Unit, onDelete: (unitId: string) => void, onUpdate: (unit: Unit) => void }) {
+function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit) => void, onDelete: (unitId: string) => void }) {
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState<SyncedEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -156,7 +156,7 @@ function UnitCard({ unit, onDelete, onUpdate }: { unit: Unit, onDelete: (unitId:
       </div>
       <div className="fb-actions">
         <button
-          onClick={() => alert(`Editing ${unit.name}`)}
+          onClick={() => onEdit(unit)}
           className="fb-btn fb-btn-secondary"
         >
           Edit
