@@ -1,3 +1,4 @@
+
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
@@ -104,12 +105,18 @@ export default function DashboardLayout({
     { href: '/dashboard/more', label: 'More', icon: MoreIcon },
   ];
   
-  if (loading || !user) {
+  if (loading) {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
             <p>Loading...</p>
         </div>
     );
+  }
+
+  if (!user) {
+    // This can happen briefly between the loading state and the redirect effect.
+    // Or if the auth state is somehow lost.
+    return null;
   }
 
 
