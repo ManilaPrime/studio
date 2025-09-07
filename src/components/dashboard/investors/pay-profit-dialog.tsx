@@ -39,7 +39,7 @@ export function PayProfitDialog({
 
     const formData = new FormData(e.currentTarget);
     const newPayment = {
-      investorId: investor.id,
+      investorId: investor.id!,
       month: formData.get('paymentMonth') as string,
       amount: parseFloat(formData.get('profitAmount') as string),
       paymentDate: formData.get('paymentDate') as string,

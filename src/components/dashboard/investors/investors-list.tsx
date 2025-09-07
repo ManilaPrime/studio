@@ -1,12 +1,13 @@
 'use client';
 
 import type { Investor, ProfitPayment } from '@/lib/types';
+import { formatDate } from '@/lib/utils';
 
 interface InvestorsListProps {
   investors: Investor[];
   profitPayments: ProfitPayment[];
   onEdit: (investor: Investor) => void;
-  onDelete: (investorId: number) => void;
+  onDelete: (investorId: string) => void;
   onPayProfit: (investor: Investor) => void;
 }
 
@@ -111,10 +112,7 @@ export function InvestorsList({
                     </button>
                   ) : (
                     <span className="text-xs text-green-600">
-                      {new Date(currentPayment!.paymentDate).toLocaleDateString(
-                        'en-US',
-                        { month: 'short', day: 'numeric' }
-                      )}
+                      {currentPayment?.paymentDate ? formatDate(currentPayment.paymentDate) : ''}
                     </span>
                   )}
                 </div>
@@ -135,7 +133,7 @@ export function InvestorsList({
                 Edit
               </button>
               <button
-                onClick={() => onDelete(investor.id)}
+                onClick={() => onDelete(investor.id!)}
                 className="fb-btn fb-btn-secondary"
               >
                 Remove

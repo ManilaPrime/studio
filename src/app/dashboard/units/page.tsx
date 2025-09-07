@@ -1,19 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AddUnitDialog } from '@/components/dashboard/units/add-unit-dialog';
 import { UnitsList } from '@/components/dashboard/units/units-list';
-import { units as initialUnits } from '@/lib/data';
 import type { Unit } from '@/lib/types';
+import { getUnits, addUnit as addUnitService, updateUnit as updateUnitService, deleteUnit as deleteUnitService } from '@/services/units';
 
 export default function UnitsPage() {
-  const [units, setUnits] = React.useState<Unit[]>(initialUnits);
+  const [units, setUnits] = React.useState<Unit[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isAddUnitOpen, setIsAddUnitOpen] = React.useState(false);
 
-  const addUnit = (newUnitData: Omit<Unit, 'id' | 'status' | 'calendars'>) => {
-    const newUnit: Unit = {
+  useEffect(() => {
+    async function fetchUnits() {
+        const unitsData = await getUnits();
+        setUnits(unitsData);
+        setLoading(false);
+    }
+    fetchUnits();
+  }, []);
+
+
+  const addUnit = async (newUnitData: Omit<Unit, 'id' | 'status' | 'calendars'>) => {
+    const newUnit: Omit<Unit, 'id'> = {
       ...newUnitData,
-      id: Math.max(0, ...units.map((u) => u.id)) + 1,
       status: 'available',
       // Provide default empty calendar URLs for new units
       calendars: {
@@ -22,17 +32,24 @@ export default function UnitsPage() {
         direct: '',
       },
     };
-    setUnits((prev) => [...prev, newUnit]);
+    const id = await addUnitService(newUnit);
+    setUnits((prev) => [...prev, { ...newUnit, id }]);
   };
 
-  const deleteUnit = (unitId: number) => {
+  const deleteUnit = async (unitId: string) => {
      if (confirm('Are you sure you want to delete this unit? This action cannot be undone.')) {
+        await deleteUnitService(unitId);
         setUnits((prev) => prev.filter((u) => u.id !== unitId));
     }
   }
 
-  const updateUnit = (updatedUnit: Unit) => {
+  const updateUnit = async (updatedUnit: Unit) => {
+    await updateUnitService(updatedUnit);
     setUnits((prev) => prev.map((u) => u.id === updatedUnit.id ? updatedUnit : u));
+  }
+
+  if(loading) {
+    return <div className="p-4 text-center">Loading units...</div>
   }
 
 

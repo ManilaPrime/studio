@@ -1,16 +1,16 @@
 'use client';
 
-import { units } from '@/lib/data';
-import type { Booking, Expense } from '@/lib/types';
+import type { Booking, Expense, Unit } from '@/lib/types';
 import { StatsBookingIcon, StatsRevenueIcon, StatsUnitsIcon, StatsProfitIcon } from './icons';
 import { useMemo } from 'react';
 
 interface StatsCardsProps {
     bookings: Booking[];
     expenses: Expense[];
+    units: Unit[];
 }
 
-const StatsCards = ({ bookings, expenses }: StatsCardsProps) => {
+const StatsCards = ({ bookings, expenses, units }: StatsCardsProps) => {
     const stats = useMemo(() => {
         const activeBookingsCount = bookings.filter(booking => {
             const checkin = new Date(booking.checkinDate);
@@ -30,7 +30,7 @@ const StatsCards = ({ bookings, expenses }: StatsCardsProps) => {
             { label: "Total Units", value: totalUnits, icon: StatsUnitsIcon, color: "yellow" },
             { label: "Net Profit", value: `₱${netProfit.toLocaleString()}`, icon: StatsProfitIcon, color: "orange" },
         ];
-    }, [bookings, expenses]);
+    }, [bookings, expenses, units]);
     
     const colorVariants: { [key: string]: { bg: string, text: string } } = {
         blue: { bg: 'bg-blue-100', text: 'text-blue-600' },

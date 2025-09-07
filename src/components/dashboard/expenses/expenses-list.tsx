@@ -1,16 +1,16 @@
 'use client';
 
-import { units } from '@/lib/data';
-import type { Expense } from '@/lib/types';
+import type { Expense, Unit } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
 
 interface ExpensesListProps {
   expenses: Expense[];
+  units: Unit[];
   onEdit: (expense: Expense) => void;
-  onDelete: (expenseId: number) => void;
+  onDelete: (expenseId: string) => void;
 }
 
-export function ExpensesList({ expenses, onEdit, onDelete }: ExpensesListProps) {
+export function ExpensesList({ expenses, units, onEdit, onDelete }: ExpensesListProps) {
   
   const categoryIcons: Record<Expense['category'], string> = {
     utilities: '⚡️',
@@ -91,7 +91,7 @@ export function ExpensesList({ expenses, onEdit, onDelete }: ExpensesListProps) 
                 Edit
               </button>
               <button
-                onClick={() => onDelete(expense.id)}
+                onClick={() => onDelete(expense.id!)}
                 className="fb-btn fb-btn-secondary"
               >
                 Delete

@@ -1,7 +1,6 @@
 'use client';
 
-import { units } from '@/lib/data';
-import type { Booking } from '@/lib/types';
+import type { Booking, Unit } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
 
 export function BookingReceiptDialog({
@@ -9,11 +8,13 @@ export function BookingReceiptDialog({
   open,
   onOpenChange,
   bookings,
+  units,
 }: {
-  bookingId: number | null;
+  bookingId: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   bookings: Booking[];
+  units: Unit[];
 }) {
   if (!open || !bookingId) return null;
 
@@ -93,7 +94,7 @@ export function BookingReceiptDialog({
                     <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
                             <p className="text-gray-600">Booking ID:</p>
-                            <p className="font-semibold">#${booking.id.toString().padStart(4, '0')}</p>
+                            <p className="font-semibold">#${booking.id!.substring(0, 4)}</p>
                         </div>
                         <div>
                             <p className="text-gray-600">Date Issued:</p>

@@ -1,13 +1,35 @@
 'use client';
 
-import { bookings, expenses } from "@/lib/data";
+import { useEffect, useState } from "react";
+import type { Booking, Expense } from "@/lib/types";
+import { getBookings } from "@/services/bookings";
+import { getExpenses } from "@/services/expenses";
+
 
 export default function ReportsPage() {
+    const [bookings, setBookings] = useState<Booking[]>([]);
+    const [expenses, setExpenses] = useState<Expense[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            const bookingsData = await getBookings();
+            const expensesData = await getExpenses();
+            setBookings(bookingsData);
+            setExpenses(expensesData);
+            setLoading(false);
+        }
+        fetchData();
+    }, []);
 
     const totalRevenue = bookings.reduce((acc, booking) => acc + booking.totalAmount, 0);
     const totalExpenses = expenses.reduce((acc, expense) => acc + expense.amount, 0);
     const netProfit = totalRevenue - totalExpenses;
     const profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
+
+    if (loading) {
+      return <div className="p-4 text-center">Loading reports...</div>
+    }
 
   return (
     <div className="p-4">

@@ -1,15 +1,25 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AgentsList } from '@/components/dashboard/agents/agents-list';
 import { AddAgentDialog } from '@/components/dashboard/agents/add-agent-dialog';
-import { agents as initialAgents } from '@/lib/data';
 import type { Agent } from '@/lib/types';
+import { getAgents, addAgent as addAgentService, updateAgent as updateAgentService, deleteAgent as deleteAgentService } from '@/services/agents';
 
 export default function AgentsPage() {
-  const [agents, setAgents] = React.useState<Agent[]>(initialAgents);
+  const [agents, setAgents] = React.useState<Agent[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isAddAgentOpen, setIsAddAgentOpen] = React.useState(false);
   const [selectedAgent, setSelectedAgent] = React.useState<Agent | null>(null);
+
+  useEffect(() => {
+    const fetchAgents = async () => {
+      const agentsData = await getAgents();
+      setAgents(agentsData);
+      setLoading(false);
+    }
+    fetchAgents();
+  }, []);
 
   const handleOpenAddDialog = () => {
     setSelectedAgent(null);
@@ -21,29 +31,35 @@ export default function AgentsPage() {
     setIsAddAgentOpen(true);
   };
 
-  const addAgent = (newAgentData: Omit<Agent, 'id' | 'totalBookings' | 'totalCommissions' | 'status'>) => {
-    const newAgent: Agent = {
+  const addAgent = async (newAgentData: Omit<Agent, 'id' | 'totalBookings' | 'totalCommissions' | 'status'>) => {
+    const newAgent: Omit<Agent, 'id'> = {
       ...newAgentData,
-      id: Math.max(0, ...agents.map((a) => a.id)) + 1,
       totalBookings: 0,
       totalCommissions: 0,
       status: 'active',
     };
-    setAgents((prev) => [...prev, newAgent]);
+    const id = await addAgentService(newAgent);
+    setAgents((prev) => [...prev, { ...newAgent, id }]);
   };
 
-  const updateAgent = (updatedAgent: Agent) => {
+  const updateAgent = async (updatedAgent: Agent) => {
+    await updateAgentService(updatedAgent);
     setAgents((prev) =>
       prev.map((a) => (a.id === updatedAgent.id ? updatedAgent : a))
     );
     setSelectedAgent(null);
   }
 
-  const deleteAgent = (agentId: number) => {
+  const deleteAgent = async (agentId: string) => {
     if (confirm('Are you sure you want to remove this agent?')) {
+        await deleteAgentService(agentId);
         setAgents((prev) => prev.filter((a) => a.id !== agentId));
     }
   };
+
+  if (loading) {
+    return <div className="p-4 text-center">Loading agents...</div>;
+  }
 
   return (
     <div className="p-4">

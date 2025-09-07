@@ -1,7 +1,6 @@
 'use client';
 
-import { units } from '@/lib/data';
-import type { Expense } from '@/lib/types';
+import type { Expense, Unit } from '@/lib/types';
 import { useEffect, useState } from 'react';
 
 export function AddExpenseDialog({
@@ -11,6 +10,7 @@ export function AddExpenseDialog({
   expense,
   onAddExpense,
   onUpdateExpense,
+  units
 }: {
   children?: React.ReactNode;
   open: boolean;
@@ -18,13 +18,14 @@ export function AddExpenseDialog({
   expense?: Expense | null;
   onAddExpense: (data: Omit<Expense, 'id'>) => void;
   onUpdateExpense: (expense: Expense) => void;
+  units: Unit[];
 }) {
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<Expense['category']>('other');
   const [amount, setAmount] = useState(0);
   const [date, setDate] = useState('');
-  const [unitId, setUnitId] = useState<number | null>(null);
+  const [unitId, setUnitId] = useState<string | null>(null);
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState<Expense['status']>('paid');
 
@@ -120,7 +121,7 @@ export function AddExpenseDialog({
                 
                 <div>
                     <label htmlFor="expenseUnit" className="block text-sm font-medium text-gray-700 mb-1">Unit (Optional)</label>
-                    <select id="expenseUnit" className="prime-input" value={unitId ?? ''} onChange={e=>setUnitId(e.target.value ? parseInt(e.target.value) : null)}>
+                    <select id="expenseUnit" className="prime-input" value={unitId ?? ''} onChange={e=>setUnitId(e.target.value ? e.target.value : null)}>
                         <option value="">All Units</option>
                         {units.map(unit => (
                             <option key={unit.id} value={String(unit.id)}>{unit.name}</option>

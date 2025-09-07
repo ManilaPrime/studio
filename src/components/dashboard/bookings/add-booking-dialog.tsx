@@ -1,7 +1,6 @@
 'use client';
 
-import { units } from '@/lib/data';
-import type { Booking } from '@/lib/types';
+import type { Booking, Unit } from '@/lib/types';
 import { useState, useEffect } from 'react';
 
 export function AddBookingDialog({
@@ -9,11 +8,13 @@ export function AddBookingDialog({
   open,
   onOpenChange,
   onAddBooking,
+  units
 }: {
   children?: React.ReactNode;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAddBooking: (booking: Omit<Booking, 'id' | 'createdAt'>) => void;
+  units: Unit[];
 }) {
   const [nightlyRate, setNightlyRate] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -25,7 +26,7 @@ export function AddBookingDialog({
 
   useEffect(() => {
     if (selectedUnitId && checkinDate && checkoutDate) {
-      const unit = units.find((u) => u.id === parseInt(selectedUnitId));
+      const unit = units.find((u) => u.id === selectedUnitId);
       if (unit) {
         const checkin = new Date(checkinDate);
         const checkout = new Date(checkoutDate);
@@ -44,7 +45,7 @@ export function AddBookingDialog({
         setNightlyRate(0);
         setTotalAmount(0);
     }
-  }, [selectedUnitId, checkinDate, checkoutDate]);
+  }, [selectedUnitId, checkinDate, checkoutDate, units]);
   
   useEffect(() => {
     if (open) {
@@ -82,7 +83,7 @@ export function AddBookingDialog({
       guestLastName: formData.get('guestLastName') as string,
       guestPhone: formData.get('guestPhone') as string,
       guestEmail: formData.get('guestEmail') as string,
-      unitId: parseInt(formData.get('bookingUnit') as string),
+      unitId: formData.get('bookingUnit') as string,
       checkinDate: formData.get('checkinDate') as string,
       checkoutDate: formData.get('checkoutDate') as string,
       adults: parseInt(formData.get('adults') as string),
@@ -138,7 +139,6 @@ export function AddBookingDialog({
                     <label htmlFor="bookingUnit" className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
                     <select name="bookingUnit" id="bookingUnit" className="prime-input" required value={selectedUnitId} onChange={(e) => setSelectedUnitId(e.target.value)}>
                         <option value="">Select Unit</option>
-                        {units.map(unit => `<option value="${unit.id}">${unit.name} - ₱${unit.rate}/night</option>`).join('')}
                          {units.map(unit => (
                             <option key={unit.id} value={unit.id}>{unit.name} - ₱{unit.rate}/night</option>
                         ))}

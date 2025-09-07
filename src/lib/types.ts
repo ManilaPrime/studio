@@ -1,5 +1,5 @@
 export type Unit = {
-  id: number;
+  id?: string;
   name: string;
   type: string;
   rate: number;
@@ -14,12 +14,12 @@ export type Unit = {
 };
 
 export type Booking = {
-  id: number;
+  id?: string;
   guestFirstName: string;
   guestLastName: string;
   guestPhone: string;
   guestEmail: string;
-  unitId: number;
+  unitId: string;
   checkinDate: string;
   checkoutDate: string;
   adults: number;
@@ -32,7 +32,7 @@ export type Booking = {
 };
 
 export type Reminder = {
-  id: number;
+  id?: string;
   title: string;
   description: string;
   category: 'payment' | 'maintenance' | 'cleaning' | 'booking' | 'inspection' | 'meeting' | 'other';
@@ -44,7 +44,7 @@ export type Reminder = {
 };
 
 export type Investor = {
-    id: number;
+    id?: string;
     name: string;
     email: string;
     phone: string;
@@ -55,7 +55,7 @@ export type Investor = {
 };
 
 export type Agent = {
-    id: number;
+    id?: string;
     name: string;
     email: string;
     phone: string;
@@ -67,19 +67,19 @@ export type Agent = {
 };
 
 export type Expense = {
-    id: number;
+    id?: string;
     title: string;
     category: 'utilities' | 'maintenance' | 'cleaning' | 'supplies' | 'insurance' | 'other';
     amount: number;
     date: string;
-    unitId: number | null;
+    unitId: string | null;
     description: string;
     status: 'paid' | 'unpaid';
 };
 
 export type ProfitPayment = {
-    id: number;
-    investorId: number;
+    id?: string;
+    investorId: string;
     month: string;
     amount: number;
     paymentDate: string;

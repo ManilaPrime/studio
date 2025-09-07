@@ -1,30 +1,50 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { BookingsList } from '@/components/dashboard/bookings/bookings-list';
 import { AddBookingDialog } from '@/components/dashboard/bookings/add-booking-dialog';
-import { bookings as initialBookings } from '@/lib/data';
-import type { Booking } from '@/lib/types';
+import type { Booking, Unit } from '@/lib/types';
+import { getBookings, addBooking as addBookingService, deleteBooking as deleteBookingService } from '@/services/bookings';
+import { getUnits } from '@/services/units';
+
 
 export default function BookingsPage() {
-  const [bookings, setBookings] = React.useState<Booking[]>(initialBookings);
+  const [bookings, setBookings] = React.useState<Booking[]>([]);
+  const [units, setUnits] = useState<Unit[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isAddBookingOpen, setIsAddBookingOpen] = React.useState(false);
 
-  const addBooking = (newBookingData: Omit<Booking, 'id' | 'createdAt'>) => {
-    const newBooking: Booking = {
+  useEffect(() => {
+    async function fetchData() {
+        const bookingsData = await getBookings();
+        const unitsData = await getUnits();
+        setBookings(bookingsData);
+        setUnits(unitsData);
+        setLoading(false);
+    }
+    fetchData();
+  }, []);
+
+  const addBooking = async (newBookingData: Omit<Booking, 'id' | 'createdAt'>) => {
+    const newBooking: Omit<Booking, 'id'> = {
       ...newBookingData,
-      id: Math.max(0, ...bookings.map((b) => b.id)) + 1,
       createdAt: new Date().toISOString(),
     };
-    setBookings((prev) => [...prev, newBooking]);
+    const id = await addBookingService(newBooking);
+    setBookings((prev) => [...prev, { ...newBooking, id }]);
   };
 
-  const deleteBooking = (bookingId: number) => {
+  const deleteBooking = async (bookingId: string) => {
     if (confirm('Are you sure you want to delete this booking?')) {
+        await deleteBookingService(bookingId);
         setBookings((prev) => prev.filter((b) => b.id !== bookingId));
     }
   };
+
+  if (loading) {
+    return <div className="p-4 text-center">Loading bookings...</div>
+  }
 
 
   return (
@@ -38,6 +58,7 @@ export default function BookingsPage() {
           open={isAddBookingOpen}
           onOpenChange={setIsAddBookingOpen}
           onAddBooking={addBooking}
+          units={units}
         >
           <button
             onClick={() => setIsAddBookingOpen(true)}
@@ -47,7 +68,7 @@ export default function BookingsPage() {
           </button>
         </AddBookingDialog>
       </div>
-      <BookingsList bookings={bookings} onDelete={deleteBooking} />
+      <BookingsList bookings={bookings} units={units} onDelete={deleteBooking} />
     </div>
   );
 }

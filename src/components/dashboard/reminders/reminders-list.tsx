@@ -8,8 +8,8 @@ type FilterType = 'all' | 'pending' | 'overdue' | 'today' | 'completed';
 
 interface RemindersListProps {
   reminders: Reminder[];
-  onUpdateStatus: (reminderId: number, status: 'pending' | 'completed') => void;
-  onDelete: (reminderId: number) => void;
+  onUpdateStatus: (reminderId: string, status: 'pending' | 'completed') => void;
+  onDelete: (reminderId: string) => void;
 }
 
 export function RemindersList({ reminders, onUpdateStatus, onDelete }: RemindersListProps) {
@@ -154,7 +154,7 @@ export function RemindersList({ reminders, onUpdateStatus, onDelete }: Reminders
                     {reminder.status === 'pending' ? (
                       <button
                         onClick={() =>
-                          onUpdateStatus(reminder.id, 'completed')
+                          onUpdateStatus(reminder.id!, 'completed')
                         }
                         className="fb-btn fb-btn-primary"
                       >
@@ -163,7 +163,7 @@ export function RemindersList({ reminders, onUpdateStatus, onDelete }: Reminders
                     ) : (
                       <button
                         onClick={() =>
-                          onUpdateStatus(reminder.id, 'pending')
+                          onUpdateStatus(reminder.id!, 'pending')
                         }
                         className="fb-btn fb-btn-secondary"
                       >
@@ -171,7 +171,7 @@ export function RemindersList({ reminders, onUpdateStatus, onDelete }: Reminders
                       </button>
                     )}
                     <button
-                      onClick={() => onDelete(reminder.id)}
+                      onClick={() => onDelete(reminder.id!)}
                       className="fb-btn fb-btn-secondary"
                     >
                       Delete

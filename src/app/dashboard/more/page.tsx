@@ -7,9 +7,11 @@ import {
   Handshake,
   CircleDollarSign,
   LogOut,
+  RefreshCw,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/use-auth';
 
 const menuItems = [
   { label: 'Units', icon: Building, href: '/dashboard/units' },
@@ -29,9 +31,11 @@ const menuItems = [
 
 export default function MorePage() {
   const router = useRouter();
+  const { logout } = useAuth();
 
-  const handleLogout = () => {
-    // In a real app, this would clear session, etc.
+
+  const handleLogout = async () => {
+    await logout();
     router.push('/');
   };
 

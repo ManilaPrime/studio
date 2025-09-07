@@ -1,37 +1,57 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { RemindersList } from '@/components/dashboard/reminders/reminders-list';
 import { AddReminderDialog } from '@/components/dashboard/reminders/add-reminder-dialog';
-import { reminders as initialReminders } from '@/lib/data';
 import type { Reminder } from '@/lib/types';
+import { getReminders, addReminder as addReminderService, updateReminder as updateReminderService, deleteReminder as deleteReminderService } from '@/services/reminders';
+
 
 export default function RemindersPage() {
-  const [reminders, setReminders] = React.useState<Reminder[]>(initialReminders);
+  const [reminders, setReminders] = React.useState<Reminder[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isAddReminderOpen, setIsAddReminderOpen] = React.useState(false);
 
-  const addReminder = (newReminderData: Omit<Reminder, 'id' | 'createdAt' | 'status'>) => {
-    const newReminder: Reminder = {
+  useEffect(() => {
+    async function fetchReminders() {
+      const remindersData = await getReminders();
+      setReminders(remindersData);
+      setLoading(false);
+    }
+    fetchReminders();
+  }, []);
+
+  const addReminder = async (newReminderData: Omit<Reminder, 'id' | 'createdAt' | 'status'>) => {
+    const newReminder: Omit<Reminder, 'id'> = {
       ...newReminderData,
-      id: Math.max(0, ...reminders.map((r) => r.id)) + 1,
       createdAt: new Date().toISOString(),
       status: 'pending',
     };
-    setReminders((prev) => [...prev, newReminder]);
+    const id = await addReminderService(newReminder);
+    setReminders((prev) => [...prev, { ...newReminder, id }]);
   };
 
-  const updateReminderStatus = (reminderId: number, status: 'pending' | 'completed') => {
-    setReminders((prev) =>
-      prev.map((r) => (r.id === reminderId ? { ...r, status } : r))
-    );
+  const updateReminderStatus = async (reminderId: string, status: 'pending' | 'completed') => {
+    const reminder = reminders.find(r => r.id === reminderId);
+    if (reminder) {
+      const updatedReminder = { ...reminder, status };
+      await updateReminderService(updatedReminder);
+      setReminders((prev) =>
+        prev.map((r) => (r.id === reminderId ? updatedReminder : r))
+      );
+    }
   };
 
-  const deleteReminder = (reminderId: number) => {
+  const deleteReminder = async (reminderId: string) => {
     if (confirm('Are you sure you want to delete this reminder?')) {
+        await deleteReminderService(reminderId);
         setReminders((prev) => prev.filter((r) => r.id !== reminderId));
     }
   };
 
+  if (loading) {
+    return <div className="p-4 text-center">Loading reminders...</div>
+  }
 
   return (
     <div className="p-4">

@@ -6,7 +6,7 @@ import { formatDate } from '@/lib/utils';
 interface AgentsListProps {
   agents: Agent[];
   onEdit: (agent: Agent) => void;
-  onDelete: (agentId: number) => void;
+  onDelete: (agentId: string) => void;
 }
 
 export function AgentsList({ agents, onEdit, onDelete }: AgentsListProps) {
@@ -68,7 +68,7 @@ export function AgentsList({ agents, onEdit, onDelete }: AgentsListProps) {
               Edit
             </button>
             <button
-              onClick={() => onDelete(agent.id)}
+              onClick={() => onDelete(agent.id!)}
               className="fb-btn fb-btn-secondary"
             >
               Remove

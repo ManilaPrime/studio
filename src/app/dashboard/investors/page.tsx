@@ -1,18 +1,32 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { InvestorsList } from '@/components/dashboard/investors/investors-list';
 import { AddInvestorDialog } from '@/components/dashboard/investors/add-investor-dialog';
 import { PayProfitDialog } from '@/components/dashboard/investors/pay-profit-dialog';
-import { investors as initialInvestors, profitPayments as initialProfitPayments } from '@/lib/data';
 import type { Investor, ProfitPayment } from '@/lib/types';
+import { getInvestors, addInvestor as addInvestorService, updateInvestor as updateInvestorService, deleteInvestor as deleteInvestorService } from '@/services/investors';
+import { getProfitPayments, addProfitPayment as addProfitPaymentService } from '@/services/profit-payments';
+
 
 export default function InvestorsPage() {
-  const [investors, setInvestors] = React.useState<Investor[]>(initialInvestors);
-  const [profitPayments, setProfitPayments] = React.useState<ProfitPayment[]>(initialProfitPayments);
+  const [investors, setInvestors] = React.useState<Investor[]>([]);
+  const [profitPayments, setProfitPayments] = React.useState<ProfitPayment[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isAddInvestorOpen, setIsAddInvestorOpen] = React.useState(false);
   const [isPayProfitOpen, setIsPayProfitOpen] = React.useState(false);
   const [selectedInvestor, setSelectedInvestor] = React.useState<Investor | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+        const investorsData = await getInvestors();
+        const paymentsData = await getProfitPayments();
+        setInvestors(investorsData);
+        setProfitPayments(paymentsData);
+        setLoading(false);
+    }
+    fetchData();
+  }, []);
 
   const handleOpenAddDialog = () => {
     setSelectedInvestor(null);
@@ -29,36 +43,42 @@ export default function InvestorsPage() {
     setIsPayProfitOpen(true);
   };
 
-  const addInvestor = (newInvestorData: Omit<Investor, 'id' | 'status'>) => {
-    const newInvestor: Investor = {
+  const addInvestor = async (newInvestorData: Omit<Investor, 'id' | 'status'>) => {
+    const newInvestor: Omit<Investor, 'id'> = {
       ...newInvestorData,
-      id: Math.max(0, ...investors.map((i) => i.id)) + 1,
       status: 'active',
     };
-    setInvestors((prev) => [...prev, newInvestor]);
+    const id = await addInvestorService(newInvestor);
+    setInvestors((prev) => [...prev, { ...newInvestor, id }]);
   };
 
-  const updateInvestor = (updatedInvestor: Investor) => {
+  const updateInvestor = async (updatedInvestor: Investor) => {
+    await updateInvestorService(updatedInvestor);
     setInvestors((prev) =>
       prev.map((i) => (i.id === updatedInvestor.id ? updatedInvestor : i))
     );
     setSelectedInvestor(null);
   };
 
-  const deleteInvestor = (investorId: number) => {
+  const deleteInvestor = async (investorId: string) => {
      if (confirm('Are you sure you want to remove this investor?')) {
+        await deleteInvestorService(investorId);
         setInvestors((prev) => prev.filter((i) => i.id !== investorId));
     }
   };
 
-  const recordProfitPayment = (newPaymentData: Omit<ProfitPayment, 'id' | 'status'>) => {
-    const newPayment: ProfitPayment = {
+  const recordProfitPayment = async (newPaymentData: Omit<ProfitPayment, 'id' | 'status'>) => {
+    const newPayment: Omit<ProfitPayment, 'id'> = {
       ...newPaymentData,
-      id: Math.max(0, ...profitPayments.map((p) => p.id)) + 1,
       status: 'paid',
     };
-    setProfitPayments((prev) => [...prev, newPayment]);
+    const id = await addProfitPaymentService(newPayment);
+    setProfitPayments((prev) => [...prev, { ...newPayment, id }]);
   };
+  
+  if (loading) {
+    return <div className="p-4 text-center">Loading investors...</div>
+  }
 
   return (
     <div className="p-4">

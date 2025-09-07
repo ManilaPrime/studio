@@ -1,8 +1,10 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Header from '@/components/dashboard/header';
 import BottomNav from '@/components/dashboard/bottom-nav';
+import { useAuth } from '@/hooks/use-auth';
+import { useEffect } from 'react';
 
 const HomeIcon = () => (
   <svg
@@ -85,6 +87,15 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/');
+    }
+  }, [user, loading, router]);
+
 
   const navItems = [
     { href: '/dashboard', label: 'Home', icon: HomeIcon },
@@ -92,6 +103,15 @@ export default function DashboardLayout({
     { href: '/dashboard/reminders', label: 'Tasks', icon: TasksIcon },
     { href: '/dashboard/more', label: 'More', icon: MoreIcon },
   ];
+  
+  if (loading || !user) {
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+            <p>Loading...</p>
+        </div>
+    );
+  }
+
 
   return (
     <div className="bg-gray-50 min-h-screen max-w-sm mx-auto flex flex-col">

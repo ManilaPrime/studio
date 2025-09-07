@@ -1,27 +1,38 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { auth } from '@/lib/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useState } from 'react';
 
 export default function Home() {
     const router = useRouter();
+    const [email, setEmail] = useState('primestaycation24@gmail.com');
+    const [password, setPassword] = useState('Prime2025');
+    const [error, setError] = useState<string | null>(null);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Simple validation for demo
-        const email = (e.target as HTMLFormElement).loginEmail.value;
-        const password = (e.target as HTMLFormElement).loginPassword.value;
-
-        if (email === 'primestaycation24@gmail.com' && password === 'Prime2025') {
+        setError(null);
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
             router.push('/dashboard');
-        } else {
-            alert('Invalid credentials. Please use the demo credentials provided.');
+        } catch (error: any) {
+            setError(error.message);
+            alert('Failed to log in. Please check your credentials.');
         }
     };
-
-    const quickLogin = () => {
-        // In a real app, you wouldn't hardcode credentials like this.
-        router.push('/dashboard');
+    
+    const quickLogin = async () => {
+        try {
+            await signInWithEmailAndPassword(auth, 'primestaycation24@gmail.com', 'Prime2025');
+            router.push('/dashboard');
+        } catch (error: any) {
+            setError(error.message);
+            alert('Failed to log in with demo credentials.');
+        }
     }
+
 
   return (
     <main className="min-h-screen bg-white flex flex-col max-w-sm mx-auto">
@@ -38,11 +49,11 @@ export default function Home() {
           
           <form id="loginForm" className="space-y-4" onSubmit={handleLogin}>
               <div>
-                  <input type="email" id="loginEmail" name="loginEmail" className="prime-input" placeholder="Email address" defaultValue="primestaycation24@gmail.com" />
+                  <input type="email" id="loginEmail" name="loginEmail" className="prime-input" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               
               <div>
-                  <input type="password" id="loginPassword" name="loginPassword" className="prime-input" placeholder="Password" defaultValue="Prime2025" />
+                  <input type="password" id="loginPassword" name="loginPassword" className="prime-input" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
               
               <button type="submit" className="prime-button w-full py-3">

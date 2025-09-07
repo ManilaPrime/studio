@@ -1,23 +1,23 @@
 'use client';
 
-import { units } from '@/lib/data';
-import type { Booking } from '@/lib/types';
+import type { Booking, Unit } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
 import { BookingReceiptDialog } from './booking-receipt-dialog';
 import { useState } from 'react';
 
 interface BookingsListProps {
     bookings: Booking[];
-    onDelete: (bookingId: number) => void;
+    units: Unit[];
+    onDelete: (bookingId: string) => void;
 }
 
-export function BookingsList({ bookings, onDelete }: BookingsListProps) {
-  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(
+export function BookingsList({ bookings, units, onDelete }: BookingsListProps) {
+  const [selectedBookingId, setSelectedBookingId] = useState<string | null>(
     null
   );
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
 
-  const handleShowReceipt = (bookingId: number) => {
+  const handleShowReceipt = (bookingId: string) => {
     setSelectedBookingId(bookingId);
     setIsReceiptOpen(true);
   };
@@ -89,7 +89,7 @@ export function BookingsList({ bookings, onDelete }: BookingsListProps) {
             </div>
             <div className="fb-actions">
               <button
-                onClick={() => handleShowReceipt(booking.id)}
+                onClick={() => handleShowReceipt(booking.id!)}
                 className="fb-btn fb-btn-primary"
               >
                 Receipt
@@ -101,7 +101,7 @@ export function BookingsList({ bookings, onDelete }: BookingsListProps) {
                 Edit
               </button>
               <button
-                onClick={() => onDelete(booking.id)}
+                onClick={() => onDelete(booking.id!)}
                 className="fb-btn fb-btn-secondary"
               >
                 Delete
@@ -115,6 +115,7 @@ export function BookingsList({ bookings, onDelete }: BookingsListProps) {
         onOpenChange={setIsReceiptOpen}
         bookingId={selectedBookingId}
         bookings={bookings}
+        units={units}
       />
     </div>
   );

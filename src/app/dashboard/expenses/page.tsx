@@ -1,15 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ExpensesList } from '@/components/dashboard/expenses/expenses-list';
 import { AddExpenseDialog } from '@/components/dashboard/expenses/add-expense-dialog';
-import { expenses as initialExpenses } from '@/lib/data';
-import type { Expense } from '@/lib/types';
+import type { Expense, Unit } from '@/lib/types';
+import { getExpenses, addExpense as addExpenseService, updateExpense as updateExpenseService, deleteExpense as deleteExpenseService } from '@/services/expenses';
+import { getUnits } from '@/services/units';
 
 export default function ExpensesPage() {
-  const [expenses, setExpenses] = React.useState<Expense[]>(initialExpenses);
+  const [expenses, setExpenses] = React.useState<Expense[]>([]);
+  const [units, setUnits] = useState<Unit[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isAddExpenseOpen, setIsAddExpenseOpen] = React.useState(false);
   const [selectedExpense, setSelectedExpense] = React.useState<Expense | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+        const expensesData = await getExpenses();
+        const unitsData = await getUnits();
+        setExpenses(expensesData);
+        setUnits(unitsData);
+        setLoading(false);
+    }
+    fetchData();
+  }, []);
 
   const handleOpenAddDialog = () => {
     setSelectedExpense(null);
@@ -21,26 +35,29 @@ export default function ExpensesPage() {
     setIsAddExpenseOpen(true);
   };
 
-  const addExpense = (newExpenseData: Omit<Expense, 'id'>) => {
-    const newExpense: Expense = {
-      ...newExpenseData,
-      id: Math.max(0, ...expenses.map((e) => e.id)) + 1,
-    };
-    setExpenses((prev) => [...prev, newExpense]);
+  const addExpense = async (newExpenseData: Omit<Expense, 'id'>) => {
+    const id = await addExpenseService(newExpenseData);
+    setExpenses((prev) => [...prev, { ...newExpenseData, id }]);
   };
 
-  const updateExpense = (updatedExpense: Expense) => {
+  const updateExpense = async (updatedExpense: Expense) => {
+    await updateExpenseService(updatedExpense);
     setExpenses((prev) =>
       prev.map((e) => (e.id === updatedExpense.id ? updatedExpense : e))
     );
     setSelectedExpense(null);
   }
 
-  const deleteExpense = (expenseId: number) => {
+  const deleteExpense = async (expenseId: string) => {
     if (confirm('Are you sure you want to delete this expense?')) {
+        await deleteExpenseService(expenseId);
         setExpenses((prev) => prev.filter((e) => e.id !== expenseId));
     }
   };
+
+  if (loading) {
+    return <div className="p-4 text-center">Loading expenses...</div>
+  }
 
   return (
     <div className="p-4">
@@ -55,6 +72,7 @@ export default function ExpensesPage() {
           onAddExpense={addExpense}
           onUpdateExpense={updateExpense}
           expense={selectedExpense}
+          units={units}
         >
           <button
             onClick={handleOpenAddDialog}
@@ -64,7 +82,7 @@ export default function ExpensesPage() {
           </button>
         </AddExpenseDialog>
       </div>
-      <ExpensesList expenses={expenses} onEdit={handleOpenEditDialog} onDelete={deleteExpense} />
+      <ExpensesList expenses={expenses} units={units} onEdit={handleOpenEditDialog} onDelete={deleteExpense} />
     </div>
   );
 }

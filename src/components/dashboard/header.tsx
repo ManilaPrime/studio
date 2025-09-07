@@ -1,10 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/use-auth';
 
 const Header = () => {
   const [currentDate, setCurrentDate] = useState('');
   const [notificationCount, setNotificationCount] = useState(2); // Sample count
+  const { logout } = useAuth();
+
 
   useEffect(() => {
     const now = new Date();
@@ -17,9 +20,8 @@ const Header = () => {
     setCurrentDate(now.toLocaleDateString('en-US', options));
   }, []);
 
-  const handleLogout = () => {
-    // In a real app, this would handle the logout logic
-    window.location.href = '/';
+  const handleLogout = async () => {
+    await logout();
   };
   
   const handleSettings = () => {

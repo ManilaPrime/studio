@@ -1,22 +1,46 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Calendar from '@/components/dashboard/calendar';
 import StatsCards from '@/components/dashboard/stats-cards';
 import RecentActivity from '@/components/dashboard/recent-activity';
-import { bookings as initialBookings, expenses as initialExpenses } from '@/lib/data';
-import type { Booking, Expense } from '@/lib/types';
+import type { Booking, Expense, Unit } from '@/lib/types';
+import { getBookings } from '@/services/bookings';
+import { getExpenses } from '@/services/expenses';
+import { getUnits } from '@/services/units';
 
 export default function DashboardPage() {
-  // In a real app, this state would likely be managed by a global state manager (e.g., Context, Redux)
-  // and fetched from an API, but for this example, we'll manage it here.
-  const [bookings, setBookings] = React.useState<Booking[]>(initialBookings);
-  const [expenses, setExpenses] = React.useState<Expense[]>(initialExpenses);
+  const [bookings, setBookings] = React.useState<Booking[]>([]);
+  const [expenses, setExpenses] = React.useState<Expense[]>([]);
+  const [units, setUnits] = React.useState<Unit[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const bookingsData = await getBookings();
+        const expensesData = await getExpenses();
+        const unitsData = await getUnits();
+        setBookings(bookingsData);
+        setExpenses(expensesData);
+        setUnits(unitsData);
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) {
+      return <div className="p-4 text-center">Loading dashboard...</div>
+  }
 
   return (
     <div id="dashboardSection" className="section p-4">
       <Calendar bookings={bookings} />
-      <StatsCards bookings={bookings} expenses={expenses} />
+      <StatsCards bookings={bookings} expenses={expenses} units={units} />
       <RecentActivity bookings={bookings} expenses={expenses} />
     </div>
   );

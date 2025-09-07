@@ -8,7 +8,7 @@ import { Calendar, Link as LinkIcon, List } from 'lucide-react';
 
 interface UnitsListProps {
   units: Unit[];
-  onDelete: (unitId: number) => void;
+  onDelete: (unitId: string) => void;
   onUpdate: (unit: Unit) => void;
 }
 
@@ -27,7 +27,7 @@ export function UnitsList({ units, onDelete, onUpdate }: UnitsListProps) {
   );
 }
 
-function UnitCard({ unit, onDelete, onUpdate }: { unit: Unit, onDelete: (unitId: number) => void, onUpdate: (unit: Unit) => void }) {
+function UnitCard({ unit, onDelete, onUpdate }: { unit: Unit, onDelete: (unitId: string) => void, onUpdate: (unit: Unit) => void }) {
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState<SyncedEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -162,7 +162,7 @@ function UnitCard({ unit, onDelete, onUpdate }: { unit: Unit, onDelete: (unitId:
           Edit
         </button>
         <button
-          onClick={() => onDelete(unit.id)}
+          onClick={() => onDelete(unit.id!)}
           className="fb-btn fb-btn-secondary"
         >
           Delete
