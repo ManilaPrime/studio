@@ -1,3 +1,5 @@
+'use server';
+
 import type { Booking, Unit } from "@/lib/types";
 
 export async function sendDiscordNotification(booking: Booking, unit: Unit) {

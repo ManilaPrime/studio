@@ -1,7 +1,7 @@
 'use client';
 
 import { db } from '@/lib/firebase';
-import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
 import type { Unit } from '@/lib/types';
 
 const unitsCollection = collection(db, 'units');
@@ -9,6 +9,15 @@ const unitsCollection = collection(db, 'units');
 export async function getUnits(): Promise<Unit[]> {
     const snapshot = await getDocs(unitsCollection);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Unit));
+}
+
+export async function getUnit(unitId: string): Promise<Unit | null> {
+    const unitDoc = doc(db, 'units', unitId);
+    const snapshot = await getDoc(unitDoc);
+    if (snapshot.exists()) {
+        return { id: snapshot.id, ...snapshot.data() } as Unit;
+    }
+    return null;
 }
 
 export async function addUnit(unitData: Omit<Unit, 'id'>): Promise<string> {

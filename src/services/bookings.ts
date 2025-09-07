@@ -2,7 +2,9 @@
 
 import { db } from '@/lib/firebase';
 import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
-import type { Booking } from '@/lib/types';
+import type { Booking, Unit } from '@/lib/types';
+import { getUnit } from './units';
+import { sendDiscordNotification } from './discord';
 
 const bookingsCollection = collection(db, 'bookings');
 
@@ -13,7 +15,18 @@ export async function getBookings(): Promise<Booking[]> {
 
 export async function addBooking(bookingData: Omit<Booking, 'id'>): Promise<string> {
     const docRef = await addDoc(bookingsCollection, bookingData);
-    // Here you would also trigger the sync and discord notification
+    
+    // After successful booking, send a notification
+    try {
+        const unit = await getUnit(bookingData.unitId);
+        if (unit) {
+            await sendDiscordNotification({ ...bookingData, id: docRef.id }, unit);
+        }
+    } catch (error) {
+        console.error("Failed to send Discord notification:", error);
+        // We don't re-throw the error because the booking itself was successful.
+    }
+
     return docRef.id;
 }
 
