@@ -113,9 +113,9 @@ export default function DashboardLayout({
     );
   }
 
+  // If the user is not authenticated, the useEffect hook above will trigger a redirect.
+  // We return null here to prevent a flash of the dashboard content before the redirect happens.
   if (!user) {
-    // The redirect in useEffect is asynchronous. This prevents a flash of the dashboard
-    // content before the redirect happens.
     return null;
   }
 
