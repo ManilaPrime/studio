@@ -1,12 +1,16 @@
+
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth.tsx';
+import { getReminders } from '@/services/reminders';
+import type { Reminder } from '@/lib/types';
 
 const Header = () => {
   const [currentDate, setCurrentDate] = useState('');
-  const [notificationCount, setNotificationCount] = useState(2); // Sample count
-  const { logout } = useAuth();
+  const [reminders, setReminders] = useState<Reminder[]>([]);
+  const { user } = useAuth();
 
 
   useEffect(() => {
@@ -18,11 +22,33 @@ const Header = () => {
       day: 'numeric',
     };
     setCurrentDate(now.toLocaleDateString('en-US', options));
-  }, []);
+    
+    async function fetchReminders() {
+        if(user) {
+            const remindersData = await getReminders();
+            setReminders(remindersData);
+        }
+    }
+    fetchReminders();
 
-  const handleLogout = async () => {
-    await logout();
-  };
+  }, [user]);
+
+  const notificationCount = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return reminders.filter(r => {
+        if (r.status === 'completed') return false;
+        
+        // Adjust for timezone when comparing dates
+        const dueDate = new Date(r.dueDate);
+        const userTimezoneOffset = dueDate.getTimezoneOffset() * 60000;
+        const adjustedDueDate = new Date(dueDate.getTime() + userTimezoneOffset);
+        adjustedDueDate.setHours(0, 0, 0, 0);
+
+        return adjustedDueDate <= today;
+    }).length;
+  }, [reminders]);
   
   const handleSettings = () => {
     alert('Settings page coming soon!');
@@ -46,14 +72,14 @@ const Header = () => {
           
           {/* Notification and Settings */}
           <div className="flex items-center space-x-2 flex-shrink-0">
-            <button className="w-9 h-9 bg-white rounded-full flex items-center justify-center relative border border-gray-300 hover:border-yellow-600 transition-colors">
+            <Link href="/dashboard/reminders" className="w-9 h-9 bg-white rounded-full flex items-center justify-center relative border border-gray-300 hover:border-yellow-600 transition-colors">
               <span className="text-gray-600 text-lg">🔔</span>
               {notificationCount > 0 && (
                 <span id="notificationBadge" className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
                   {notificationCount > 9 ? '9+' : notificationCount}
                 </span>
               )}
-            </button>
+            </Link>
             <button onClick={handleSettings} className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-300 hover:border-yellow-600 transition-colors">
               <span className="text-gray-600 text-lg">⚙️</span>
             </button>
