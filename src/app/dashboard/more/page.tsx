@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/hooks/use-auth.tsx';
 
 const menuItems = [
   { label: 'Units', icon: Building, href: '/dashboard/units' },

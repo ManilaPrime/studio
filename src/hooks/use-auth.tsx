@@ -1,3 +1,6 @@
+
+'use client';
+
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
@@ -11,7 +14,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AppAuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -44,9 +47,3 @@ export const useAuth = () => {
     }
     return context;
 };
-
-// We need to wrap our app in this provider.
-// The best place is in the root layout.
-export function AppAuthProvider({ children }: { children: ReactNode }) {
-    return <AuthProvider>{children}</AuthProvider>
-}

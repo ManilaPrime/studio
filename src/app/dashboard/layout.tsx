@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import Header from '@/components/dashboard/header';
 import BottomNav from '@/components/dashboard/bottom-nav';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/hooks/use-auth.tsx';
 import { useEffect } from 'react';
 
 const HomeIcon = () => (
