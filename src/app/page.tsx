@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function Home() {
     const router = useRouter();
@@ -49,11 +50,17 @@ export default function Home() {
           
           <form id="loginForm" className="space-y-4" onSubmit={handleLogin}>
               <div>
-                  <input type="email" id="loginEmail" name="loginEmail" className="prime-input" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <input type="email" id="loginEmail" name="loginEmail" className="prime-input" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </div>
               
               <div>
-                  <input type="password" id="loginPassword" name="loginPassword" className="prime-input" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                  <input type="password" id="loginPassword" name="loginPassword" className="prime-input" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              </div>
+
+              <div className="flex items-center justify-between text-sm">
+                <Link href="/reset-password" id="forgotPasswordLink" className="font-medium text-yellow-600 hover:text-yellow-500">
+                    Forgot your password?
+                </Link>
               </div>
               
               <button type="submit" className="prime-button w-full py-3">
@@ -61,6 +68,15 @@ export default function Home() {
               </button>
           </form>
           
+          <div className="mt-6 text-center">
+                <p className="text-sm">
+                    Don&apos;t have an account?{' '}
+                    <Link href="/register" id="signUpLink" className="font-medium text-yellow-600 hover:text-yellow-500">
+                        Sign Up
+                    </Link>
+                </p>
+          </div>
+
           <div className="mt-6">
               <div className="relative">
                   <div className="absolute inset-0 flex items-center">
