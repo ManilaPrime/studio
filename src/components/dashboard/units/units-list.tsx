@@ -1,10 +1,11 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Unit, SyncedEvent } from '@/lib/types';
 import { syncCalendars } from '@/app/actions/sync-calendars';
 import { formatDate } from '@/lib/utils';
-import { Calendar, Link as LinkIcon, List } from 'lucide-react';
+import { Calendar, Link as LinkIcon, List, Copy, Check } from 'lucide-react';
 
 interface UnitsListProps {
   units: Unit[];
@@ -31,6 +32,15 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState<SyncedEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [masterUrlCopied, setMasterUrlCopied] = useState(false);
+  const [baseUrl, setBaseUrl] = useState('');
+
+  useEffect(() => {
+    // This ensures window is defined, so it runs only on the client
+    setBaseUrl(window.location.origin);
+    handleSync(true); // Auto-sync on component mount silently
+  }, []);
+
 
   const statusVariant = {
     available: 'bg-green-100 text-green-800',
@@ -44,28 +54,44 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
     'Direct': 'bg-green-50 text-green-700 border-green-200',
   }
 
-  const handleSync = async () => {
-    setLoading(true);
+  const handleSync = async (isAutoSync = false) => {
+    if (!isAutoSync) {
+        setLoading(true);
+    }
     setError(null);
-    setEvents([]);
+    if (!isAutoSync) {
+        setEvents([]);
+    }
     try {
       if(!unit.calendars.airbnb && !unit.calendars.bookingcom && !unit.calendars.direct) {
-        setError("Please provide at least one calendar URL to sync.");
+        if (!isAutoSync) {
+            setError("Please provide at least one calendar URL to sync.");
+        }
         setLoading(false);
         return;
       }
       const result = await syncCalendars(unit.calendars);
       setEvents(result);
-      if (result.length === 0) {
+      if (result.length === 0 && !isAutoSync) {
         setError('No events found in the provided calendars. The URLs might be incorrect, empty, or placeholder examples.');
       }
     } catch (e) {
       console.error('Syncing failed:', e);
-      setError('An error occurred while syncing calendars. Please check the console for details.');
+       if (!isAutoSync) {
+        setError('An error occurred while syncing calendars. Please check the console for details.');
+       }
     } finally {
       setLoading(false);
     }
   };
+
+  const handleCopyMasterUrl = () => {
+    const url = `${baseUrl}/api/ical/${unit.id}`;
+    navigator.clipboard.writeText(url);
+    setMasterUrlCopied(true);
+    setTimeout(() => setMasterUrlCopied(false), 2000);
+  };
+
 
   return (
     <div className="fb-card">
@@ -91,6 +117,30 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
         
         <div className="border-t border-b border-gray-200 py-4">
           <h4 className="font-semibold text-gray-800 mb-2">Calendar Sync</h4>
+
+          {/* Master Calendar URL */}
+           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+              <h5 className="font-semibold text-yellow-800 mb-2">Master Calendar URL</h5>
+              <p className="text-xs text-yellow-700 mb-2">Use this link to export your bookings from this app to other platforms like Airbnb or Booking.com.</p>
+              <div className="flex items-center bg-white border rounded-md">
+                <input 
+                  type="text" 
+                  readOnly 
+                  value={`${baseUrl}/api/ical/${unit.id}`}
+                  className="p-2 text-sm bg-transparent w-full outline-none"
+                />
+                <button 
+                  onClick={handleCopyMasterUrl}
+                  className="p-2 text-gray-500 hover:text-gray-800"
+                  title="Copy URL"
+                >
+                  {masterUrlCopied ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+          <h5 className="font-semibold text-gray-800 mb-2">Import Calendars</h5>
+           <p className="text-xs text-gray-500 mb-3">Add iCal links from other platforms to import their bookings into this app.</p>
           <div className="space-y-2 mb-4">
             <p className="flex items-center text-sm text-gray-600">
               <LinkIcon className="w-4 h-4 mr-2" /> 
@@ -109,11 +159,11 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
             </p>
           </div>
           <button
-            onClick={handleSync}
+            onClick={() => handleSync()}
             className="w-full fb-btn fb-btn-primary"
             disabled={loading}
           >
-            {loading ? 'Syncing...' : 'Sync Calendars'}
+            {loading ? 'Syncing...' : 'Sync Now'}
           </button>
           
           {loading && (
@@ -171,3 +221,4 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
     </div>
   );
 }
+
