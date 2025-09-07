@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -8,8 +9,8 @@ import Link from 'next/link';
 
 export default function Home() {
     const router = useRouter();
-    const [email, setEmail] = useState('primestaycation24@gmail.com');
-    const [password, setPassword] = useState('Prime2025');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -23,17 +24,6 @@ export default function Home() {
             alert('Failed to log in. Please check your credentials.');
         }
     };
-    
-    const quickLogin = async () => {
-        try {
-            await signInWithEmailAndPassword(auth, 'primestaycation24@gmail.com', 'Prime2025');
-            router.push('/dashboard');
-        } catch (error: any) {
-            setError(error.message);
-            alert('Failed to log in with demo credentials.');
-        }
-    }
-
 
   return (
     <main className="min-h-screen bg-white flex flex-col max-w-sm mx-auto">
@@ -75,30 +65,6 @@ export default function Home() {
                         Sign Up
                     </Link>
                 </p>
-          </div>
-
-          <div className="mt-6">
-              <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-300"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                      <span className="px-2 bg-white text-gray-500">or</span>
-                  </div>
-              </div>
-              
-              <button type="button" onClick={quickLogin} className="mt-4 w-full bg-yellow-500 text-black py-3 rounded-lg font-semibold hover:bg-yellow-400 transition-colors">
-                  Quick Demo Login
-              </button>
-          </div>
-      </div>
-      
-      {/* Footer */}
-      <div className="p-6 border-t border-yellow-400 bg-yellow-100">
-          <div className="text-center text-sm text-black">
-              <p className="font-semibold mb-2">Demo Credentials:</p>
-              <p>📧 primestaycation24@gmail.com</p>
-              <p>🔑 Prime2025</p>
           </div>
       </div>
     </main>
