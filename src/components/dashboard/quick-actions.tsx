@@ -9,54 +9,39 @@ import {
   Handshake,
 } from 'lucide-react';
 import React from 'react';
-// These dialogs are now just for display. 
-// The state and logic are handled in their respective pages.
-import { AddBookingDialog } from './bookings/add-booking-dialog';
-import { AddUnitDialog } from './units/add-unit-dialog';
-import { AddReminderDialog } from './reminders/add-reminder-dialog';
-import { AddExpenseDialog } from './expenses/add-expense-dialog';
-import { AddInvestorDialog } from './investors/add-investor-dialog';
-import { AddAgentDialog } from './agents/add-agent-dialog';
 
 const actionComponents = [
   {
     label: 'Add Booking',
     icon: CalendarDays,
-    // DialogComponent: AddBookingDialog,
   },
   {
     label: 'Add Unit',
     icon: Building,
-    // DialogComponent: AddUnitDialog,
   },
   {
     label: 'Add Reminder',
     icon: ClipboardList,
-    // DialogComponent: AddReminderDialog,
   },
   {
     label: 'Add Expense',
     icon: CircleDollarSign,
-    // DialogComponent: AddExpenseDialog,
   },
   {
     label: 'Add Investor',
     icon: User,
-    // DialogComponent: AddInvestorDialog,
   },
   {
     label: 'Add Agent',
     icon: Handshake,
-    // DialogComponent: AddAgentDialog,
   },
 ];
 
 export function QuickActions({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void}) {
-  const [openDialog, setOpenDialog] = React.useState<string | null>(null);
 
   const handleOpenDialog = (label: string) => {
-    onOpenChange(false); // Close the quick actions modal
-    alert(`"${label}" dialog should be opened from its respective page now.`);
+    onOpenChange(false);
+    alert(`Please use the '+ Add' button on the respective page to ${label}.`);
   };
 
   const colorClasses = {
@@ -94,12 +79,6 @@ export function QuickActions({ open, onOpenChange }: { open: boolean, onOpenChan
             </div>
         </div>
       </div>
-
-      {/* 
-        The dialog components are no longer managed here. 
-        Each page now manages its own dialog state.
-        This section is kept for reference but is not functional.
-      */}
     </>
   );
 }
