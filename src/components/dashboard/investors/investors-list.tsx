@@ -29,7 +29,7 @@ export function InvestorsList({
     <div className="space-y-4">
       {investors.map((investor) => {
         const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
-        const monthlyProfit = 32500; // Sample net profit
+        const monthlyProfit = 32500; // This should be calculated from actual revenue and expenses
         const investorShare = (monthlyProfit * investor.sharePercentage) / 100;
         const currentPayment = profitPayments.find(
           (p) => p.investorId === investor.id && p.month === currentMonth
