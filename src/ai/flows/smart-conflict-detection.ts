@@ -39,10 +39,10 @@ const prompt = ai.definePrompt({
 You are given two sets of calendar events in iCal format, and the name of the rental unit.
 
 Calendar 1 Events:
-{{calendar1Events}}
+{{{calendar1Events}}}
 
 Calendar 2 Events:
-{{calendar2Events}}
+{{{calendar2Events}}}
 
 Rental Unit Name: {{unitName}}
 
