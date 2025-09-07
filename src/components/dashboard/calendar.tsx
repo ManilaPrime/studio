@@ -1,9 +1,13 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { bookings } from '@/lib/data';
+import type { Booking } from '@/lib/types';
 
-const Calendar = () => {
+interface CalendarProps {
+  bookings: Booking[];
+}
+
+const Calendar = ({ bookings }: CalendarProps) => {
   const [date, setDate] = useState(new Date());
   const [today, setToday] = useState<Date | null>(null);
 
@@ -67,7 +71,7 @@ const Calendar = () => {
       );
     }
     return grid;
-  }, [currentYear, currentMonth, firstDay, daysInMonth, today]);
+  }, [currentYear, currentMonth, firstDay, daysInMonth, bookings, today]);
 
   const previousMonth = () => {
     setDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1));

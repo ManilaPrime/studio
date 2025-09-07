@@ -1,20 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import { expenses, units } from '@/lib/data';
+import { units } from '@/lib/data';
 import type { Expense } from '@/lib/types';
-import { AddExpenseDialog } from './add-expense-dialog';
 import { formatDate } from '@/lib/utils';
 
-export function ExpensesList() {
-  const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
-  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+interface ExpensesListProps {
+  expenses: Expense[];
+  onEdit: (expense: Expense) => void;
+  onDelete: (expenseId: number) => void;
+}
 
-  const handleEditExpense = (expense: Expense) => {
-    setSelectedExpense(expense);
-    setIsAddExpenseOpen(true);
-  };
-
+export function ExpensesList({ expenses, onEdit, onDelete }: ExpensesListProps) {
+  
   const categoryIcons: Record<Expense['category'], string> = {
     utilities: '⚡️',
     maintenance: '🔧',
@@ -88,13 +85,13 @@ export function ExpensesList() {
             </div>
             <div className="fb-actions">
               <button
-                onClick={() => handleEditExpense(expense)}
+                onClick={() => onEdit(expense)}
                 className="fb-btn fb-btn-secondary"
               >
                 Edit
               </button>
               <button
-                onClick={() => alert('Deleting expense soon!')}
+                onClick={() => onDelete(expense.id)}
                 className="fb-btn fb-btn-secondary"
               >
                 Delete
@@ -103,11 +100,6 @@ export function ExpensesList() {
           </div>
         );
       })}
-      <AddExpenseDialog
-        open={isAddExpenseOpen}
-        onOpenChange={setIsAddExpenseOpen}
-        expense={selectedExpense}
-      />
     </div>
   );
 }

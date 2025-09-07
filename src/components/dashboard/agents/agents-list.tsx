@@ -1,22 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-import { agents } from '@/lib/data';
 import type { Agent } from '@/lib/types';
-import { AddAgentDialog } from './add-agent-dialog';
 import { formatDate } from '@/lib/utils';
 
-export function AgentsList() {
-  const [isAddAgentOpen, setIsAddAgentOpen] = useState(false);
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+interface AgentsListProps {
+  agents: Agent[];
+  onEdit: (agent: Agent) => void;
+  onDelete: (agentId: number) => void;
+}
 
-  const handleEditAgent = (agent: Agent) => {
-    setSelectedAgent(agent);
-    setIsAddAgentOpen(true);
-  };
+export function AgentsList({ agents, onEdit, onDelete }: AgentsListProps) {
 
   if (agents.length === 0) {
-    return <p className="text-gray-500 text-center py-8">No agents found.</p>;
+    return <p className="text-gray-500 text-center py-8">No agents found. Click "+ Add" to create one.</p>;
   }
 
   return (
@@ -66,13 +62,13 @@ export function AgentsList() {
           </div>
           <div className="fb-actions">
             <button
-              onClick={() => handleEditAgent(agent)}
+              onClick={() => onEdit(agent)}
               className="fb-btn fb-btn-secondary"
             >
               Edit
             </button>
             <button
-              onClick={() => alert('Removing agent soon!')}
+              onClick={() => onDelete(agent.id)}
               className="fb-btn fb-btn-secondary"
             >
               Remove
@@ -80,11 +76,6 @@ export function AgentsList() {
           </div>
         </div>
       ))}
-      <AddAgentDialog
-        open={isAddAgentOpen}
-        onOpenChange={setIsAddAgentOpen}
-        agent={selectedAgent}
-      />
     </div>
   );
 }

@@ -1,28 +1,23 @@
 'use client';
 
-import { useState } from 'react';
-import { investors, profitPayments } from '@/lib/data';
-import { PayProfitDialog } from './pay-profit-dialog';
-import { AddInvestorDialog } from './add-investor-dialog';
-import type { Investor } from '@/lib/types';
+import type { Investor, ProfitPayment } from '@/lib/types';
 
-export function InvestorsList() {
-  const [isPayProfitOpen, setIsPayProfitOpen] = useState(false);
-  const [isAddInvestorOpen, setIsAddInvestorOpen] = useState(false);
-  const [selectedInvestor, setSelectedInvestor] = useState<Investor | null>(
-    null
-  );
+interface InvestorsListProps {
+  investors: Investor[];
+  profitPayments: ProfitPayment[];
+  onEdit: (investor: Investor) => void;
+  onDelete: (investorId: number) => void;
+  onPayProfit: (investor: Investor) => void;
+}
 
-  const handlePayProfit = (investor: Investor) => {
-    setSelectedInvestor(investor);
-    setIsPayProfitOpen(true);
-  };
-
-  const handleEditInvestor = (investor: Investor) => {
-    setSelectedInvestor(investor);
-    setIsAddInvestorOpen(true);
-  };
-
+export function InvestorsList({ 
+    investors, 
+    profitPayments, 
+    onEdit, 
+    onDelete, 
+    onPayProfit 
+}: InvestorsListProps) {
+  
   if (investors.length === 0) {
     return (
       <p className="text-gray-500 text-center py-8">No investors found.</p>
@@ -109,7 +104,7 @@ export function InvestorsList() {
                   </span>
                   {paymentStatus === 'pending' ? (
                     <button
-                      onClick={() => handlePayProfit(investor)}
+                      onClick={() => onPayProfit(investor)}
                       className="text-xs bg-yellow-500 text-white px-2 py-1 rounded font-semibold h-auto"
                     >
                       Pay Now
@@ -134,13 +129,13 @@ export function InvestorsList() {
                 History
               </button>
               <button
-                onClick={() => handleEditInvestor(investor)}
+                onClick={() => onEdit(investor)}
                 className="fb-btn fb-btn-secondary"
               >
                 Edit
               </button>
               <button
-                onClick={() => alert('Removing investor soon!')}
+                onClick={() => onDelete(investor.id)}
                 className="fb-btn fb-btn-secondary"
               >
                 Remove
@@ -149,16 +144,6 @@ export function InvestorsList() {
           </div>
         );
       })}
-      <PayProfitDialog
-        open={isPayProfitOpen}
-        onOpenChange={setIsPayProfitOpen}
-        investor={selectedInvestor}
-      />
-      <AddInvestorDialog
-        open={isAddInvestorOpen}
-        onOpenChange={setIsAddInvestorOpen}
-        investor={selectedInvestor}
-      />
     </div>
   );
 }

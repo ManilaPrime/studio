@@ -1,11 +1,17 @@
 'use client';
 
-import { bookings, units } from '@/lib/data';
+import { units } from '@/lib/data';
+import type { Booking } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
 import { BookingReceiptDialog } from './booking-receipt-dialog';
 import { useState } from 'react';
 
-export function BookingsList() {
+interface BookingsListProps {
+    bookings: Booking[];
+    onDelete: (bookingId: number) => void;
+}
+
+export function BookingsList({ bookings, onDelete }: BookingsListProps) {
   const [selectedBookingId, setSelectedBookingId] = useState<number | null>(
     null
   );
@@ -95,7 +101,7 @@ export function BookingsList() {
                 Edit
               </button>
               <button
-                onClick={() => alert('Delete feature coming soon!')}
+                onClick={() => onDelete(booking.id)}
                 className="fb-btn fb-btn-secondary"
               >
                 Delete
@@ -108,6 +114,7 @@ export function BookingsList() {
         open={isReceiptOpen}
         onOpenChange={setIsReceiptOpen}
         bookingId={selectedBookingId}
+        bookings={bookings}
       />
     </div>
   );

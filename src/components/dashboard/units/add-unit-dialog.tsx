@@ -1,29 +1,29 @@
 'use client';
 
-import { units } from '@/lib/data';
+import type { Unit } from '@/lib/types';
 
 export function AddUnitDialog({
   children,
   open,
   onOpenChange,
+  onAddUnit,
 }: {
   children?: React.ReactNode;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onAddUnit: (unit: Omit<Unit, 'id' | 'status' | 'calendars'>) => void;
 }) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const newUnit = {
-      id: Math.max(...units.map((u) => u.id), 0) + 1,
       name: formData.get('unitName') as string,
       type: formData.get('unitType') as string,
       rate: parseInt(formData.get('unitRate') as string),
       maxOccupancy: parseInt(formData.get('maxOccupancy') as string),
       description: formData.get('unitDescription') as string,
-      status: 'available' as const,
     };
-    units.push(newUnit);
+    onAddUnit(newUnit);
     onOpenChange(false);
   };
   

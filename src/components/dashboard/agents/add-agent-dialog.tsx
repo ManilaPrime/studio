@@ -1,62 +1,69 @@
 'use client';
 
-import { agents } from '@/lib/data';
 import type { Agent } from '@/lib/types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export function AddAgentDialog({
   children,
   open,
   onOpenChange,
   agent,
+  onAddAgent,
+  onUpdateAgent,
 }: {
   children?: React.ReactNode;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   agent?: Agent | null;
+  onAddAgent: (data: Omit<Agent, 'id' | 'totalBookings' | 'totalCommissions' | 'status'>) => void;
+  onUpdateAgent: (agent: Agent) => void;
 }) {
+  
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [commissionRate, setCommissionRate] = useState(0);
+  const [joinDate, setJoinDate] = useState('');
+
   useEffect(() => {
-    if (open && !agent) {
-      const today = new Date().toISOString().split('T')[0];
-      const dateInput = document.getElementById(
-        'agentJoinDate'
-      ) as HTMLInputElement;
-      if (dateInput) dateInput.value = today;
+    if (open) {
+      if (agent) {
+        setName(agent.name);
+        setEmail(agent.email);
+        setPhone(agent.phone);
+        setCommissionRate(agent.commissionRate);
+        setJoinDate(agent.joinDate);
+      } else {
+        // Reset form for new agent
+        setName('');
+        setEmail('');
+        setPhone('');
+        setCommissionRate(0);
+        setJoinDate(new Date().toISOString().split('T')[0]);
+      }
     }
   }, [open, agent]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-
     if (agent) {
-      // Update existing agent
-      const existingAgent = agents.find((a) => a.id === agent.id);
-      if (existingAgent) {
-        existingAgent.name = formData.get('agentName') as string;
-        existingAgent.email = formData.get('agentEmail') as string;
-        existingAgent.phone = formData.get('agentPhone') as string;
-        existingAgent.commissionRate = parseFloat(
-          formData.get('agentCommission') as string
-        );
-        existingAgent.joinDate = formData.get('agentJoinDate') as string;
-      }
+      onUpdateAgent({
+        ...agent,
+        name,
+        email,
+        phone,
+        commissionRate,
+        joinDate,
+      });
     } else {
-      // Add new agent
-      const newAgent = {
-        id: Math.max(...agents.map((a) => a.id), 0) + 1,
-        name: formData.get('agentName') as string,
-        email: formData.get('agentEmail') as string,
-        phone: formData.get('agentPhone') as string,
-        commissionRate: parseFloat(formData.get('agentCommission') as string),
-        totalBookings: 0,
-        totalCommissions: 0,
-        joinDate: formData.get('agentJoinDate') as string,
-        status: 'active' as const,
-      };
-      agents.push(newAgent);
+      onAddAgent({
+        name,
+        email,
+        phone,
+        commissionRate,
+        joinDate,
+      });
     }
-
     onOpenChange(false);
   };
   
@@ -79,27 +86,27 @@ export function AddAgentDialog({
             <form id="agentForm" className="space-y-4" onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor='agentName' className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                    <input type="text" name="agentName" id="agentName" className="prime-input" defaultValue={agent?.name} required />
+                    <input type="text" id="agentName" className="prime-input" value={name} onChange={e => setName(e.target.value)} required />
                 </div>
                 
                 <div>
                     <label htmlFor='agentEmail' className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" name="agentEmail" id="agentEmail" className="prime-input" defaultValue={agent?.email} required />
+                    <input type="email" id="agentEmail" className="prime-input" value={email} onChange={e => setEmail(e.target.value)} required />
                 </div>
                 
                 <div>
                     <label htmlFor='agentPhone' className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                    <input type="tel" name="agentPhone" id="agentPhone" className="prime-input" defaultValue={agent?.phone} required />
+                    <input type="tel" id="agentPhone" className="prime-input" value={phone} onChange={e => setPhone(e.target.value)} required />
                 </div>
                 
                 <div>
                     <label htmlFor='agentCommission' className="block text-sm font-medium text-gray-700 mb-1">Commission Rate (%)</label>
-                    <input type="number" name="agentCommission" id="agentCommission" min="0" max="100" step="1" className="prime-input" defaultValue={agent?.commissionRate} required />
+                    <input type="number" id="agentCommission" min="0" max="100" step="1" className="prime-input" value={commissionRate} onChange={e => setCommissionRate(parseFloat(e.target.value))} required />
                 </div>
                 
                 <div>
                     <label htmlFor='agentJoinDate' className="block text-sm font-medium text-gray-700 mb-1">Join Date</label>
-                    <input type="date" name="agentJoinDate" id="agentJoinDate" className="prime-input" defaultValue={agent?.joinDate} required />
+                    <input type="date" id="agentJoinDate" className="prime-input" value={joinDate} onChange={e => setJoinDate(e.target.value)} required />
                 </div>
                 
                 <div className="flex space-x-3 pt-2">

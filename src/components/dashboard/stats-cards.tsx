@@ -1,26 +1,36 @@
 'use client';
 
-import { units, bookings } from '@/lib/data';
+import { units } from '@/lib/data';
+import type { Booking, Expense } from '@/lib/types';
 import { StatsBookingIcon, StatsRevenueIcon, StatsUnitsIcon, StatsProfitIcon } from './icons';
+import { useMemo } from 'react';
 
-const StatsCards = () => {
-    const activeBookingsCount = bookings.filter(booking => {
-        const checkin = new Date(booking.checkinDate);
-        const checkout = new Date(booking.checkoutDate);
-        const today = new Date();
-        return checkin <= today && checkout >= today;
-    }).length;
+interface StatsCardsProps {
+    bookings: Booking[];
+    expenses: Expense[];
+}
 
-    const monthlyRevenue = bookings.reduce((total, booking, index) => total + (index === 0 ? 7500 : 6900), 0);
-    const totalUnits = units.length;
-    const netProfit = monthlyRevenue - 12500; // Sample expenses
+const StatsCards = ({ bookings, expenses }: StatsCardsProps) => {
+    const stats = useMemo(() => {
+        const activeBookingsCount = bookings.filter(booking => {
+            const checkin = new Date(booking.checkinDate);
+            const checkout = new Date(booking.checkoutDate);
+            const today = new Date();
+            return checkin <= today && checkout >= today;
+        }).length;
 
-    const stats = [
-        { label: "Active Bookings", value: activeBookingsCount, icon: StatsBookingIcon, color: "blue" },
-        { label: "Monthly Revenue", value: `₱${monthlyRevenue.toLocaleString()}`, icon: StatsRevenueIcon, color: "green" },
-        { label: "Total Units", value: totalUnits, icon: StatsUnitsIcon, color: "yellow" },
-        { label: "Net Profit", value: `₱${netProfit.toLocaleString()}`, icon: StatsProfitIcon, color: "orange" },
-    ];
+        const monthlyRevenue = bookings.reduce((total, booking) => total + booking.totalAmount, 0);
+        const totalUnits = units.length;
+        const totalExpenses = expenses.reduce((total, expense) => total + expense.amount, 0);
+        const netProfit = monthlyRevenue - totalExpenses;
+
+        return [
+            { label: "Active Bookings", value: activeBookingsCount, icon: StatsBookingIcon, color: "blue" },
+            { label: "Monthly Revenue", value: `₱${monthlyRevenue.toLocaleString()}`, icon: StatsRevenueIcon, color: "green" },
+            { label: "Total Units", value: totalUnits, icon: StatsUnitsIcon, color: "yellow" },
+            { label: "Net Profit", value: `₱${netProfit.toLocaleString()}`, icon: StatsProfitIcon, color: "orange" },
+        ];
+    }, [bookings, expenses]);
     
     const colorVariants: { [key: string]: { bg: string, text: string } } = {
         blue: { bg: 'bg-blue-100', text: 'text-blue-600' },

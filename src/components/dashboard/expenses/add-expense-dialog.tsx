@@ -1,69 +1,74 @@
 'use client';
 
-import { expenses, units } from '@/lib/data';
+import { units } from '@/lib/data';
 import type { Expense } from '@/lib/types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export function AddExpenseDialog({
   children,
   open,
   onOpenChange,
   expense,
+  onAddExpense,
+  onUpdateExpense,
 }: {
   children?: React.ReactNode;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   expense?: Expense | null;
+  onAddExpense: (data: Omit<Expense, 'id'>) => void;
+  onUpdateExpense: (expense: Expense) => void;
 }) {
+
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState<Expense['category']>('other');
+  const [amount, setAmount] = useState(0);
+  const [date, setDate] = useState('');
+  const [unitId, setUnitId] = useState<number | null>(null);
+  const [description, setDescription] = useState('');
+  const [status, setStatus] = useState<Expense['status']>('paid');
+
+
   useEffect(() => {
-    if (open && !expense) {
-      const today = new Date().toISOString().split('T')[0];
-      const dateInput = document.getElementById(
-        'expenseDate'
-      ) as HTMLInputElement;
-      if (dateInput) dateInput.value = today;
+    if (open) {
+      if (expense) {
+        setTitle(expense.title);
+        setCategory(expense.category);
+        setAmount(expense.amount);
+        setDate(expense.date);
+        setUnitId(expense.unitId);
+        setDescription(expense.description);
+        setStatus(expense.status);
+      } else {
+        // Reset form for new expense
+        setTitle('');
+        setCategory('other');
+        setAmount(0);
+        setDate(new Date().toISOString().split('T')[0]);
+        setUnitId(null);
+        setDescription('');
+        setStatus('paid');
+      }
     }
   }, [open, expense]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    
+    const expenseData = {
+      title,
+      category,
+      amount,
+      date,
+      unitId,
+      description,
+      status,
+    };
 
     if (expense) {
-      // Update existing expense
-      const existingExpense = expenses.find((ex) => ex.id === expense.id);
-      if (existingExpense) {
-        existingExpense.title = formData.get('expenseTitle') as string;
-        existingExpense.category = formData.get(
-          'expenseCategory'
-        ) as Expense['category'];
-        existingExpense.amount = parseFloat(
-          formData.get('expenseAmount') as string
-        );
-        existingExpense.date = formData.get('expenseDate') as string;
-        const unitId = formData.get('expenseUnit') as string;
-        existingExpense.unitId = unitId ? parseInt(unitId) : null;
-        existingExpense.description = formData.get(
-          'expenseDescription'
-        ) as string;
-        existingExpense.status = formData.get(
-          'expenseStatus'
-        ) as Expense['status'];
-      }
+      onUpdateExpense({ ...expense, ...expenseData });
     } else {
-      // Add new expense
-      const unitId = formData.get('expenseUnit') as string;
-      const newExpense: Expense = {
-        id: Math.max(...expenses.map((ex) => ex.id), 0) + 1,
-        title: formData.get('expenseTitle') as string,
-        category: formData.get('expenseCategory') as Expense['category'],
-        amount: parseFloat(formData.get('expenseAmount') as string),
-        date: formData.get('expenseDate') as string,
-        unitId: unitId ? parseInt(unitId) : null,
-        description: formData.get('expenseDescription') as string,
-        status: formData.get('expenseStatus') as Expense['status'],
-      };
-      expenses.push(newExpense);
+      onAddExpense(expenseData);
     }
 
     onOpenChange(false);
@@ -88,13 +93,12 @@ export function AddExpenseDialog({
             <form id="expenseForm" className="space-y-4" onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="expenseTitle" className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                    <input type="text" name="expenseTitle" id="expenseTitle" className="prime-input" defaultValue={expense?.title} required />
+                    <input type="text" id="expenseTitle" className="prime-input" value={title} onChange={e=>setTitle(e.target.value)} required />
                 </div>
                 
                 <div>
                     <label htmlFor="expenseCategory" className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <select name="expenseCategory" id="expenseCategory" className="prime-input" defaultValue={expense?.category} required>
-                        <option value="">Select Category</option>
+                    <select id="expenseCategory" className="prime-input" value={category} onChange={e=>setCategory(e.target.value as Expense['category'])} required>
                         <option value="utilities">Utilities</option>
                         <option value="maintenance">Maintenance</option>
                         <option value="cleaning">Cleaning</option>
@@ -106,17 +110,17 @@ export function AddExpenseDialog({
                 
                 <div>
                     <label htmlFor="expenseAmount" className="block text-sm font-medium text-gray-700 mb-1">Amount (₱)</label>
-                    <input type="number" name="expenseAmount" id="expenseAmount" min="0" step="0.01" className="prime-input" defaultValue={expense?.amount} required />
+                    <input type="number" id="expenseAmount" min="0" step="0.01" className="prime-input" value={amount} onChange={e=>setAmount(parseFloat(e.target.value))} required />
                 </div>
                 
                 <div>
                     <label htmlFor="expenseDate" className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                    <input type="date" name="expenseDate" id="expenseDate" className="prime-input" defaultValue={expense?.date} required />
+                    <input type="date" id="expenseDate" className="prime-input" value={date} onChange={e=>setDate(e.target.value)} required />
                 </div>
                 
                 <div>
                     <label htmlFor="expenseUnit" className="block text-sm font-medium text-gray-700 mb-1">Unit (Optional)</label>
-                    <select name="expenseUnit" id="expenseUnit" className="prime-input" defaultValue={expense?.unitId?.toString()}>
+                    <select id="expenseUnit" className="prime-input" value={unitId ?? ''} onChange={e=>setUnitId(e.target.value ? parseInt(e.target.value) : null)}>
                         <option value="">All Units</option>
                         {units.map(unit => (
                             <option key={unit.id} value={String(unit.id)}>{unit.name}</option>
@@ -126,7 +130,7 @@ export function AddExpenseDialog({
                 
                 <div>
                     <label htmlFor="expenseStatus" className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select name="expenseStatus" id="expenseStatus" className="prime-input" defaultValue={expense?.status || 'paid'} required>
+                    <select id="expenseStatus" className="prime-input" value={status} onChange={e=>setStatus(e.target.value as Expense['status'])} required>
                         <option value="paid">Paid</option>
                         <option value="unpaid">Unpaid</option>
                     </select>
@@ -134,7 +138,7 @@ export function AddExpenseDialog({
                 
                 <div>
                     <label htmlFor="expenseDescription" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                    <textarea name="expenseDescription" id="expenseDescription" rows={3} className="prime-input" placeholder="Additional details..." defaultValue={expense?.description}></textarea>
+                    <textarea id="expenseDescription" rows={3} className="prime-input" placeholder="Additional details..." value={description} onChange={e=>setDescription(e.target.value)}></textarea>
                 </div>
                 
                 <div className="flex space-x-3 pt-2">

@@ -1,65 +1,69 @@
 'use client';
 
-import { investors } from '@/lib/data';
 import type { Investor } from '@/lib/types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export function AddInvestorDialog({
   children,
   open,
   onOpenChange,
   investor,
+  onAddInvestor,
+  onUpdateInvestor,
 }: {
   children?: React.ReactNode;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   investor?: Investor | null;
+  onAddInvestor: (data: Omit<Investor, 'id' | 'status'>) => void;
+  onUpdateInvestor: (investor: Investor) => void;
 }) {
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [investmentAmount, setInvestmentAmount] = useState(0);
+  const [sharePercentage, setSharePercentage] = useState(0);
+  const [joinDate, setJoinDate] = useState('');
+
+
   useEffect(() => {
-    if (open && !investor) {
-      // Set today's date as default join date for new investors
-      const today = new Date().toISOString().split('T')[0];
-      const dateInput = document.getElementById(
-        'investorJoinDate'
-      ) as HTMLInputElement;
-      if (dateInput) dateInput.value = today;
+    if (open) {
+      if (investor) {
+        setName(investor.name);
+        setEmail(investor.email);
+        setPhone(investor.phone);
+        setInvestmentAmount(investor.investmentAmount);
+        setSharePercentage(investor.sharePercentage);
+        setJoinDate(investor.joinDate);
+      } else {
+        // Reset form for new investor
+        setName('');
+        setEmail('');
+        setPhone('');
+        setInvestmentAmount(0);
+        setSharePercentage(0);
+        setJoinDate(new Date().toISOString().split('T')[0]);
+      }
     }
   }, [open, investor]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    
+    const investorData = {
+        name,
+        email,
+        phone,
+        investmentAmount,
+        sharePercentage,
+        joinDate,
+    };
 
     if (investor) {
-      // Update existing investor
-      const existingInvestor = investors.find((i) => i.id === investor.id);
-      if (existingInvestor) {
-        existingInvestor.name = formData.get('investorName') as string;
-        existingInvestor.email = formData.get('investorEmail') as string;
-        existingInvestor.phone = formData.get('investorPhone') as string;
-        existingInvestor.investmentAmount = parseFloat(
-          formData.get('investorAmount') as string
-        );
-        existingInvestor.sharePercentage = parseFloat(
-          formData.get('investorShare') as string
-        );
-        existingInvestor.joinDate = formData.get('investorJoinDate') as string;
-      }
+      onUpdateInvestor({ ...investor, ...investorData });
     } else {
-      // Add new investor
-      const newInvestor = {
-        id: Math.max(...investors.map((i) => i.id), 0) + 1,
-        name: formData.get('investorName') as string,
-        email: formData.get('investorEmail') as string,
-        phone: formData.get('investorPhone') as string,
-        investmentAmount: parseFloat(
-          formData.get('investorAmount') as string
-        ),
-        sharePercentage: parseFloat(formData.get('investorShare') as string),
-        joinDate: formData.get('investorJoinDate') as string,
-        status: 'active' as const,
-      };
-      investors.push(newInvestor);
+      onAddInvestor(investorData);
     }
 
     onOpenChange(false);
@@ -84,32 +88,32 @@ export function AddInvestorDialog({
             <form id="investorForm" className="space-y-4" onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor='investorName' className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                    <input type="text" name="investorName" id="investorName" className="prime-input" defaultValue={investor?.name} required />
+                    <input type="text" id="investorName" className="prime-input" value={name} onChange={e=>setName(e.target.value)} required />
                 </div>
                 
                 <div>
                     <label htmlFor='investorEmail' className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" name="investorEmail" id="investorEmail" className="prime-input" defaultValue={investor?.email} required />
+                    <input type="email" id="investorEmail" className="prime-input" value={email} onChange={e=>setEmail(e.target.value)} required />
                 </div>
                 
                 <div>
                     <label htmlFor='investorPhone' className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                    <input type="tel" name="investorPhone" id="investorPhone" className="prime-input" defaultValue={investor?.phone} required />
+                    <input type="tel" id="investorPhone" className="prime-input" value={phone} onChange={e=>setPhone(e.target.value)} required />
                 </div>
                 
                 <div>
                     <label htmlFor='investorAmount' className="block text-sm font-medium text-gray-700 mb-1">Investment Amount (₱)</label>
-                    <input type="number" name="investorAmount" id="investorAmount" min="0" className="prime-input" defaultValue={investor?.investmentAmount} required />
+                    <input type="number" id="investorAmount" min="0" className="prime-input" value={investmentAmount} onChange={e=>setInvestmentAmount(parseFloat(e.target.value))} required />
                 </div>
                 
                 <div>
                     <label htmlFor='investorShare' className="block text-sm font-medium text-gray-700 mb-1">Share Percentage (%)</label>
-                    <input type="number" name="investorShare" id="investorShare" min="0" max="100" step="0.1" className="prime-input" defaultValue={investor?.sharePercentage} required />
+                    <input type="number" id="investorShare" min="0" max="100" step="0.1" className="prime-input" value={sharePercentage} onChange={e=>setSharePercentage(parseFloat(e.target.value))} required />
                 </div>
                 
                 <div>
                     <label htmlFor='investorJoinDate' className="block text-sm font-medium text-gray-700 mb-1">Join Date</label>
-                    <input type="date" name="investorJoinDate" id="investorJoinDate" className="prime-input" defaultValue={investor?.joinDate} required />
+                    <input type="date" id="investorJoinDate" className="prime-input" value={joinDate} onChange={e=>setJoinDate(e.target.value)} required />
                 </div>
                 
                 <div className="flex space-x-3 pt-2">

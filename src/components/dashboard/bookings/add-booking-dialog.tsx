@@ -1,16 +1,19 @@
 'use client';
 
-import { units, bookings } from '@/lib/data';
+import { units } from '@/lib/data';
+import type { Booking } from '@/lib/types';
 import { useState, useEffect } from 'react';
 
 export function AddBookingDialog({
   children,
   open,
   onOpenChange,
+  onAddBooking,
 }: {
   children?: React.ReactNode;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onAddBooking: (booking: Omit<Booking, 'id' | 'createdAt'>) => void;
 }) {
   const [nightlyRate, setNightlyRate] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -37,29 +40,44 @@ export function AddBookingDialog({
           setTotalAmount(0);
         }
       }
+    } else {
+        setNightlyRate(0);
+        setTotalAmount(0);
     }
   }, [selectedUnitId, checkinDate, checkoutDate]);
-
+  
   useEffect(() => {
     if (open) {
-      const unitSelect = document.getElementById('bookingUnit') as HTMLSelectElement;
-      if (unitSelect) {
-        unitSelect.innerHTML = '<option value="">Select Unit</option>' + 
-            units.map(unit => `<option value="${unit.id}">${unit.name} - ₱${unit.rate}/night</option>`).join('');
-      }
+      // Reset form state when dialog opens
+      setNightlyRate(0);
+      setTotalAmount(0);
+      setSelectedUnitId(undefined);
       const today = new Date().toISOString().split('T')[0];
+      setCheckinDate(today);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      setCheckoutDate(tomorrow.toISOString().split('T')[0]);
+
       const checkinInput = document.getElementById('checkinDate') as HTMLInputElement;
       const checkoutInput = document.getElementById('checkoutDate') as HTMLInputElement;
       if(checkinInput) checkinInput.min = today;
-      if(checkoutInput) checkoutInput.min = today;
+      if(checkoutInput) checkoutInput.min = checkinDate || today;
+
     }
   }, [open]);
+
+  useEffect(() => {
+    if(checkinDate){
+        const checkoutInput = document.getElementById('checkoutDate') as HTMLInputElement;
+        if(checkoutInput) checkoutInput.min = checkinDate;
+    }
+  }, [checkinDate]);
+
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const newBooking = {
-      id: Math.max(...bookings.map((b) => b.id), 0) + 1,
       guestFirstName: formData.get('guestFirstName') as string,
       guestLastName: formData.get('guestLastName') as string,
       guestPhone: formData.get('guestPhone') as string,
@@ -69,13 +87,12 @@ export function AddBookingDialog({
       checkoutDate: formData.get('checkoutDate') as string,
       adults: parseInt(formData.get('adults') as string),
       children: parseInt(formData.get('children') as string),
-      nightlyRate: parseFloat(formData.get('nightlyRate') as string),
-      totalAmount: parseFloat(formData.get('totalAmount') as string),
+      nightlyRate: nightlyRate,
+      totalAmount: totalAmount,
       paymentStatus: formData.get('paymentStatus') as 'pending' | 'partial' | 'paid',
       specialRequests: formData.get('specialRequests') as string,
-      createdAt: new Date().toISOString(),
     };
-    bookings.push(newBooking);
+    onAddBooking(newBooking);
     onOpenChange(false);
   };
 
@@ -119,19 +136,23 @@ export function AddBookingDialog({
                 
                 <div>
                     <label htmlFor="bookingUnit" className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
-                    <select name="bookingUnit" id="bookingUnit" className="prime-input" required onChange={(e) => setSelectedUnitId(e.target.value)}>
+                    <select name="bookingUnit" id="bookingUnit" className="prime-input" required value={selectedUnitId} onChange={(e) => setSelectedUnitId(e.target.value)}>
                         <option value="">Select Unit</option>
+                        {units.map(unit => `<option value="${unit.id}">${unit.name} - ₱${unit.rate}/night</option>`).join('')}
+                         {units.map(unit => (
+                            <option key={unit.id} value={unit.id}>{unit.name} - ₱{unit.rate}/night</option>
+                        ))}
                     </select>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <label htmlFor="checkinDate" className="block text-sm font-medium text-gray-700 mb-1">Check-in Date</label>
-                        <input name="checkinDate" type="date" id="checkinDate" className="prime-input" required onChange={(e) => setCheckinDate(e.target.value)} />
+                        <input name="checkinDate" type="date" id="checkinDate" className="prime-input" required value={checkinDate} onChange={(e) => setCheckinDate(e.target.value)} />
                     </div>
                     <div>
                         <label htmlFor="checkoutDate" className="block text-sm font-medium text-gray-700 mb-1">Check-out Date</label>
-                        <input name="checkoutDate" type="date" id="checkoutDate" className="prime-input" required onChange={(e) => setCheckoutDate(e.target.value)} />
+                        <input name="checkoutDate" type="date" id="checkoutDate" className="prime-input" required value={checkoutDate} onChange={(e) => setCheckoutDate(e.target.value)} />
                     </div>
                 </div>
                 
@@ -149,11 +170,11 @@ export function AddBookingDialog({
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <label htmlFor="nightlyRate" className="block text-sm font-medium text-gray-700 mb-1">Nightly Rate</label>
-                        <input name="nightlyRate" type="number" id="nightlyRate" className="prime-input" value={nightlyRate} readOnly />
+                        <input name="nightlyRate" type="text" id="nightlyRate" className="prime-input bg-gray-100" value={`₱${nightlyRate.toLocaleString()}`} readOnly />
                     </div>
                     <div>
                         <label htmlFor="totalAmount" className="block text-sm font-medium text-gray-700 mb-1">Total Amount</label>
-                        <input name="totalAmount" type="number" id="totalAmount" className="prime-input" value={totalAmount} readOnly />
+                        <input name="totalAmount" type="text" id="totalAmount" className="prime-input bg-gray-100" value={`₱${totalAmount.toLocaleString()}`} readOnly />
                     </div>
                 </div>
                 

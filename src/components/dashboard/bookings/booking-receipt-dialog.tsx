@@ -1,16 +1,19 @@
 'use client';
 
-import { bookings, units } from '@/lib/data';
+import { units } from '@/lib/data';
+import type { Booking } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
 
 export function BookingReceiptDialog({
   bookingId,
   open,
   onOpenChange,
+  bookings,
 }: {
   bookingId: number | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  bookings: Booking[];
 }) {
   if (!open || !bookingId) return null;
 

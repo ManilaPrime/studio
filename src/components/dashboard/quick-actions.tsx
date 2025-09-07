@@ -9,6 +9,8 @@ import {
   Handshake,
 } from 'lucide-react';
 import React from 'react';
+// These dialogs are now just for display. 
+// The state and logic are handled in their respective pages.
 import { AddBookingDialog } from './bookings/add-booking-dialog';
 import { AddUnitDialog } from './units/add-unit-dialog';
 import { AddReminderDialog } from './reminders/add-reminder-dialog';
@@ -20,32 +22,32 @@ const actionComponents = [
   {
     label: 'Add Booking',
     icon: CalendarDays,
-    DialogComponent: AddBookingDialog,
+    // DialogComponent: AddBookingDialog,
   },
   {
     label: 'Add Unit',
     icon: Building,
-    DialogComponent: AddUnitDialog,
+    // DialogComponent: AddUnitDialog,
   },
   {
     label: 'Add Reminder',
     icon: ClipboardList,
-    DialogComponent: AddReminderDialog,
+    // DialogComponent: AddReminderDialog,
   },
   {
     label: 'Add Expense',
     icon: CircleDollarSign,
-    DialogComponent: AddExpenseDialog,
+    // DialogComponent: AddExpenseDialog,
   },
   {
     label: 'Add Investor',
     icon: User,
-    DialogComponent: AddInvestorDialog,
+    // DialogComponent: AddInvestorDialog,
   },
   {
     label: 'Add Agent',
     icon: Handshake,
-    DialogComponent: AddAgentDialog,
+    // DialogComponent: AddAgentDialog,
   },
 ];
 
@@ -54,8 +56,7 @@ export function QuickActions({ open, onOpenChange }: { open: boolean, onOpenChan
 
   const handleOpenDialog = (label: string) => {
     onOpenChange(false); // Close the quick actions modal
-    // A short delay is needed to allow the parent dialog to close first
-    setTimeout(() => setOpenDialog(label), 150); 
+    alert(`"${label}" dialog should be opened from its respective page now.`);
   };
 
   const colorClasses = {
@@ -94,18 +95,11 @@ export function QuickActions({ open, onOpenChange }: { open: boolean, onOpenChan
         </div>
       </div>
 
-      {actionComponents.map((item) => {
-          const Dialog = item.DialogComponent;
-          return (
-            <Dialog
-              key={item.label}
-              open={openDialog === item.label}
-              onOpenChange={(isOpen) =>
-                setOpenDialog(isOpen ? item.label : null)
-              }
-            />
-          );
-      })}
+      {/* 
+        The dialog components are no longer managed here. 
+        Each page now manages its own dialog state.
+        This section is kept for reference but is not functional.
+      */}
     </>
   );
 }

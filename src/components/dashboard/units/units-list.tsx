@@ -1,27 +1,33 @@
 'use client';
 
 import { useState } from 'react';
-import { units } from '@/lib/data';
 import type { Unit, SyncedEvent } from '@/lib/types';
 import { syncCalendars } from '@/app/actions/sync-calendars';
 import { formatDate } from '@/lib/utils';
 import { Calendar, Link as LinkIcon, List } from 'lucide-react';
 
-export function UnitsList() {
+interface UnitsListProps {
+  units: Unit[];
+  onDelete: (unitId: number) => void;
+  onUpdate: (unit: Unit) => void;
+}
+
+
+export function UnitsList({ units, onDelete, onUpdate }: UnitsListProps) {
   if (units.length === 0) {
-    return <p className="text-gray-500 text-center py-8">No units found</p>;
+    return <p className="text-gray-500 text-center py-8">No units found. Click "+ Add" to create one.</p>;
   }
 
   return (
     <div className="space-y-4">
       {units.map((unit) => (
-        <UnitCard key={unit.id} unit={unit} />
+        <UnitCard key={unit.id} unit={unit} onDelete={onDelete} onUpdate={onUpdate} />
       ))}
     </div>
   );
 }
 
-function UnitCard({ unit }: { unit: Unit }) {
+function UnitCard({ unit, onDelete, onUpdate }: { unit: Unit, onDelete: (unitId: number) => void, onUpdate: (unit: Unit) => void }) {
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState<SyncedEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +49,11 @@ function UnitCard({ unit }: { unit: Unit }) {
     setError(null);
     setEvents([]);
     try {
+      if(!unit.calendars.airbnb && !unit.calendars.bookingcom && !unit.calendars.direct) {
+        setError("Please provide at least one calendar URL to sync.");
+        setLoading(false);
+        return;
+      }
       const result = await syncCalendars(unit.calendars);
       setEvents(result);
       if (result.length === 0) {
@@ -84,17 +95,17 @@ function UnitCard({ unit }: { unit: Unit }) {
             <p className="flex items-center text-sm text-gray-600">
               <LinkIcon className="w-4 h-4 mr-2" /> 
               <span className="font-semibold mr-2">Airbnb:</span>
-              <span className="truncate text-gray-500">{unit.calendars.airbnb}</span>
+              <span className="truncate text-gray-500">{unit.calendars.airbnb || 'Not set'}</span>
             </p>
             <p className="flex items-center text-sm text-gray-600">
               <LinkIcon className="w-4 h-4 mr-2" /> 
               <span className="font-semibold mr-2">Booking.com:</span>
-              <span className="truncate text-gray-500">{unit.calendars.bookingcom}</span>
+              <span className="truncate text-gray-500">{unit.calendars.bookingcom || 'Not set'}</span>
             </p>
             <p className="flex items-center text-sm text-gray-600">
               <LinkIcon className="w-4 h-4 mr-2" /> 
               <span className="font-semibold mr-2">Direct:</span>
-              <span className="truncate text-gray-500">{unit.calendars.direct}</span>
+              <span className="truncate text-gray-500">{unit.calendars.direct || 'Not set'}</span>
             </p>
           </div>
           <button
@@ -151,7 +162,7 @@ function UnitCard({ unit }: { unit: Unit }) {
           Edit
         </button>
         <button
-          onClick={() => alert(`Deleting ${unit.name}`)}
+          onClick={() => onDelete(unit.id)}
           className="fb-btn fb-btn-secondary"
         >
           Delete

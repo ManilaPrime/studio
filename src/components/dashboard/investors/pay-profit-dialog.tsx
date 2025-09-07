@@ -1,38 +1,35 @@
 'use client';
 
-import { profitPayments } from '@/lib/data';
-import type { Investor } from '@/lib/types';
+import type { Investor, ProfitPayment } from '@/lib/types';
 import { useEffect, useState } from 'react';
 
 export function PayProfitDialog({
   open,
   onOpenChange,
   investor,
+  onRecordPayment,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   investor?: Investor | null;
+  onRecordPayment: (payment: Omit<ProfitPayment, 'id' | 'status'>) => void;
 }) {
   const [suggestedAmount, setSuggestedAmount] = useState(0);
+  const [paymentAmount, setPaymentAmount] = useState(0);
+  const [paymentMonth, setPaymentMonth] = useState('');
+  const [paymentDate, setPaymentDate] = useState('');
 
   useEffect(() => {
     if (open && investor) {
-      const today = new Date().toISOString().split('T')[0];
-      const dateInput = document.getElementById(
-        'paymentDate'
-      ) as HTMLInputElement;
-      if (dateInput) dateInput.value = today;
-
-      const currentMonthInput = document.getElementById(
-        'paymentMonth'
-      ) as HTMLInputElement;
-      if (currentMonthInput)
-        currentMonthInput.value = new Date().toISOString().slice(0, 7);
+      const today = new Date();
+      setPaymentDate(today.toISOString().split('T')[0]);
+      setPaymentMonth(today.toISOString().slice(0, 7));
 
       // Calculate suggested profit amount
       const monthlyProfit = 32500; // Sample current month profit
       const amount = (monthlyProfit * investor.sharePercentage) / 100;
       setSuggestedAmount(amount);
+      setPaymentAmount(amount);
     }
   }, [open, investor]);
 
@@ -42,7 +39,6 @@ export function PayProfitDialog({
 
     const formData = new FormData(e.currentTarget);
     const newPayment = {
-      id: Math.max(...profitPayments.map((p) => p.id), 0) + 1,
       investorId: investor.id,
       month: formData.get('paymentMonth') as string,
       amount: parseFloat(formData.get('profitAmount') as string),
@@ -53,10 +49,9 @@ export function PayProfitDialog({
         | 'cash'
         | 'check',
       notes: formData.get('paymentNotes') as string,
-      status: 'paid' as const,
     };
 
-    profitPayments.push(newPayment);
+    onRecordPayment(newPayment);
     onOpenChange(false);
   };
   
@@ -77,17 +72,17 @@ export function PayProfitDialog({
             <form id="profitPaymentForm" className="space-y-4" onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="paymentMonth" className="block text-sm font-medium text-gray-700 mb-1">Payment Month</label>
-                    <input name="paymentMonth" id="paymentMonth" type="month" className="prime-input" required />
+                    <input name="paymentMonth" id="paymentMonth" type="month" className="prime-input" value={paymentMonth} onChange={e=>setPaymentMonth(e.target.value)} required />
                 </div>
                 
                 <div>
                     <label htmlFor="profitAmount" className="block text-sm font-medium text-gray-700 mb-1">Profit Amount (₱)</label>
-                    <input name="profitAmount" id="profitAmount" type="number" min="0" className="prime-input" defaultValue={suggestedAmount} required />
+                    <input name="profitAmount" id="profitAmount" type="number" min="0" className="prime-input" value={paymentAmount} onChange={e=>setPaymentAmount(parseFloat(e.target.value))} required />
                 </div>
                 
                 <div>
                     <label htmlFor="paymentDate" className="block text-sm font-medium text-gray-700 mb-1">Payment Date</label>
-                    <input name="paymentDate" id="paymentDate" type="date" className="prime-input" required />
+                    <input name="paymentDate" id="paymentDate" type="date" className="prime-input" value={paymentDate} onChange={e=>setPaymentDate(e.target.value)} required />
                 </div>
                 
                 <div>
