@@ -6,12 +6,9 @@ import {
   Users,
   Handshake,
   CircleDollarSign,
-  LogOut,
-  UserCog,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/use-auth.tsx';
 
 const menuItems = [
   { label: 'Units', icon: Building, href: '/dashboard/units' },
@@ -29,19 +26,8 @@ const menuItems = [
   { label: 'Expenses', icon: CircleDollarSign, href: '/dashboard/expenses' },
 ];
 
-const settingsItems = [
-    { label: 'Account Management', icon: UserCog, href: '/dashboard/account' }
-]
-
 export default function MorePage() {
   const router = useRouter();
-  const { logout } = useAuth();
-
-
-  const handleLogout = async () => {
-    await logout();
-    router.push('/');
-  };
 
   return (
     <div className="p-4">
@@ -64,29 +50,6 @@ export default function MorePage() {
             </div>
           </Link>
         ))}
-
-        <h3 className="text-sm font-semibold text-gray-500 px-2 mt-6">Settings</h3>
-        {settingsItems.map((item) => (
-          <Link key={item.href} href={item.href} className="block prime-card p-0 no-underline hover:border-prime-yellow">
-            <div className="flex items-center space-x-4 p-4">
-                <item.icon className="w-6 h-6 text-gray-600" />
-                <span className="font-semibold text-gray-800">{item.label}</span>
-            </div>
-          </Link>
-        ))}
-
-
-        <div className="border-t border-gray-200 pt-3 mt-3">
-          <div className="prime-card p-0 hover:border-red-500">
-              <button
-              onClick={handleLogout}
-              className="w-full flex items-center space-x-4 p-4 bg-transparent border-none"
-              >
-              <LogOut className="w-6 h-6 text-red-700" />
-              <span className="font-semibold text-red-800">Logout</span>
-              </button>
-          </div>
-        </div>
       </div>
     </div>
   );

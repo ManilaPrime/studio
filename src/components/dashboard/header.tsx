@@ -77,7 +77,7 @@ const Header = () => {
                 </span>
               )}
             </Link>
-            <Link href="/dashboard/more" className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-300 hover:border-yellow-600 transition-colors">
+            <Link href="/dashboard/settings" className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-300 hover:border-yellow-600 transition-colors">
               <span className="text-gray-600 text-lg">⚙️</span>
             </Link>
           </div>
