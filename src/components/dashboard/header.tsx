@@ -59,7 +59,6 @@ const Header = () => {
     return reminders.filter(r => {
         if (r.status === 'completed') return false;
         
-        // Adjust for timezone when comparing dates
         const dueDate = new Date(r.dueDate);
         const userTimezoneOffset = dueDate.getTimezoneOffset() * 60000;
         const adjustedDueDate = new Date(dueDate.getTime() + userTimezoneOffset);
@@ -74,7 +73,7 @@ const Header = () => {
       type: 'booking' as const,
       icon: ActivityBookingIcon,
       title: 'New booking',
-      description: `${b.guestFirstName} ${b.guestLastName}`,
+      description: `${b.guestFirstName} ${b.guestLastName} - ₱${b.totalAmount.toLocaleString()}`,
       time: b.createdAt,
       color: 'blue'
     }));
@@ -83,7 +82,7 @@ const Header = () => {
       type: 'expense' as const,
       icon: ActivityPaymentIcon,
       title: 'Expense paid',
-      description: `${e.title}`,
+      description: `${e.title} - ₱${e.amount.toLocaleString()}`,
       time: e.date,
       color: 'green'
     }));
@@ -114,14 +113,14 @@ const Header = () => {
           <div className="flex items-center space-x-2 flex-shrink-0">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="w-9 h-9 bg-white rounded-full flex items-center justify-center relative border border-gray-300 hover:border-yellow-600 transition-colors">
-                  <span className="text-gray-600 text-lg">🔔</span>
-                  {notificationCount > 0 && (
-                    <span id="notificationBadge" className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
-                      {notificationCount > 9 ? '9+' : notificationCount}
-                    </span>
-                  )}
-                </button>
+                  <button className="w-9 h-9 bg-white rounded-full flex items-center justify-center relative border border-gray-300 hover:border-yellow-600 transition-colors">
+                    <span className="text-gray-600 text-lg">🔔</span>
+                    {notificationCount > 0 && (
+                      <span id="notificationBadge" className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                        {notificationCount > 9 ? '9+' : notificationCount}
+                      </span>
+                    )}
+                  </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-80 mr-4" align="end">
                 <DropdownMenuLabel>Recent Notifications</DropdownMenuLabel>
@@ -134,7 +133,7 @@ const Header = () => {
                             </div>
                             <div className="flex-1">
                                 <p className="text-sm font-medium text-gray-900">{activity.title}</p>
-                                <p className="text-xs text-gray-500">{activity.description}</p>
+                                <p className="text-xs text-gray-500 truncate">{activity.description}</p>
                                 <p className="text-xs text-gray-400 mt-1">{formatDate(activity.time)}</p>
                             </div>
                         </DropdownMenuItem>
