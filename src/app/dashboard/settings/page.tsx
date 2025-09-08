@@ -3,11 +3,12 @@
 
 import { useAuth } from '@/hooks/use-auth.tsx';
 import { LogOut } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function SettingsPage() {
-  const { user, logout } = useAuth();
-  const router = useRouter();
+  const { user, logout, sendPasswordReset } = useAuth();
+  const [resetMessage, setResetMessage] = useState('');
+  const [resetError, setResetError] = useState('');
 
 
   if (!user) {
@@ -16,8 +17,18 @@ export default function SettingsPage() {
   
   const handleLogout = async () => {
     await logout();
-    router.push('/');
   };
+
+  const handlePasswordReset = async () => {
+    setResetMessage('');
+    setResetError('');
+    try {
+        await sendPasswordReset();
+        setResetMessage('Password reset email sent! Please check your inbox.');
+    } catch (error: any) {
+        setResetError('Failed to send reset email. Please try again later.');
+    }
+  }
 
   return (
     <div className="p-4">
@@ -39,6 +50,19 @@ export default function SettingsPage() {
                   Profile editing features are coming soon.
               </p>
           </div>
+        </div>
+
+        <div className="prime-card p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Security Settings</h3>
+            <div className="space-y-4">
+                <div>
+                    <button onClick={handlePasswordReset} className="prime-button w-full py-2">
+                        Change Password
+                    </button>
+                    {resetMessage && <p className="text-green-600 text-sm mt-2">{resetMessage}</p>}
+                    {resetError && <p className="text-red-600 text-sm mt-2">{resetError}</p>}
+                </div>
+            </div>
         </div>
         
         <div className="border-t border-gray-200 pt-3 mt-3">

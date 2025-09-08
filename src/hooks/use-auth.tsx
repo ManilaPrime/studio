@@ -3,13 +3,14 @@
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { auth } from '@/lib/firebase';
-import { onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { onAuthStateChanged, signOut, User, sendPasswordResetEmail } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   logout: () => Promise<void>;
+  sendPasswordReset: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,8 +34,16 @@ export const AppAuthProvider = ({ children }: { children: ReactNode }) => {
     router.push('/');
   };
 
+  const sendPasswordReset = async () => {
+    if (user) {
+      await sendPasswordResetEmail(auth, user.email!);
+    } else {
+      throw new Error("No user is signed in to reset the password for.");
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, logout }}>
+    <AuthContext.Provider value={{ user, loading, logout, sendPasswordReset }}>
       {children}
     </AuthContext.Provider>
   );
