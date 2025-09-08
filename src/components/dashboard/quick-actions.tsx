@@ -9,39 +9,47 @@ import {
   Handshake,
 } from 'lucide-react';
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 const actionComponents = [
   {
     label: 'Add Booking',
     icon: CalendarDays,
+    href: '/dashboard/bookings',
   },
   {
     label: 'Add Unit',
     icon: Building,
+    href: '/dashboard/units',
   },
   {
     label: 'Add Reminder',
     icon: ClipboardList,
+    href: '/dashboard/reminders',
   },
   {
     label: 'Add Expense',
     icon: CircleDollarSign,
+    href: '/dashboard/expenses',
   },
   {
     label: 'Add Investor',
     icon: User,
+    href: '/dashboard/investors',
   },
   {
     label: 'Add Agent',
     icon: Handshake,
+    href: '/dashboard/agents',
   },
 ];
 
 export function QuickActions({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void}) {
+  const router = useRouter();
 
-  const handleOpenDialog = (label: string) => {
+  const handleNavigate = (href: string) => {
     onOpenChange(false);
-    alert(`Please use the '+ Add' button on the respective page to ${label}.`);
+    router.push(`${href}?action=add`);
   };
 
   const colorClasses = {
@@ -69,7 +77,7 @@ export function QuickActions({ open, onOpenChange }: { open: boolean, onOpenChan
               {actionComponents.map((item) => (
                   <button
                     key={item.label}
-                    onClick={() => handleOpenDialog(item.label)}
+                    onClick={() => handleNavigate(item.href)}
                     className={`flex flex-col items-center p-4 rounded-lg transition-colors ${colorClasses[item.label as keyof typeof colorClasses]}`}
                   >
                     <item.icon className="text-3xl mb-2" />

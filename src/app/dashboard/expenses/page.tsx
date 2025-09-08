@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ExpensesList } from '@/components/dashboard/expenses/expenses-list';
 import { AddExpenseDialog } from '@/components/dashboard/expenses/add-expense-dialog';
 import type { Expense, Unit } from '@/lib/types';
@@ -13,6 +14,7 @@ export default function ExpensesPage() {
   const [loading, setLoading] = useState(true);
   const [isAddExpenseOpen, setIsAddExpenseOpen] = React.useState(false);
   const [selectedExpense, setSelectedExpense] = React.useState<Expense | null>(null);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     async function fetchData() {
@@ -24,6 +26,12 @@ export default function ExpensesPage() {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get('action') === 'add') {
+      setIsAddExpenseOpen(true);
+    }
+  }, [searchParams]);
 
   const handleOpenAddDialog = () => {
     setSelectedExpense(null);

@@ -146,7 +146,7 @@ export function BookingReceiptDialog({
                         <div className="border-t pt-2 mt-2">
                             <div className="flex justify-between font-semibold">
                                 <span>Total Amount:</span>
-                                <span>₱${booking.totalAmount.toLocaleString()}</span>
+                                <span>₱{booking.totalAmount.toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between mt-1">
                                 <span>Payment Status:</span>

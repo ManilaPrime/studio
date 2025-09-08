@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { InvestorsList } from '@/components/dashboard/investors/investors-list';
 import { AddInvestorDialog } from '@/components/dashboard/investors/add-investor-dialog';
 import { PayProfitDialog } from '@/components/dashboard/investors/pay-profit-dialog';
@@ -16,6 +17,7 @@ export default function InvestorsPage() {
   const [isAddInvestorOpen, setIsAddInvestorOpen] = React.useState(false);
   const [isPayProfitOpen, setIsPayProfitOpen] = React.useState(false);
   const [selectedInvestor, setSelectedInvestor] = React.useState<Investor | null>(null);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     async function fetchData() {
@@ -27,6 +29,12 @@ export default function InvestorsPage() {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get('action') === 'add') {
+      setIsAddInvestorOpen(true);
+    }
+  }, [searchParams]);
 
   const handleOpenAddDialog = () => {
     setSelectedInvestor(null);

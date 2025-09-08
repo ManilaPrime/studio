@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { RemindersList } from '@/components/dashboard/reminders/reminders-list';
 import { AddReminderDialog } from '@/components/dashboard/reminders/add-reminder-dialog';
 import type { Reminder } from '@/lib/types';
@@ -11,6 +12,7 @@ export default function RemindersPage() {
   const [reminders, setReminders] = React.useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddReminderOpen, setIsAddReminderOpen] = React.useState(false);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     async function fetchReminders() {
@@ -20,6 +22,12 @@ export default function RemindersPage() {
     }
     fetchReminders();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get('action') === 'add') {
+      setIsAddReminderOpen(true);
+    }
+  }, [searchParams]);
 
   const addReminder = async (newReminderData: Omit<Reminder, 'id' | 'createdAt' | 'status'>) => {
     const newReminder: Omit<Reminder, 'id'> = {

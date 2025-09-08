@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { AddUnitDialog } from '@/components/dashboard/units/add-unit-dialog';
 import { EditUnitDialog } from '@/components/dashboard/units/edit-unit-dialog';
 import { UnitsList } from '@/components/dashboard/units/units-list';
@@ -13,6 +14,7 @@ export default function UnitsPage() {
   const [isAddUnitOpen, setIsAddUnitOpen] = React.useState(false);
   const [isEditUnitOpen, setIsEditUnitOpen] = React.useState(false);
   const [selectedUnit, setSelectedUnit] = React.useState<Unit | null>(null);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     async function fetchUnits() {
@@ -22,6 +24,12 @@ export default function UnitsPage() {
     }
     fetchUnits();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get('action') === 'add') {
+      setIsAddUnitOpen(true);
+    }
+  }, [searchParams]);
 
   const handleOpenEditDialog = (unit: Unit) => {
     setSelectedUnit(unit);

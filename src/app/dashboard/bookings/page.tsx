@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { BookingsList } from '@/components/dashboard/bookings/bookings-list';
 import { AddBookingDialog } from '@/components/dashboard/bookings/add-booking-dialog';
@@ -17,6 +18,7 @@ export default function BookingsPage() {
   const [isAddBookingOpen, setIsAddBookingOpen] = React.useState(false);
   const [isEditBookingOpen, setIsEditBookingOpen] = React.useState(false);
   const [selectedBooking, setSelectedBooking] = React.useState<Booking | null>(null);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     async function fetchData() {
@@ -28,6 +30,12 @@ export default function BookingsPage() {
     }
     fetchData();
   }, []);
+  
+  useEffect(() => {
+    if (searchParams.get('action') === 'add') {
+      setIsAddBookingOpen(true);
+    }
+  }, [searchParams]);
 
   const handleOpenEditDialog = (booking: Booking) => {
     setSelectedBooking(booking);

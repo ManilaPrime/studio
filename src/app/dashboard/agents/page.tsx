@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { AgentsList } from '@/components/dashboard/agents/agents-list';
 import { AddAgentDialog } from '@/components/dashboard/agents/add-agent-dialog';
 import type { Agent } from '@/lib/types';
@@ -11,6 +12,7 @@ export default function AgentsPage() {
   const [loading, setLoading] = useState(true);
   const [isAddAgentOpen, setIsAddAgentOpen] = React.useState(false);
   const [selectedAgent, setSelectedAgent] = React.useState<Agent | null>(null);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const fetchAgents = async () => {
@@ -20,6 +22,12 @@ export default function AgentsPage() {
     }
     fetchAgents();
   }, []);
+  
+  useEffect(() => {
+    if (searchParams.get('action') === 'add') {
+      setIsAddAgentOpen(true);
+    }
+  }, [searchParams]);
 
   const handleOpenAddDialog = () => {
     setSelectedAgent(null);
