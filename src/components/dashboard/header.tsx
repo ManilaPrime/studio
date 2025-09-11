@@ -123,7 +123,7 @@ const Header = () => {
                     )}
                   </button>
               </SheetTrigger>
-              <SheetContent side="top" className="p-0">
+              <SheetContent side="top" variant="container" className="p-0">
                 <SheetHeader className="p-4 border-b">
                   <SheetTitle>Recent Notifications</SheetTitle>
                 </SheetHeader>
