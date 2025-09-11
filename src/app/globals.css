@@ -166,7 +166,9 @@
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
-      max-width: 428px;
+      max-width: 448px; /* max-w-sm is 384px, so this should be sm or md, let's go higher for safety */
+      margin-left: auto;
+      margin-right: auto;
       background: #ffffff;
       border-top: 2px solid #FFD700;
       z-index: 50;

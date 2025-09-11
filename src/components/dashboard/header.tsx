@@ -122,7 +122,7 @@ const Header = () => {
                     )}
                   </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-80 mr-4" align="end">
+              <DropdownMenuContent className="w-80" align="end">
                 <DropdownMenuLabel>Recent Notifications</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {recentActivities.length > 0 ? (
