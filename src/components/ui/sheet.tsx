@@ -39,7 +39,7 @@ const sheetVariants = cva(
         container: "absolute"
       },
       side: {
-        top: "inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top max-w-sm mx-auto",
+        top: "border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top left-0 right-0 max-w-sm mx-auto",
         bottom:
           "inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
         left: "inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
@@ -63,7 +63,7 @@ const SheetContent = React.forwardRef<
   SheetContentProps
 >(({ side = "right", variant, className, children, ...props }, ref) => (
   <SheetPortal>
-    <SheetOverlay />
+    {variant !== 'container' && <SheetOverlay />}
     <SheetPrimitive.Content
       ref={ref}
       className={cn(sheetVariants({ side, variant }), className)}
