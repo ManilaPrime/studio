@@ -26,6 +26,7 @@ const Header = () => {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { user } = useAuth();
 
 
@@ -112,9 +113,9 @@ const Header = () => {
           
           {/* Notification and Settings */}
           <div className="flex items-center space-x-2 flex-shrink-0">
-            <Sheet>
+            <Sheet open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
               <SheetTrigger asChild>
-                  <button className="w-9 h-9 bg-white rounded-full flex items-center justify-center relative border border-gray-300 hover:border-yellow-600 transition-colors">
+                  <button onClick={() => setIsNotificationsOpen(!isNotificationsOpen)} className="w-9 h-9 bg-white rounded-full flex items-center justify-center relative border border-gray-300 hover:border-yellow-600 transition-colors">
                     <span className="text-gray-600 text-lg">🔔</span>
                     {notificationCount > 0 && (
                       <span id="notificationBadge" className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
