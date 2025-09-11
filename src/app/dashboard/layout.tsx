@@ -120,10 +120,12 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen max-w-sm mx-auto flex flex-col">
-      <Header />
-      <main className="flex-grow content-area">{children}</main>
-      <BottomNav navItems={navItems} pathname={pathname} />
+    <div className="bg-gray-50 min-h-screen">
+        <div className="max-w-sm mx-auto flex flex-col min-h-screen relative">
+            <Header />
+            <main className="flex-grow content-area">{children}</main>
+            <BottomNav navItems={navItems} pathname={pathname} />
+        </div>
     </div>
   );
 }
