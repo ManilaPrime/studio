@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { Investor, Unit } from '@/lib/types';
