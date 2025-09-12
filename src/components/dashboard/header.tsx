@@ -129,15 +129,15 @@ const Header = () => {
                 </SheetTrigger>
                 <SheetContent 
                     side="top" 
-                    className="w-full max-w-sm mx-auto p-6"
+                    className="w-full max-w-sm mx-auto rounded-b-lg"
                     style={{ top: `${headerHeight}px` }}
                 >
                     <SheetTitle className="sr-only">Notifications</SheetTitle>
-                     <div>
+                     <div className="py-4">
                         <div>
-                            <h3 className="font-semibold">Recent Notifications</h3>
+                            <h3 className="font-semibold mb-4 border-b pb-4">Recent Notifications</h3>
                         </div>
-                        <div className="py-4 space-y-4">
+                        <div className="space-y-4">
                             {recentActivities.length > 0 ? (
                                 recentActivities.map((activity, index) => (
                                     <div key={index} className="flex items-start space-x-3 p-2">
@@ -157,7 +157,7 @@ const Header = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="border-t pt-4">
+                        <div className="border-t pt-4 mt-4">
                             <Button asChild variant="outline" className="w-full">
                                 <Link href="/dashboard/reminders">
                                     View All Reminders
