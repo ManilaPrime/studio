@@ -106,102 +106,104 @@ export function AddBookingDialog({
     <>
       {children}
       <div id="addBookingModal" className="absolute inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto z-50" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-800">Add New Booking</h3>
-                <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
-                    <span className="text-2xl">×</span>
-                </button>
-            </div>
+        <div className="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto z-50 flex flex-col">
+            <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-bold text-gray-800">Add New Booking</h3>
+                    <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
+                        <span className="text-2xl">×</span>
+                    </button>
+                </div>
             
-            <form id="bookingForm" className="space-y-4" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="guestFirstName" className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                        <input name="guestFirstName" type="text" id="guestFirstName" className="prime-input" required />
+                <form id="bookingForm" className="space-y-4" onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label htmlFor="guestFirstName" className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                            <input name="guestFirstName" type="text" id="guestFirstName" className="prime-input" required />
+                        </div>
+                        <div>
+                            <label htmlFor="guestLastName" className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                            <input name="guestLastName" type="text" id="guestLastName" className="prime-input" required />
+                        </div>
                     </div>
+                    
                     <div>
-                        <label htmlFor="guestLastName" className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                        <input name="guestLastName" type="text" id="guestLastName" className="prime-input" required />
+                        <label htmlFor="guestPhone" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <input name="guestPhone" type="tel" id="guestPhone" className="prime-input" required />
                     </div>
-                </div>
-                
-                <div>
-                    <label htmlFor="guestPhone" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                    <input name="guestPhone" type="tel" id="guestPhone" className="prime-input" required />
-                </div>
-                
-                <div>
-                    <label htmlFor="guestEmail" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input name="guestEmail" type="email" id="guestEmail" className="prime-input" />
-                </div>
-                
-                <div>
-                    <label htmlFor="bookingUnit" className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
-                    <select name="bookingUnit" id="bookingUnit" className="prime-input" required value={selectedUnitId} onChange={(e) => setSelectedUnitId(e.target.value)}>
-                        <option value="">Select Unit</option>
-                         {units.map(unit => (
-                            <option key={unit.id} value={unit.id}>{unit.name} - ₱{unit.rate}/night</option>
-                        ))}
-                    </select>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
+                    
                     <div>
-                        <label htmlFor="checkinDate" className="block text-sm font-medium text-gray-700 mb-1">Check-in Date</label>
-                        <input name="checkinDate" type="date" id="checkinDate" className="prime-input" required value={checkinDate} onChange={(e) => setCheckinDate(e.target.value)} />
+                        <label htmlFor="guestEmail" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input name="guestEmail" type="email" id="guestEmail" className="prime-input" />
                     </div>
+                    
                     <div>
-                        <label htmlFor="checkoutDate" className="block text-sm font-medium text-gray-700 mb-1">Check-out Date</label>
-                        <input name="checkoutDate" type="date" id="checkoutDate" className="prime-input" required value={checkoutDate} onChange={(e) => setCheckoutDate(e.target.value)} />
+                        <label htmlFor="bookingUnit" className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+                        <select name="bookingUnit" id="bookingUnit" className="prime-input" required value={selectedUnitId} onChange={(e) => setSelectedUnitId(e.target.value)}>
+                            <option value="">Select Unit</option>
+                            {units.map(unit => (
+                                <option key={unit.id} value={unit.id}>{unit.name} - ₱{unit.rate}/night</option>
+                            ))}
+                        </select>
                     </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label htmlFor="checkinDate" className="block text-sm font-medium text-gray-700 mb-1">Check-in Date</label>
+                            <input name="checkinDate" type="date" id="checkinDate" className="prime-input" required value={checkinDate} onChange={(e) => setCheckinDate(e.target.value)} />
+                        </div>
+                        <div>
+                            <label htmlFor="checkoutDate" className="block text-sm font-medium text-gray-700 mb-1">Check-out Date</label>
+                            <input name="checkoutDate" type="date" id="checkoutDate" className="prime-input" required value={checkoutDate} onChange={(e) => setCheckoutDate(e.target.value)} />
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label htmlFor="adults" className="block text-sm font-medium text-gray-700 mb-1">Adults</label>
+                            <input name="adults" type="number" id="adults" min="1" defaultValue="2" className="prime-input" required />
+                        </div>
+                        <div>
+                            <label htmlFor="children" className="block text-sm font-medium text-gray-700 mb-1">Children</label>
+                            <input name="children" type="number" id="children" min="0" defaultValue="0" className="prime-input" />
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label htmlFor="nightlyRate" className="block text-sm font-medium text-gray-700 mb-1">Nightly Rate</label>
+                            <input name="nightlyRate" type="text" id="nightlyRate" className="prime-input bg-gray-100" value={`₱${nightlyRate.toLocaleString()}`} readOnly />
+                        </div>
+                        <div>
+                            <label htmlFor="totalAmount" className="block text-sm font-medium text-gray-700 mb-1">Total Amount</label>
+                            <input name="totalAmount" type="text" id="totalAmount" className="prime-input bg-gray-100" value={`₱${totalAmount.toLocaleString()}`} readOnly />
+                        </div>
+                    </div>
+                    
                     <div>
-                        <label htmlFor="adults" className="block text-sm font-medium text-gray-700 mb-1">Adults</label>
-                        <input name="adults" type="number" id="adults" min="1" defaultValue="2" className="prime-input" required />
+                        <label htmlFor="paymentStatus" className="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
+                        <select name="paymentStatus" id="paymentStatus" className="prime-input" defaultValue="pending">
+                            <option value="pending">Pending</option>
+                            <option value="partial">Partial</option>
+                            <option value="paid">Paid</option>
+                        </select>
                     </div>
+                    
                     <div>
-                        <label htmlFor="children" className="block text-sm font-medium text-gray-700 mb-1">Children</label>
-                        <input name="children" type="number" id="children" min="0" defaultValue="0" className="prime-input" />
+                        <label htmlFor="specialRequests" className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
+                        <textarea name="specialRequests" id="specialRequests" rows={3} className="prime-input" placeholder="Any special requests or notes..."></textarea>
                     </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="nightlyRate" className="block text-sm font-medium text-gray-700 mb-1">Nightly Rate</label>
-                        <input name="nightlyRate" type="text" id="nightlyRate" className="prime-input bg-gray-100" value={`₱${nightlyRate.toLocaleString()}`} readOnly />
+                    
+                    <div className="flex space-x-3 pt-2">
+                        <button type="button" onClick={() => onOpenChange(false)} className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" className="w-full prime-button py-3">
+                            Add Booking
+                        </button>
                     </div>
-                    <div>
-                        <label htmlFor="totalAmount" className="block text-sm font-medium text-gray-700 mb-1">Total Amount</label>
-                        <input name="totalAmount" type="text" id="totalAmount" className="prime-input bg-gray-100" value={`₱${totalAmount.toLocaleString()}`} readOnly />
-                    </div>
-                </div>
-                
-                <div>
-                    <label htmlFor="paymentStatus" className="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
-                    <select name="paymentStatus" id="paymentStatus" className="prime-input" defaultValue="pending">
-                        <option value="pending">Pending</option>
-                        <option value="partial">Partial</option>
-                        <option value="paid">Paid</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label htmlFor="specialRequests" className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
-                    <textarea name="specialRequests" id="specialRequests" rows={3} className="prime-input" placeholder="Any special requests or notes..."></textarea>
-                </div>
-                
-                <div className="flex space-x-3 pt-2">
-                    <button type="button" onClick={() => onOpenChange(false)} className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
-                        Cancel
-                    </button>
-                    <button type="submit" className="w-full prime-button py-3">
-                        Add Booking
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
     </>
