@@ -98,7 +98,7 @@ export function BookingReceiptDialog({
                         </div>
                         <div>
                             <p className="text-gray-600">Date Issued:</p>
-                            <p className="font-semibold">{formatDate(booking.createdAt.split('T')[0])}</p>
+                            <p className="font-semibold">${formatDate(booking.createdAt.split('T')[0])}</p>
                         </div>
                     </div>
                 </div>
@@ -106,20 +106,20 @@ export function BookingReceiptDialog({
                 <div className="mb-4">
                     <h5 className="font-semibold text-gray-800 mb-2">Guest Information</h5>
                     <div className="text-sm space-y-1">
-                        <p><strong>Name:</strong> {booking.guestFirstName} {booking.guestLastName}</p>
-                        <p><strong>Phone:</strong> {booking.guestPhone}</p>
-                        <p><strong>Email:</strong> {booking.guestEmail}</p>
+                        <p><strong>Name:</strong> ${booking.guestFirstName} ${booking.guestLastName}</p>
+                        <p><strong>Phone:</strong> ${booking.guestPhone}</p>
+                        <p><strong>Email:</strong> ${booking.guestEmail}</p>
                     </div>
                 </div>
                 
                 <div className="mb-4">
                     <h5 className="font-semibold text-gray-800 mb-2">Booking Details</h5>
                     <div className="text-sm space-y-1">
-                        <p><strong>Unit:</strong> {unit?.name} ({unit?.type})</p>
-                        <p><strong>Check-in:</strong> {formatDate(booking.checkinDate)}</p>
-                        <p><strong>Check-out:</strong> {formatDate(booking.checkoutDate)}</p>
-                        <p><strong>Nights:</strong> {nights}</p>
-                        <p><strong>Guests:</strong> {booking.adults} Adults, {booking.children} Children</p>
+                        <p><strong>Unit:</strong> ${unit?.name} (${unit?.type})</p>
+                        <p><strong>Check-in:</strong> ${formatDate(booking.checkinDate)}</p>
+                        <p><strong>Check-out:</strong> ${formatDate(booking.checkoutDate)}</p>
+                        <p><strong>Nights:</strong> ${nights}</p>
+                        <p><strong>Guests:</strong> ${booking.adults} Adults, ${booking.children} Children</p>
                     </div>
                 </div>
                 
@@ -127,7 +127,7 @@ export function BookingReceiptDialog({
                     <h5 className="font-semibold text-gray-800 mb-2">📶 WiFi Access</h5>
                     <div className="text-sm space-y-1">
                         <p><strong>Network:</strong> Manila Prime WiFi</p>
-                        <p><strong>Password:</strong> <span className="font-mono bg-white px-2 py-1 rounded border">Prime{unit?.name?.replace(/\s+/g, '')}</span></p>
+                        <p><strong>Password:</strong> <span className="font-mono bg-white px-2 py-1 rounded border">Prime${unit?.name?.replace(/\s+/g, '')}</span></p>
                         <p className="text-xs text-gray-600 mt-2">Please connect to our complimentary WiFi during your stay</p>
                     </div>
                 </div>
@@ -137,32 +137,32 @@ export function BookingReceiptDialog({
                     <div className="bg-gray-50 p-3 rounded-lg text-sm">
                         <div className="flex justify-between mb-1">
                             <span>Rate per night:</span>
-                            <span>₱{booking.nightlyRate.toLocaleString()}</span>
+                            <span>₱${booking.nightlyRate.toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between mb-1">
                             <span>Number of nights:</span>
-                            <span>{nights}</span>
+                            <span>${nights}</span>
                         </div>
                         <div className="border-t pt-2 mt-2">
                             <div className="flex justify-between font-semibold">
                                 <span>Total Amount:</span>
-                                <span>₱{booking.totalAmount.toLocaleString()}</span>
+                                <span>₱${booking.totalAmount.toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between mt-1">
                                 <span>Payment Status:</span>
-                                <span className={`px-2 py-1 rounded text-xs font-semibold ${statusVariant[booking.paymentStatus]}`}>
-                                    {booking.paymentStatus.charAt(0).toUpperCase() + booking.paymentStatus.slice(1)}
+                                <span className={'px-2 py-1 rounded text-xs font-semibold ${statusVariant[booking.paymentStatus]}'}>
+                                    ${booking.paymentStatus.charAt(0).toUpperCase() + booking.paymentStatus.slice(1)}
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                {booking.specialRequests &&
-                    <div className="mb-4">
+                ${booking.specialRequests &&
+                    `<div className="mb-4">
                         <h5 className="font-semibold text-gray-800 mb-2">Special Requests</h5>
-                        <p className="text-sm text-gray-600">{booking.specialRequests}</p>
-                    </div>
+                        <p className="text-sm text-gray-600">${booking.specialRequests}</p>
+                    </div>`
                 }
                 
                 <div className="text-center text-xs text-gray-500 mt-6">
