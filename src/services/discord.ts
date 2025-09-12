@@ -1,13 +1,12 @@
 'use server';
 
 import type { Booking, Unit } from "@/lib/types";
-import { getConfigValue } from "./config";
 
 export async function sendDiscordNotification(booking: Booking, unit: Unit) {
-    const webhookUrl = await getConfigValue('DISCORD_WEBHOOK_URL');
+    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
     if (!webhookUrl) {
-        console.warn("Discord webhook URL not set in Firestore 'config' collection. Skipping notification.");
+        console.warn("DISCORD_WEBHOOK_URL environment variable not set. Skipping notification.");
         return;
     }
 
@@ -41,7 +40,8 @@ export async function sendDiscordNotification(booking: Booking, unit: Unit) {
         });
 
         if (!response.ok) {
-            console.error(`Discord notification failed: ${response.statusText}`);
+            const errorBody = await response.text();
+            console.error(`Discord notification failed: ${response.statusText}`, errorBody);
         }
     } catch (error) {
         console.error("Error sending Discord notification:", error);
