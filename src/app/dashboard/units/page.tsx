@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -38,16 +39,10 @@ export default function UnitsPage() {
   };
 
 
-  const addUnit = async (newUnitData: Omit<Unit, 'id' | 'status' | 'calendars'>) => {
+  const addUnit = async (newUnitData: Omit<Unit, 'id' | 'status'>) => {
     const newUnit: Omit<Unit, 'id'> = {
       ...newUnitData,
       status: 'available',
-      // Provide default empty calendar URLs for new units
-      calendars: {
-        airbnb: '',
-        bookingcom: '',
-        direct: '',
-      },
     };
     const id = await addUnitService(newUnit);
     setUnits((prev) => [...prev, { ...newUnit, id }]);

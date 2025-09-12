@@ -12,7 +12,7 @@ export function AddUnitDialog({
   children?: React.ReactNode;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddUnit: (unit: Omit<Unit, 'id' | 'status' | 'calendars'>) => void;
+  onAddUnit: (unit: Omit<Unit, 'id' | 'status'>) => void;
 }) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,6 +23,11 @@ export function AddUnitDialog({
       rate: parseInt(formData.get('unitRate') as string),
       maxOccupancy: parseInt(formData.get('maxOccupancy') as string),
       description: formData.get('unitDescription') as string,
+      calendars: {
+        airbnb: formData.get('airbnbUrl') as string,
+        bookingcom: formData.get('bookingcomUrl') as string,
+        direct: formData.get('directUrl') as string,
+      }
     };
     onAddUnit(newUnit);
     onOpenChange(false);
@@ -35,8 +40,8 @@ export function AddUnitDialog({
   return (
     <>
     {children}
-    <div id="addUnitModal" className="absolute inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4" onClick={() => onOpenChange(false)}>
-        <div className="bg-white rounded-xl p-6 w-full max-w-md overflow-y-auto z-50 max-h-full" onClick={(e) => e.stopPropagation()}>
+    <div id="addUnitModal" className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4" onClick={() => onOpenChange(false)}>
+        <div className="bg-white rounded-xl p-6 w-full max-w-md overflow-y-auto z-50 max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-800">Add New Unit</h3>
                 <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
@@ -74,6 +79,23 @@ export function AddUnitDialog({
                 <div>
                     <label htmlFor="unitDescription" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                     <textarea name="unitDescription" id="unitDescription" rows={3} className="prime-input" placeholder="Unit features and amenities..."></textarea>
+                </div>
+
+                <div className="border-t pt-4">
+                  <h4 className="text-lg font-semibold text-gray-800 mb-2">Calendar iCal Links</h4>
+                   <p className="text-xs text-gray-500 mb-3">Add iCal links from other platforms to import their bookings into this app.</p>
+                  <div>
+                      <label htmlFor="airbnbUrl" className="block text-sm font-medium text-gray-700 mb-1">Airbnb URL</label>
+                      <input type="url" name="airbnbUrl" id="airbnbUrl" className="prime-input" placeholder="https://www.airbnb.com/calendar/ical/..." />
+                  </div>
+                   <div className="mt-2">
+                      <label htmlFor="bookingcomUrl" className="block text-sm font-medium text-gray-700 mb-1">Booking.com URL</label>
+                      <input type="url" name="bookingcomUrl" id="bookingcomUrl" className="prime-input" placeholder="https://admin.booking.com/hotel/hoteladmin/ical.html?t=..." />
+                  </div>
+                   <div className="mt-2">
+                      <label htmlFor="directUrl" className="block text-sm font-medium text-gray-700 mb-1">Direct URL</label>
+                      <input type="url" name="directUrl" id="directUrl" className="prime-input" placeholder="https://example.com/ical/..." />
+                  </div>
                 </div>
                 
                 <div className="flex space-x-3 pt-2">
