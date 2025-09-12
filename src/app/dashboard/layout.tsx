@@ -143,7 +143,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     <div className="bg-gray-50 min-h-screen">
       <div className="max-w-sm mx-auto grid grid-rows-[auto_1fr_auto] min-h-screen">
         <Header />
-        <main className="relative overflow-hidden">
+        <main className="relative overflow-y-auto">
           {children}
         </main>
         <BottomNav 
