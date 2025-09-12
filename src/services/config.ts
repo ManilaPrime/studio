@@ -1,3 +1,4 @@
+
 'use server';
 
 import { db } from '@/lib/firebase';
@@ -42,7 +43,7 @@ export async function getConfigValue(key: string): Promise<string | null> {
         return value;
       }
     }
-    console.warn(`Config value for key "${key}" not found in Firestore.`);
+    console.warn(`Config value for key "${key}" not found in Firestore. This may not be an error if the value is determined dynamically.`);
     return null;
   } catch (error) {
     console.error(`Error fetching config value for key "${key}":`, error);

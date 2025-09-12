@@ -2,11 +2,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import type { Unit, SyncedEvent } from '@/lib/types';
+import type { Unit, SyncedEvent, Platform } from '@/lib/types';
 import { syncCalendars } from '@/app/actions/sync-calendars';
 import { formatDate } from '@/lib/utils';
 import { Calendar, Link as LinkIcon, List, Copy, Check } from 'lucide-react';
-import { getConfigValue } from '@/services/config';
 
 interface UnitsListProps {
   units: Unit[];
@@ -37,13 +36,12 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
   const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
-    // Fetch base URL from config for iCal link
-    async function fetchBaseUrl() {
-        const url = await getConfigValue('FUNCTION_ICAL_URL');
-        // Fallback to local dev URL if not found in Firestore
-        setBaseUrl(url || 'http://localhost:5001/unified-booker/us-central1/api');
+    // Dynamically determine the base URL.
+    // This will be the Vercel URL when deployed, or localhost during development.
+    if (typeof window !== 'undefined') {
+      setBaseUrl(window.location.origin);
     }
-    fetchBaseUrl();
+    
     handleSync(true); // Auto-sync on component mount silently
   }, []);
 
@@ -94,7 +92,7 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
   };
 
   const handleCopyMasterUrl = () => {
-    const url = `${baseUrl}/ical/${unit.id}`;
+    const url = `${baseUrl}/api/ical/${unit.id}`;
     navigator.clipboard.writeText(url);
     setMasterUrlCopied(true);
     setTimeout(() => setMasterUrlCopied(false), 2000);
@@ -134,7 +132,7 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
                 <input 
                   type="text" 
                   readOnly 
-                  value={baseUrl ? `${baseUrl}/ical/${unit.id}`: 'Loading...'}
+                  value={baseUrl ? `${baseUrl}/api/ical/${unit.id}`: 'Loading...'}
                   className="p-2 text-sm bg-transparent w-full outline-none"
                 />
                 <button 
@@ -229,3 +227,4 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
     </div>
   );
 }
+
