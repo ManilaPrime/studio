@@ -4,7 +4,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import Header from '@/components/dashboard/header';
 import BottomNav from '@/components/dashboard/bottom-nav';
 import { useAuth } from '@/hooks/use-auth.tsx';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { QuickActions } from '@/components/dashboard/quick-actions';
 
 const HomeIcon = () => (
   <svg
@@ -89,6 +90,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading } = useAuth();
+  const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -112,18 +114,24 @@ export default function DashboardLayout({
     );
   }
 
-  // If the user is not authenticated, the useEffect hook above will trigger a redirect.
-  // We return null here to prevent a flash of the dashboard content before the redirect happens.
   if (!user) {
     return null;
   }
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-sm mx-auto grid grid-rows-[auto_1fr_auto] min-h-screen">
+      <div className="relative max-w-sm mx-auto grid grid-rows-[auto_1fr_auto] min-h-screen">
         <Header />
         <main className="flex-grow content-area overflow-y-auto">{children}</main>
-        <BottomNav navItems={navItems} pathname={pathname} />
+        <BottomNav 
+          navItems={navItems} 
+          pathname={pathname}
+          onQuickActionsOpen={() => setIsQuickActionsOpen(true)}
+        />
+        <QuickActions
+          open={isQuickActionsOpen}
+          onOpenChange={setIsQuickActionsOpen}
+        />
       </div>
     </div>
   );

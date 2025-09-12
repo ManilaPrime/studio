@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { QuickActions } from './quick-actions';
 
 interface NavItem {
   href: string;
@@ -13,6 +12,7 @@ interface NavItem {
 interface BottomNavProps {
   navItems: NavItem[];
   pathname: string;
+  onQuickActionsOpen: () => void;
 }
 
 const PlusIcon = () => (
@@ -23,8 +23,7 @@ const PlusIcon = () => (
 );
 
 
-const BottomNav = ({ navItems, pathname }: BottomNavProps) => {
-  const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
+const BottomNav = ({ navItems, pathname, onQuickActionsOpen }: BottomNavProps) => {
   return (
     <nav className="bottom-nav">
       <div className="flex items-center justify-around py-2">
@@ -43,17 +42,12 @@ const BottomNav = ({ navItems, pathname }: BottomNavProps) => {
         ))}
 
         <button
-          onClick={() => setIsQuickActionsOpen(true)}
+          onClick={onQuickActionsOpen}
           className="quick-action-btn"
           aria-label="Quick Actions"
         >
           <PlusIcon />
         </button>
-
-        <QuickActions
-          open={isQuickActionsOpen}
-          onOpenChange={setIsQuickActionsOpen}
-        />
 
         {navItems.slice(2).map((item) => (
           <Link
