@@ -6,8 +6,11 @@ import { AgentsList } from '@/components/dashboard/agents/agents-list';
 import { AddAgentDialog } from '@/components/dashboard/agents/add-agent-dialog';
 import type { Agent } from '@/lib/types';
 import { getAgents, addAgent as addAgentService, updateAgent as updateAgentService, deleteAgent as deleteAgentService } from '@/services/agents';
+import { useUIContext } from '@/hooks/use-ui-context';
 
-export default function AgentsPage({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
+
+export default function AgentsPage() {
+  const { isAddAgentOpen, setIsAddAgentOpen } = useUIContext();
   const [agents, setAgents] = React.useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAgent, setSelectedAgent] = React.useState<Agent | null>(null);
@@ -23,23 +26,19 @@ export default function AgentsPage({ open, onOpenChange }: { open: boolean, onOp
   }, []);
   
   useEffect(() => {
-    if (searchParams.get('action') === 'add' && typeof onOpenChange === 'function') {
-      onOpenChange(true);
+    if (searchParams.get('action') === 'add') {
+      setIsAddAgentOpen(true);
     }
-  }, [searchParams, onOpenChange]);
+  }, [searchParams, setIsAddAgentOpen]);
 
   const handleOpenAddDialog = () => {
     setSelectedAgent(null);
-    if (typeof onOpenChange === 'function') {
-      onOpenChange(true);
-    }
+    setIsAddAgentOpen(true);
   };
   
   const handleOpenEditDialog = (agent: Agent) => {
     setSelectedAgent(agent);
-    if (typeof onOpenChange === 'function') {
-      onOpenChange(true);
-    }
+    setIsAddAgentOpen(true);
   };
 
   const addAgent = async (newAgentData: Omit<Agent, 'id' | 'totalBookings' | 'totalCommissions' | 'status'>) => {
@@ -80,8 +79,8 @@ export default function AgentsPage({ open, onOpenChange }: { open: boolean, onOp
           <p className="text-sm text-gray-500">Partner agents & commissions</p>
         </div>
         <AddAgentDialog
-          open={open}
-          onOpenChange={onOpenChange}
+          open={isAddAgentOpen}
+          onOpenChange={setIsAddAgentOpen}
           onAddAgent={addAgent}
           onUpdateAgent={updateAgent}
           agent={selectedAgent}

@@ -7,8 +7,10 @@ import { AddExpenseDialog } from '@/components/dashboard/expenses/add-expense-di
 import type { Expense, Unit } from '@/lib/types';
 import { getExpenses, addExpense as addExpenseService, updateExpense as updateExpenseService, deleteExpense as deleteExpenseService } from '@/services/expenses';
 import { getUnits } from '@/services/units';
+import { useUIContext } from '@/hooks/use-ui-context';
 
-export default function ExpensesPage({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
+export default function ExpensesPage() {
+  const { isAddExpenseOpen, setIsAddExpenseOpen } = useUIContext();
   const [expenses, setExpenses] = React.useState<Expense[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,23 +29,19 @@ export default function ExpensesPage({ open, onOpenChange }: { open: boolean, on
   }, []);
 
   useEffect(() => {
-    if (searchParams.get('action') === 'add' && typeof onOpenChange === 'function') {
-      onOpenChange(true);
+    if (searchParams.get('action') === 'add') {
+      setIsAddExpenseOpen(true);
     }
-  }, [searchParams, onOpenChange]);
+  }, [searchParams, setIsAddExpenseOpen]);
 
   const handleOpenAddDialog = () => {
     setSelectedExpense(null);
-    if (typeof onOpenChange === 'function') {
-      onOpenChange(true);
-    }
+    setIsAddExpenseOpen(true);
   };
   
   const handleOpenEditDialog = (expense: Expense) => {
     setSelectedExpense(expense);
-    if (typeof onOpenChange === 'function') {
-      onOpenChange(true);
-    }
+    setIsAddExpenseOpen(true);
   };
 
   const addExpense = async (newExpenseData: Omit<Expense, 'id'>) => {
@@ -78,8 +76,8 @@ export default function ExpensesPage({ open, onOpenChange }: { open: boolean, on
           <p className="text-sm text-gray-500">Track all property expenses</p>
         </div>
         <AddExpenseDialog
-          open={open}
-          onOpenChange={onOpenChange}
+          open={isAddExpenseOpen}
+          onOpenChange={setIsAddExpenseOpen}
           onAddExpense={addExpense}
           onUpdateExpense={updateExpense}
           expense={selectedExpense}

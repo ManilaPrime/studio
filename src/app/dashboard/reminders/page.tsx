@@ -6,9 +6,11 @@ import { RemindersList } from '@/components/dashboard/reminders/reminders-list';
 import { AddReminderDialog } from '@/components/dashboard/reminders/add-reminder-dialog';
 import type { Reminder } from '@/lib/types';
 import { getReminders, addReminder as addReminderService, updateReminder as updateReminderService, deleteReminder as deleteReminderService } from '@/services/reminders';
+import { useUIContext } from '@/hooks/use-ui-context';
 
 
-export default function RemindersPage({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
+export default function RemindersPage() {
+  const { isAddReminderOpen, setIsAddReminderOpen } = useUIContext();
   const [reminders, setReminders] = React.useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
@@ -23,10 +25,10 @@ export default function RemindersPage({ open, onOpenChange }: { open: boolean, o
   }, []);
 
   useEffect(() => {
-    if (searchParams.get('action') === 'add' && typeof onOpenChange === 'function') {
-      onOpenChange(true);
+    if (searchParams.get('action') === 'add') {
+      setIsAddReminderOpen(true);
     }
-  }, [searchParams, onOpenChange]);
+  }, [searchParams, setIsAddReminderOpen]);
 
   const addReminder = async (newReminderData: Omit<Reminder, 'id' | 'createdAt' | 'status'>) => {
     const newReminder: Omit<Reminder, 'id'> = {
@@ -68,12 +70,12 @@ export default function RemindersPage({ open, onOpenChange }: { open: boolean, o
           <p className="text-sm text-gray-500">Task management system</p>
         </div>
         <AddReminderDialog
-          open={open}
-          onOpenChange={onOpenChange}
+          open={isAddReminderOpen}
+          onOpenChange={setIsAddReminderOpen}
           onAddReminder={addReminder}
         >
           <button
-            onClick={() => typeof onOpenChange === 'function' && onOpenChange(true)}
+            onClick={() => setIsAddReminderOpen(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add

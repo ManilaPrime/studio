@@ -11,19 +11,16 @@ import { getProfitPayments, addProfitPayment as addProfitPaymentService } from '
 import { getUnits } from '@/services/units';
 import { getBookings } from '@/services/bookings';
 import { getExpenses } from '@/services/expenses';
+import { useUIContext } from '@/hooks/use-ui-context';
 
 
-export default function InvestorsPage({
-  isAddInvestorOpen,
-  onAddInvestorOpenChange,
-  isPayProfitOpen,
-  onPayProfitOpenChange,
-}: {
-  isAddInvestorOpen: boolean;
-  onAddInvestorOpenChange: (open: boolean) => void;
-  isPayProfitOpen: boolean;
-  onPayProfitOpenChange: (open: boolean) => void;
-}) {
+export default function InvestorsPage() {
+  const {
+    isAddInvestorOpen,
+    setIsAddInvestorOpen,
+    isPayProfitOpen,
+    setIsPayProfitOpen,
+  } = useUIContext();
   const [investors, setInvestors] = React.useState<Investor[]>([]);
   const [profitPayments, setProfitPayments] = React.useState<ProfitPayment[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
@@ -53,30 +50,24 @@ export default function InvestorsPage({
   }, []);
 
   useEffect(() => {
-    if (searchParams.get('action') === 'add' && typeof onAddInvestorOpenChange === 'function') {
-      onAddInvestorOpenChange(true);
+    if (searchParams.get('action') === 'add') {
+      setIsAddInvestorOpen(true);
     }
-  }, [searchParams, onAddInvestorOpenChange]);
+  }, [searchParams, setIsAddInvestorOpen]);
 
   const handleOpenAddDialog = () => {
     setSelectedInvestor(null);
-    if (typeof onAddInvestorOpenChange === 'function') {
-      onAddInvestorOpenChange(true);
-    }
+    setIsAddInvestorOpen(true);
   };
   
   const handleOpenEditDialog = (investor: Investor) => {
     setSelectedInvestor(investor);
-    if (typeof onAddInvestorOpenChange === 'function') {
-      onAddInvestorOpenChange(true);
-    }
+    setIsAddInvestorOpen(true);
   };
   
   const handleOpenPayProfitDialog = (investor: Investor) => {
     setSelectedInvestor(investor);
-    if (typeof onPayProfitOpenChange === 'function') {
-      onPayProfitOpenChange(true);
-    }
+    setIsPayProfitOpen(true);
   };
 
   const addInvestor = async (newInvestorData: Omit<Investor, 'id' | 'status'>) => {
@@ -125,7 +116,7 @@ export default function InvestorsPage({
         </div>
         <AddInvestorDialog
           open={isAddInvestorOpen}
-          onOpenChange={onAddInvestorOpenChange}
+          onOpenChange={setIsAddInvestorOpen}
           onAddInvestor={addInvestor}
           onUpdateInvestor={updateInvestor}
           investor={selectedInvestor}
@@ -151,7 +142,7 @@ export default function InvestorsPage({
       />
       <PayProfitDialog
         open={isPayProfitOpen}
-        onOpenChange={onPayProfitOpenChange}
+        onOpenChange={setIsPayProfitOpen}
         investor={selectedInvestor}
         onRecordPayment={recordProfitPayment}
       />

@@ -7,18 +7,11 @@ import { EditUnitDialog } from '@/components/dashboard/units/edit-unit-dialog';
 import { UnitsList } from '@/components/dashboard/units/units-list';
 import type { Unit } from '@/lib/types';
 import { getUnits, addUnit as addUnitService, updateUnit as updateUnitService, deleteUnit as deleteUnitService } from '@/services/units';
+import { useUIContext } from '@/hooks/use-ui-context';
 
-export default function UnitsPage({
-  isAddUnitOpen,
-  onAddUnitOpenChange,
-  isEditUnitOpen,
-  onEditUnitOpenChange,
-}: {
-  isAddUnitOpen: boolean;
-  onAddUnitOpenChange: (open: boolean) => void;
-  isEditUnitOpen: boolean;
-  onEditUnitOpenChange: (open: boolean) => void;
-}) {
+export default function UnitsPage() {
+  const { isAddUnitOpen, setIsAddUnitOpen, isEditUnitOpen, setIsEditUnitOpen } =
+    useUIContext();
   const [units, setUnits] = React.useState<Unit[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedUnit, setSelectedUnit] = React.useState<Unit | null>(null);
@@ -34,16 +27,14 @@ export default function UnitsPage({
   }, []);
 
   useEffect(() => {
-    if (searchParams.get('action') === 'add' && typeof onAddUnitOpenChange === 'function') {
-      onAddUnitOpenChange(true);
+    if (searchParams.get('action') === 'add') {
+      setIsAddUnitOpen(true);
     }
-  }, [searchParams, onAddUnitOpenChange]);
+  }, [searchParams, setIsAddUnitOpen]);
 
   const handleOpenEditDialog = (unit: Unit) => {
     setSelectedUnit(unit);
-    if (typeof onEditUnitOpenChange === 'function') {
-      onEditUnitOpenChange(true);
-    }
+    setIsEditUnitOpen(true);
   };
 
 
@@ -89,11 +80,11 @@ export default function UnitsPage({
         </div>
         <AddUnitDialog 
           open={isAddUnitOpen} 
-          onOpenChange={onAddUnitOpenChange}
+          onOpenChange={setIsAddUnitOpen}
           onAddUnit={addUnit}
         >
           <button
-            onClick={() => typeof onAddUnitOpenChange === 'function' && onAddUnitOpenChange(true)}
+            onClick={() => setIsAddUnitOpen(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add
@@ -105,7 +96,7 @@ export default function UnitsPage({
         <EditUnitDialog
           key={selectedUnit.id}
           open={isEditUnitOpen}
-          onOpenChange={onEditUnitOpenChange}
+          onOpenChange={setIsEditUnitOpen}
           unit={selectedUnit}
           onUpdateUnit={updateUnit}
         />

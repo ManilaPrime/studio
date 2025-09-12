@@ -4,8 +4,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import Header from '@/components/dashboard/header';
 import BottomNav from '@/components/dashboard/bottom-nav';
 import { useAuth } from '@/hooks/use-auth.tsx';
-import React, { useEffect, useState, cloneElement } from 'react';
+import React, { useEffect, useState } from 'react';
 import { QuickActions } from '@/components/dashboard/quick-actions';
+import { UIProvider } from '@/hooks/use-ui-context';
 
 const HomeIcon = () => (
   <svg
@@ -82,26 +83,11 @@ const MoreIcon = () => (
   </svg>
 );
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading } = useAuth();
-
-  // State for all dialogs
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
-  const [isAddUnitOpen, setIsAddUnitOpen] = useState(false);
-  const [isEditUnitOpen, setIsEditUnitOpen] = useState(false);
-  const [isAddBookingOpen, setIsAddBookingOpen] = useState(false);
-  const [isEditBookingOpen, setIsEditBookingOpen] = useState(false);
-  const [isAddAgentOpen, setIsAddAgentOpen] = useState(false);
-  const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
-  const [isAddInvestorOpen, setIsAddInvestorOpen] = useState(false);
-  const [isPayProfitOpen, setIsPayProfitOpen] = useState(false);
-  const [isAddReminderOpen, setIsAddReminderOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -116,55 +102,6 @@ export default function DashboardLayout({
     { href: '/dashboard/reminders', label: 'Tasks', icon: TasksIcon },
     { href: '/dashboard/more', label: 'More', icon: MoreIcon },
   ];
-
-  const anyDialogOpen =
-    isQuickActionsOpen ||
-    isAddUnitOpen ||
-    isEditUnitOpen ||
-    isAddBookingOpen ||
-    isEditBookingOpen ||
-    isAddAgentOpen ||
-    isAddExpenseOpen ||
-    isAddInvestorOpen ||
-    isPayProfitOpen ||
-    isAddReminderOpen;
-
-  const pageSpecificProps: { [key: string]: any } = {
-    '/dashboard/units': {
-      isAddUnitOpen,
-      onAddUnitOpenChange: setIsAddUnitOpen,
-      isEditUnitOpen,
-      onEditUnitOpenChange: setIsEditUnitOpen,
-    },
-    '/dashboard/bookings': {
-      isAddBookingOpen,
-      onAddBookingOpenChange: setIsAddBookingOpen,
-      isEditBookingOpen,
-      onEditBookingOpenChange: setIsEditBookingOpen,
-    },
-     '/dashboard/agents': {
-      open: isAddAgentOpen,
-      onOpenChange: setIsAddAgentOpen,
-    },
-    '/dashboard/expenses': {
-      open: isAddExpenseOpen,
-      onOpenChange: setIsAddExpenseOpen,
-    },
-    '/dashboard/investors': {
-      isAddInvestorOpen,
-      onAddInvestorOpenChange: setIsAddInvestorOpen,
-      isPayProfitOpen,
-      onPayProfitOpenChange: setIsPayProfitOpen,
-    },
-    '/dashboard/reminders': {
-        open: isAddReminderOpen,
-        onOpenChange: setIsAddReminderOpen,
-    }
-  };
-
-  const childrenWithProps = React.isValidElement(children)
-    ? cloneElement(children, pageSpecificProps[pathname] || {})
-    : children;
   
   if (loading) {
     return (
@@ -182,12 +119,8 @@ export default function DashboardLayout({
     <div className="bg-gray-50 min-h-screen">
       <div className="max-w-sm mx-auto grid grid-rows-[auto_1fr_auto] min-h-screen">
         <Header />
-        <main
-          className={`content-area relative contain-layout ${
-            anyDialogOpen ? 'overflow-hidden' : 'overflow-y-auto'
-          }`}
-        >
-          {childrenWithProps}
+        <main className="contain-layout relative overflow-y-auto">
+          {children}
         </main>
         <BottomNav 
           navItems={navItems} 
@@ -200,5 +133,17 @@ export default function DashboardLayout({
         />
       </div>
     </div>
+  );
+}
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <UIProvider>
+      <Layout>{children}</Layout>
+    </UIProvider>
   );
 }

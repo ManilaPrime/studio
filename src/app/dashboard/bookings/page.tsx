@@ -9,19 +9,17 @@ import { EditBookingDialog } from '@/components/dashboard/bookings/edit-booking-
 import type { Booking, Unit } from '@/lib/types';
 import { getBookings, addBooking as addBookingService, updateBooking as updateBookingService, deleteBooking as deleteBookingService } from '@/services/bookings';
 import { getUnits } from '@/services/units';
+import { useUIContext } from '@/hooks/use-ui-context';
 
 
-export default function BookingsPage({
-  isAddBookingOpen,
-  onAddBookingOpenChange,
-  isEditBookingOpen,
-  onEditBookingOpenChange,
-}: {
-  isAddBookingOpen: boolean;
-  onAddBookingOpenChange: (open: boolean) => void;
-  isEditBookingOpen: boolean;
-  onEditBookingOpenChange: (open: boolean) => void;
-}) {
+export default function BookingsPage() {
+  const {
+    isAddBookingOpen,
+    setIsAddBookingOpen,
+    isEditBookingOpen,
+    setIsEditBookingOpen,
+  } = useUIContext();
+
   const [bookings, setBookings] = React.useState<Booking[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,16 +38,14 @@ export default function BookingsPage({
   }, []);
   
   useEffect(() => {
-    if (searchParams.get('action') === 'add' && typeof onAddBookingOpenChange === 'function') {
-      onAddBookingOpenChange(true);
+    if (searchParams.get('action') === 'add') {
+      setIsAddBookingOpen(true);
     }
-  }, [searchParams, onAddBookingOpenChange]);
+  }, [searchParams, setIsAddBookingOpen]);
 
   const handleOpenEditDialog = (booking: Booking) => {
     setSelectedBooking(booking);
-    if (typeof onEditBookingOpenChange === 'function') {
-      onEditBookingOpenChange(true);
-    }
+    setIsEditBookingOpen(true);
   };
 
   const addBooking = async (newBookingData: Omit<Booking, 'id' | 'createdAt'>) => {
@@ -90,12 +86,12 @@ export default function BookingsPage({
         </div>
         <AddBookingDialog
           open={isAddBookingOpen}
-          onOpenChange={onAddBookingOpenChange}
+          onOpenChange={setIsAddBookingOpen}
           onAddBooking={addBooking}
           units={units}
         >
           <button
-            onClick={() => typeof onAddBookingOpenChange === 'function' && onAddBookingOpenChange(true)}
+            onClick={() => setIsAddBookingOpen(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add
@@ -112,7 +108,7 @@ export default function BookingsPage({
         <EditBookingDialog
           key={selectedBooking.id}
           open={isEditBookingOpen}
-          onOpenChange={onEditBookingOpenChange}
+          onOpenChange={setIsEditBookingOpen}
           booking={selectedBooking}
           onUpdateBooking={updateBooking}
           units={units}
