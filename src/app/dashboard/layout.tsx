@@ -1,3 +1,4 @@
+
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
@@ -6,7 +7,7 @@ import BottomNav from '@/components/dashboard/bottom-nav';
 import { useAuth } from '@/hooks/use-auth.tsx';
 import React, { useEffect, useState } from 'react';
 import { QuickActions } from '@/components/dashboard/quick-actions';
-import { UIProvider } from '@/hooks/use-ui-context';
+import { UIProvider, useUIContext } from '@/hooks/use-ui-context';
 
 const HomeIcon = () => (
   <svg
@@ -87,6 +88,29 @@ function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading } = useAuth();
+  const {
+    isAddUnitOpen,
+    isEditUnitOpen,
+    isAddBookingOpen,
+    isEditBookingOpen,
+    isAddAgentOpen,
+    isAddExpenseOpen,
+    isAddInvestorOpen,
+    isPayProfitOpen,
+    isAddReminderOpen,
+  } = useUIContext();
+
+  const isAnyDialogOpen =
+    isAddUnitOpen ||
+    isEditUnitOpen ||
+    isAddBookingOpen ||
+    isEditBookingOpen ||
+    isAddAgentOpen ||
+    isAddExpenseOpen ||
+    isAddInvestorOpen ||
+    isPayProfitOpen ||
+    isAddReminderOpen;
+
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
 
   useEffect(() => {
@@ -119,7 +143,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     <div className="bg-gray-50 min-h-screen">
       <div className="max-w-sm mx-auto grid grid-rows-[auto_1fr_auto] min-h-screen">
         <Header />
-        <main className="contain-layout relative overflow-y-auto">
+        <main className={`contain-layout relative ${isAnyDialogOpen ? 'overflow-hidden' : 'overflow-y-auto'}`}>
           {children}
         </main>
         <BottomNav 
