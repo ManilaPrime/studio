@@ -100,7 +100,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="relative z-10 bg-yellow-400 shadow-md" ref={headerRef} id="app-header">
+      <header className="z-10 bg-yellow-400 shadow-md" ref={headerRef} id="app-header">
         {/* Main Header Section */}
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
