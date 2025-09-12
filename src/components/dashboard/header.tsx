@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState, useRef, useMemo } from 'react';
@@ -131,7 +132,7 @@ const Header = () => {
                   <SheetContent 
                       side="top" 
                       className="w-full max-w-sm mx-auto rounded-b-lg p-6"
-                      style={{ top: `${headerHeight + 8}px`, zIndex: 40 }}
+                      style={{ top: `${headerHeight + 12}px`, zIndex: 40 }}
                       showOverlay={false}
                   >
                       <SheetTitle className="sr-only">Notifications</SheetTitle>
