@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState, useRef, useMemo } from 'react';
@@ -25,6 +26,7 @@ const Header = () => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
   const { user } = useAuth();
 
 
@@ -49,6 +51,10 @@ const Header = () => {
         }
     }
     fetchData();
+
+    if (headerRef.current) {
+        setHeaderHeight(headerRef.current.offsetHeight);
+    }
 
   }, [user]);
 
@@ -110,7 +116,7 @@ const Header = () => {
           </div>
           
           {/* Notification and Settings */}
-          <div className="flex items-center space-x-2 flex-shrink-0 relative">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <Sheet open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
                 <SheetTrigger asChild>
                     <button className="w-9 h-9 bg-white rounded-full flex items-center justify-center relative border border-gray-300 hover:border-yellow-600 transition-colors">
@@ -124,7 +130,8 @@ const Header = () => {
                 </SheetTrigger>
                 <SheetContent 
                     side="top" 
-                    className="w-full max-w-sm mx-auto rounded-b-lg"
+                    className="w-full max-w-sm mx-auto rounded-b-lg p-6"
+                    style={{ top: `${headerHeight}px`, zIndex: 100 }}
                 >
                     <SheetTitle className="sr-only">Notifications</SheetTitle>
                      <div>
