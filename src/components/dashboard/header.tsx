@@ -101,9 +101,9 @@ const Header = () => {
 
   return (
     <>
-      <header className="mobile-header" ref={headerRef} id="app-header">
+      <header className="relative z-10 bg-yellow-400 shadow-md" ref={headerRef} id="app-header">
         {/* Main Header Section */}
-        <div className="px-4 py-3 bg-yellow-400">
+        <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo and Title */}
             <div className="flex items-center space-x-3 flex-1 min-w-0">
@@ -132,7 +132,7 @@ const Header = () => {
                   <SheetContent 
                       side="top" 
                       className="w-full max-w-sm mx-auto rounded-b-lg p-6"
-                      style={{ top: `${headerHeight + 12}px`, zIndex: 40 }}
+                      style={{ top: `${headerHeight + 12}px` }}
                       showOverlay={false}
                   >
                       <SheetTitle className="sr-only">Notifications</SheetTitle>

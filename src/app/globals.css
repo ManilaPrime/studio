@@ -143,15 +143,6 @@
         border-color: #FFD700;
         box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
     }
-    .mobile-header {
-      background: #ffffff;
-      position: relative;
-      z-index: 100;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      border-bottom: 2px solid #FFD700;
-      height: auto;
-    }
-
     .content-area {
       background: #ffffff;
     }
