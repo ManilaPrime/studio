@@ -13,7 +13,18 @@ const SheetTrigger = SheetPrimitive.Trigger
 
 const SheetClose = SheetPrimitive.Close
 
-const SheetPortal = SheetPrimitive.Portal
+const SheetPortal = React.forwardRef<
+  React.ElementRef<typeof SheetPrimitive.Portal>,
+  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Portal>
+>(({ className, ...props }, ref) => (
+  <SheetPrimitive.Portal
+    ref={ref}
+    className={cn(className)}
+    {...props}
+  />
+));
+SheetPortal.displayName = SheetPrimitive.Portal.displayName;
+
 
 const SheetOverlay = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Overlay>,
@@ -51,14 +62,16 @@ const sheetVariants = cva(
 
 interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
-    VariantProps<typeof sheetVariants> {}
+    VariantProps<typeof sheetVariants> {
+      showOverlay?: boolean;
+    }
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
->(({ side = "right", className, children, ...props }, ref) => (
+>(({ side = "right", showOverlay = true, className, children, ...props }, ref) => (
   <SheetPortal>
-    <SheetOverlay />
+    {showOverlay && <SheetOverlay />}
     <SheetPrimitive.Content
       ref={ref}
       className={cn(sheetVariants({ side }), className)}
