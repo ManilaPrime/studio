@@ -143,7 +143,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     <div className="bg-gray-50 h-screen max-w-sm mx-auto grid grid-rows-[auto_1fr_auto] overflow-hidden">
       <Header />
       <main
-        className={`relative overflow-y-auto ${
+        className={`relative ${
           isAnyDialogOpen ? 'overflow-hidden' : 'overflow-y-auto'
         }`}
       >
