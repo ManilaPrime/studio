@@ -65,7 +65,7 @@ export function QuickActions({ open, onOpenChange }: { open: boolean, onOpenChan
 
   return (
     <>
-      <div id="quickActionsModal" className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4" onClick={() => onOpenChange(false)}>
+      <div id="quickActionsModal" className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onClick={() => onOpenChange(false)}>
         <div className="bg-white rounded-xl p-6 w-full max-w-sm max-h-screen overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-gray-800">Quick Actions</h3>
@@ -81,7 +81,7 @@ export function QuickActions({ open, onOpenChange }: { open: boolean, onOpenChan
                     className={`flex flex-col items-center p-4 rounded-lg transition-colors ${colorClasses[item.label as keyof typeof colorClasses]}`}
                   >
                     <item.icon className="text-3xl mb-2" />
-                    <span className="font-semibold">{item.label}</span>
+                    <span className="font-semibold text-center">{item.label}</span>
                   </button>
               ))}
             </div>
