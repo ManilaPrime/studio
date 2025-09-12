@@ -6,6 +6,7 @@ import type { Unit, SyncedEvent } from '@/lib/types';
 import { syncCalendars } from '@/app/actions/sync-calendars';
 import { formatDate } from '@/lib/utils';
 import { Calendar, Link as LinkIcon, List, Copy, Check } from 'lucide-react';
+import { getConfigValue } from '@/services/config';
 
 interface UnitsListProps {
   units: Unit[];
@@ -33,9 +34,16 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
   const [events, setEvents] = useState<SyncedEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [masterUrlCopied, setMasterUrlCopied] = useState(false);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
+  const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
+    // Fetch base URL from config for iCal link
+    async function fetchBaseUrl() {
+        const url = await getConfigValue('NEXT_PUBLIC_BASE_URL');
+        // Fallback to local dev URL if not found in Firestore
+        setBaseUrl(url || 'http://localhost:9002');
+    }
+    fetchBaseUrl();
     handleSync(true); // Auto-sync on component mount silently
   }, []);
 
@@ -124,7 +132,7 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
                 <input 
                   type="text" 
                   readOnly 
-                  value={`${baseUrl}/api/ical/${unit.id}`}
+                  value={baseUrl ? `${baseUrl}/api/ical/${unit.id}`: 'Loading...'}
                   className="p-2 text-sm bg-transparent w-full outline-none"
                 />
                 <button 

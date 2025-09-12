@@ -1,12 +1,13 @@
 'use server';
 
 import type { Booking, Unit } from "@/lib/types";
+import { getConfigValue } from "./config";
 
 export async function sendDiscordNotification(booking: Booking, unit: Unit) {
-    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    const webhookUrl = await getConfigValue('DISCORD_WEBHOOK_URL');
 
     if (!webhookUrl) {
-        console.warn("Discord webhook URL not set. Skipping notification.");
+        console.warn("Discord webhook URL not set in Firestore 'config' collection. Skipping notification.");
         return;
     }
 
