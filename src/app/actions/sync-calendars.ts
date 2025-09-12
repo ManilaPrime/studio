@@ -3,64 +3,89 @@
 
 import { CalendarService } from '@/services/calendar';
 import type { Platform, SyncedEvent, Unit, Booking } from '@/lib/types';
-import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, documentId } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { getUnit } from '@/services/units';
+import { sendDiscordNotification } from '@/services/discord';
 
-async function getExistingBookingUIDs(unitId: string): Promise<string[]> {
+async function getExistingBookingUIDs(unitId: string, uidsToFetch: string[]): Promise<string[]> {
+    if (uidsToFetch.length === 0) {
+        return [];
+    }
+
     const bookingsCollection = collection(db, 'bookings');
-    // Note: We can't query for a specific UID format, so we fetch all and filter locally.
-    // This is not ideal for performance but necessary with iCal UIDs.
-    // A more robust system might store the original UID in a dedicated field.
-    const q = query(bookingsCollection, where('unitId', '==', unitId));
-    const querySnapshot = await getDocs(q);
+    // Firestore allows 'in' queries with up to 30 values.
+    // If we have more, we need to batch the requests.
+    const batches: string[][] = [];
+    for (let i = 0; i < uidsToFetch.length; i += 30) {
+        batches.push(uidsToFetch.slice(i, i + 30));
+    }
+
+    const existingUIDs = new Set<string>();
+
+    for (const batch of batches) {
+        const q = query(
+            bookingsCollection,
+            where('unitId', '==', unitId),
+            where('uid', 'in', batch)
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(doc => {
+            const booking = doc.data() as Booking;
+            if (booking.uid) {
+                existingUIDs.add(booking.uid);
+            }
+        });
+    }
     
-    // We are assuming the booking ID is the UID from the iCal event.
-    // This is a simplification. A real-world app would store the UID separately.
-    return querySnapshot.docs.map(doc => doc.id); 
+    return Array.from(existingUIDs);
 }
 
-async function createBookingFromEvent(event: SyncedEvent, unitId: string): Promise<void> {
+async function createBookingFromEvent(event: SyncedEvent, unit: Unit): Promise<void> {
     const bookingsCollection = collection(db, 'bookings');
     
-    const newBooking: Omit<Booking, 'id' | 'createdAt'> = {
+    const newBookingData: Omit<Booking, 'id' | 'createdAt'> = {
+        uid: event.uid,
         guestFirstName: "Synced",
-        guestLastName: "Booking",
+        guestLastName: event.platform,
         guestPhone: "N/A",
         guestEmail: "N/A",
-        unitId: unitId,
+        unitId: unit.id!,
         checkinDate: event.start,
         checkoutDate: event.end,
         adults: 0,
         children: 0,
-        nightlyRate: 0,
-        totalAmount: 0,
+        nightlyRate: unit.rate,
+        totalAmount: 0, // Total amount is unknown from iCal
         paymentStatus: 'paid', // Assume synced bookings are paid
         specialRequests: `Synced from ${event.platform}: ${event.summary}`,
     };
 
-    // We can't set the ID with addDoc, so Firestore will auto-generate one.
-    // This is a limitation of this approach. In a real app, you might use the UID
-    // as the document ID if it's guaranteed to be unique and a valid Firestore ID.
-    // For now, we'll let Firestore create the ID and we'll rely on other fields
-    // to check for existence, which is inefficient but works for this demo.
-    // A better approach would be to query for a booking with the same start/end/summary.
-    
-    // For simplicity, we are not creating new bookings automatically to avoid duplicates
-    // without a more robust UID/ID mapping strategy. This function serves as a placeholder
-    // for how one might implement it. The core logic below will still return all events.
-    console.log(`Placeholder: Would create booking for event UID ${event.uid}`);
+    const docRef = await addDoc(bookingsCollection, {
+        ...newBookingData,
+        createdAt: new Date().toISOString()
+    });
+
+    try {
+        await sendDiscordNotification({ ...newBookingData, id: docRef.id, createdAt: new Date().toISOString() }, unit);
+    } catch(error) {
+        console.error("Failed to send Discord notification for synced event:", error);
+    }
 }
 
 
-export async function syncCalendars(unitCalendars: Unit['calendars']): Promise<SyncedEvent[]> {
+export async function syncCalendars(unitCalendars: Unit['calendars'], unitId: string): Promise<SyncedEvent[]> {
   const platforms: Platform[] = ['Airbnb', 'Booking.com', 'Direct'];
   
-  const unitId = "some-unit-id"; // In a real app, you'd pass the unitId in.
+  const unit = await getUnit(unitId);
+  if (!unit) {
+    throw new Error(`Unit with ID ${unitId} not found.`);
+  }
 
   const calendarPromises = platforms.map(async (platform) => {
     const calendarKey = platform.toLowerCase().replace('.com', '') as keyof typeof unitCalendars;
     const url = unitCalendars[calendarKey];
-    if (url && !url.includes('example.com')) { // Do not fetch example URLs
+    if (url && !url.includes('example.com')) {
       try {
         const events = await CalendarService.fetchAndParseCalendar(url);
         return events.map((event) => ({ ...event, platform }));
@@ -75,18 +100,16 @@ export async function syncCalendars(unitCalendars: Unit['calendars']): Promise<S
   const allEventsNested = await Promise.all(calendarPromises);
   const allEvents = allEventsNested.flat();
 
-  // This is where the automatic booking creation would happen.
-  // We're disabling the actual creation to prevent duplicate entries,
-  // but this is where the logic would go.
-  // const existingUIDs = await getExistingBookingUIDs(unitId);
-  // for (const event of allEvents) {
-  //   if (!existingUIDs.includes(event.uid)) {
-  //     await createBookingFromEvent(event, unitId);
-  //   }
-  // }
+  // Logic to find and create new bookings
+  const allEventUIDs = allEvents.map(event => event.uid);
+  const existingUIDs = await getExistingBookingUIDs(unitId, allEventUIDs);
+  const newEvents = allEvents.filter(event => !existingUIDs.includes(event.uid));
 
+  for (const event of newEvents) {
+      await createBookingFromEvent(event, unit);
+  }
 
-  // Sort events by start date
+  // Sort events by start date for display
   allEvents.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
 
   return allEvents;

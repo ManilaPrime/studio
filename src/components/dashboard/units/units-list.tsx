@@ -54,13 +54,15 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
     maintenance: 'bg-yellow-100 text-yellow-800',
   };
   
-  const platformColors = {
+  const platformColors: Record<Platform, string> = {
     'Airbnb': 'bg-red-50 text-red-700 border-red-200',
     'Booking.com': 'bg-blue-50 text-blue-700 border-blue-200',
     'Direct': 'bg-green-50 text-green-700 border-green-200',
-  }
+  };
 
   const handleSync = async (isAutoSync = false) => {
+    if (!unit.id) return;
+
     if (!isAutoSync) {
         setLoading(true);
     }
@@ -76,7 +78,7 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
         setLoading(false);
         return;
       }
-      const result = await syncCalendars(unit.calendars);
+      const result = await syncCalendars(unit.calendars, unit.id);
       setEvents(result);
       if (result.length === 0 && !isAutoSync) {
         setError('No events found in the provided calendars. The URLs might be incorrect, empty, or placeholder examples.');

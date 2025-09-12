@@ -16,8 +16,9 @@ export type Unit = {
 
 export type Booking = {
   id?: string;
+  uid?: string; // Unique identifier from iCal source
   guestFirstName: string;
-  guestLastName: string;
+  guestLastName:string;
   guestPhone: string;
   guestEmail: string;
   unitId: string;

@@ -19,7 +19,7 @@ export async function GET(
     const q = query(bookingsCollection, where('unitId', '==', unitId));
     const querySnapshot = await getDocs(q);
     const bookings = querySnapshot.docs.map(
-      doc => doc.data() as Booking
+      doc => ({ id: doc.id, ...doc.data() } as Booking)
     );
 
     let icalContent = [
@@ -37,14 +37,16 @@ export async function GET(
         .toISOString()
         .replace(/[-:]/g, '')
         .split('.')[0];
-      const createdAt = new Date(booking.createdAt)
+      const createdAt = (booking.createdAt ? new Date(booking.createdAt) : new Date())
         .toISOString()
         .replace(/[-:]/g, '')
         .split('.')[0];
-      const bookingId = booking.id || new Date().getTime(); // Fallback UID
+        
+      // Use the original iCal UID if available, otherwise create one.
+      const bookingId = booking.uid || `${booking.id}@manilaprimestaycation.com`;
 
       icalContent.push('BEGIN:VEVENT');
-      icalContent.push(`UID:${bookingId}@manilaprimestaycation.com`);
+      icalContent.push(`UID:${bookingId}`);
       icalContent.push(`DTSTAMP:${createdAt}Z`);
       icalContent.push(`DTSTART;VALUE=DATE:${startDate.substring(0, 8)}`);
       icalContent.push(`DTEND;VALUE=DATE:${endDate.substring(0, 8)}`);
