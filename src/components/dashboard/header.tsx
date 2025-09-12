@@ -24,7 +24,6 @@ const Header = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLElement>(null);
   const { user } = useAuth();
 
@@ -50,10 +49,6 @@ const Header = () => {
         }
     }
     fetchData();
-
-    if (headerRef.current) {
-        setHeaderHeight(headerRef.current.offsetHeight);
-    }
 
   }, [user]);
 
@@ -130,12 +125,11 @@ const Header = () => {
                 <SheetContent 
                     side="top" 
                     className="w-full max-w-sm mx-auto rounded-b-lg"
-                    style={{ top: `${headerHeight}px` }}
                 >
                     <SheetTitle className="sr-only">Notifications</SheetTitle>
-                     <div className="py-4">
+                     <div>
                         <div>
-                            <h3 className="font-semibold mb-4 border-b pb-4">Recent Notifications</h3>
+                            <h3 className="font-semibold mb-4">Recent Notifications</h3>
                         </div>
                         <div className="space-y-4">
                             {recentActivities.length > 0 ? (
