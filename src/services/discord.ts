@@ -3,10 +3,12 @@
 import type { Booking, Unit } from "@/lib/types";
 
 export async function sendDiscordNotification(booking: Booking, unit: Unit) {
+    // This function will be executed on the Vercel backend.
+    // It reads the webhook URL from environment variables on the server.
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
     if (!webhookUrl) {
-        console.warn("DISCORD_WEBHOOK_URL environment variable not set. Skipping notification.");
+        console.warn("DISCORD_WEBHOOK_URL environment variable not set on the server. Skipping notification.");
         return;
     }
 

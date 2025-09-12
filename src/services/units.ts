@@ -3,6 +3,7 @@
 import { db } from '@/lib/firebase';
 import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
 import type { Unit } from '@/lib/types';
+import { callApi } from './utils';
 
 const unitsCollection = collection(db, 'units');
 

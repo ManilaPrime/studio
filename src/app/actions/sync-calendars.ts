@@ -1,12 +1,14 @@
 
 'use server';
 
-import { CalendarService } from '@/services/calendar';
 import type { Platform, SyncedEvent, Unit, Booking } from '@/lib/types';
 import { collection, query, where, getDocs, addDoc, documentId } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { getUnit } from '@/services/units';
 import { sendDiscordNotification } from '@/services/discord';
+import { callApi } from '@/services/utils';
+import { CalendarService } from '@/services/calendar';
+
 
 async function getExistingBookingUIDs(unitId: string, uidsToFetch: string[]): Promise<string[]> {
     if (uidsToFetch.length === 0) {
@@ -75,42 +77,16 @@ async function createBookingFromEvent(event: SyncedEvent, unit: Unit): Promise<v
 
 
 export async function syncCalendars(unitCalendars: Unit['calendars'], unitId: string): Promise<SyncedEvent[]> {
-  const platforms: Platform[] = ['Airbnb', 'Booking.com', 'Direct'];
+  const result = await callApi('sync-calendars', { unitCalendars, unitId });
   
-  const unit = await getUnit(unitId);
-  if (!unit) {
-    throw new Error(`Unit with ID ${unitId} not found.`);
-  }
-
-  const calendarPromises = platforms.map(async (platform) => {
-    const calendarKey = platform.toLowerCase().replace('.com', '') as keyof typeof unitCalendars;
-    const url = unitCalendars[calendarKey];
-    if (url && !url.includes('example.com')) {
-      try {
-        const events = await CalendarService.fetchAndParseCalendar(url);
-        return events.map((event) => ({ ...event, platform }));
-      } catch (error) {
-        console.error(`Failed to fetch or parse calendar for ${platform}:`, error);
-        return [];
+  if (result.newEvents) {
+      const unit = await getUnit(unitId);
+      if(unit) {
+          for (const event of result.newEvents) {
+              await createBookingFromEvent(event, unit);
+          }
       }
-    }
-    return [];
-  });
-
-  const allEventsNested = await Promise.all(calendarPromises);
-  const allEvents = allEventsNested.flat();
-
-  // Logic to find and create new bookings
-  const allEventUIDs = allEvents.map(event => event.uid);
-  const existingUIDs = await getExistingBookingUIDs(unitId, allEventUIDs);
-  const newEvents = allEvents.filter(event => !existingUIDs.includes(event.uid));
-
-  for (const event of newEvents) {
-      await createBookingFromEvent(event, unit);
   }
-
-  // Sort events by start date for display
-  allEvents.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
-
-  return allEvents;
+  
+  return result.allEvents;
 }

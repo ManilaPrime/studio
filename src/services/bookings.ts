@@ -6,32 +6,7 @@ import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase
 import type { Booking, Unit } from '@/lib/types';
 import { getUnit } from './units';
 import { sendDiscordNotification } from './discord';
-
-// This is the base URL for your Vercel deployment.
-// You will need to replace this with your actual Vercel URL.
-const PROD_URL = process.env.NEXT_PUBLIC_PROD_URL || 'https://your-project-name.vercel.app';
-
-
-async function callApi(endpoint: string, body: any) {
-    const isProd = process.env.NODE_ENV === 'production';
-    // In a native/production build, we call the Vercel backend.
-    // In local development, Next.js handles this automatically.
-    const baseUrl = isProd ? PROD_URL : '';
-
-    const response = await fetch(`${baseUrl}/api/${endpoint}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'API call failed');
-    }
-    return response.json();
-}
+import { callApi } from './utils';
 
 
 const bookingsCollection = collection(db, 'bookings');
@@ -48,7 +23,8 @@ export async function addBooking(bookingData: Omit<Booking, 'id'>): Promise<stri
     try {
         const unit = await getUnit(bookingData.unitId);
         if (unit) {
-            await sendDiscordNotification({ ...bookingData, id: docRef.id }, unit);
+            // This is a fire-and-forget call to the backend, which will be on Vercel in production.
+            callApi('discord-notification', { booking: { ...bookingData, id: docRef.id }, unit });
         }
     } catch (error) {
         console.error("Failed to send Discord notification:", error);

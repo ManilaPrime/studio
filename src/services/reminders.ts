@@ -3,6 +3,7 @@
 import { db } from '@/lib/firebase';
 import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import type { Reminder } from '@/lib/types';
+import { callApi } from './utils';
 
 const remindersCollection = collection(db, 'reminders');
 
