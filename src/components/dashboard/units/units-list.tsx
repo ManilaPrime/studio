@@ -2,11 +2,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import type { Unit, SyncedEvent } from '@/lib/types';
+import type { Unit, SyncedEvent, Platform } from '@/lib/types';
 import { syncCalendars } from '@/app/actions/sync-calendars';
 import { formatDate } from '@/lib/utils';
 import { Calendar, Link as LinkIcon, List, Copy, Check } from 'lucide-react';
-import { getConfigValue } from '@/services/config';
 
 interface UnitsListProps {
   units: Unit[];
@@ -37,13 +36,11 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
   const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
-    // Fetch base URL from config for iCal link
-    async function fetchBaseUrl() {
-        const url = await getConfigValue('NEXT_PUBLIC_BASE_URL');
-        // Fallback to local dev URL if not found in Firestore
-        setBaseUrl(url || 'http://localhost:9002');
-    }
-    fetchBaseUrl();
+    // This will be the Vercel URL when deployed, or localhost during development.
+    const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002';
+    setBaseUrl(vercelUrl ? `https://${vercelUrl}` : siteUrl);
+    
     handleSync(true); // Auto-sync on component mount silently
   }, []);
 
