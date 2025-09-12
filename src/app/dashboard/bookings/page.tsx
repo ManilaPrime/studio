@@ -47,7 +47,9 @@ export default function BookingsPage({
 
   const handleOpenEditDialog = (booking: Booking) => {
     setSelectedBooking(booking);
-    onEditBookingOpenChange(true);
+    if (typeof onEditBookingOpenChange === 'function') {
+      onEditBookingOpenChange(true);
+    }
   };
 
   const addBooking = async (newBookingData: Omit<Booking, 'id' | 'createdAt'>) => {
@@ -93,7 +95,7 @@ export default function BookingsPage({
           units={units}
         >
           <button
-            onClick={() => onAddBookingOpenChange(true)}
+            onClick={() => typeof onAddBookingOpenChange === 'function' && onAddBookingOpenChange(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add

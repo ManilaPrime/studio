@@ -27,19 +27,23 @@ export default function ExpensesPage({ open, onOpenChange }: { open: boolean, on
   }, []);
 
   useEffect(() => {
-    if (searchParams.get('action') === 'add') {
+    if (searchParams.get('action') === 'add' && typeof onOpenChange === 'function') {
       onOpenChange(true);
     }
   }, [searchParams, onOpenChange]);
 
   const handleOpenAddDialog = () => {
     setSelectedExpense(null);
-    onOpenChange(true);
+    if (typeof onOpenChange === 'function') {
+      onOpenChange(true);
+    }
   };
   
   const handleOpenEditDialog = (expense: Expense) => {
     setSelectedExpense(expense);
-    onOpenChange(true);
+    if (typeof onOpenChange === 'function') {
+      onOpenChange(true);
+    }
   };
 
   const addExpense = async (newExpenseData: Omit<Expense, 'id'>) => {

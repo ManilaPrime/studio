@@ -53,24 +53,30 @@ export default function InvestorsPage({
   }, []);
 
   useEffect(() => {
-    if (searchParams.get('action') === 'add') {
+    if (searchParams.get('action') === 'add' && typeof onAddInvestorOpenChange === 'function') {
       onAddInvestorOpenChange(true);
     }
   }, [searchParams, onAddInvestorOpenChange]);
 
   const handleOpenAddDialog = () => {
     setSelectedInvestor(null);
-    onAddInvestorOpenChange(true);
+    if (typeof onAddInvestorOpenChange === 'function') {
+      onAddInvestorOpenChange(true);
+    }
   };
   
   const handleOpenEditDialog = (investor: Investor) => {
     setSelectedInvestor(investor);
-    onAddInvestorOpenChange(true);
+    if (typeof onAddInvestorOpenChange === 'function') {
+      onAddInvestorOpenChange(true);
+    }
   };
   
   const handleOpenPayProfitDialog = (investor: Investor) => {
     setSelectedInvestor(investor);
-    onPayProfitOpenChange(true);
+    if (typeof onPayProfitOpenChange === 'function') {
+      onPayProfitOpenChange(true);
+    }
   };
 
   const addInvestor = async (newInvestorData: Omit<Investor, 'id' | 'status'>) => {

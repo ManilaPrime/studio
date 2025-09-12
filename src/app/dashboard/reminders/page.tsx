@@ -23,7 +23,7 @@ export default function RemindersPage({ open, onOpenChange }: { open: boolean, o
   }, []);
 
   useEffect(() => {
-    if (searchParams.get('action') === 'add') {
+    if (searchParams.get('action') === 'add' && typeof onOpenChange === 'function') {
       onOpenChange(true);
     }
   }, [searchParams, onOpenChange]);
@@ -73,7 +73,7 @@ export default function RemindersPage({ open, onOpenChange }: { open: boolean, o
           onAddReminder={addReminder}
         >
           <button
-            onClick={() => onOpenChange(true)}
+            onClick={() => typeof onOpenChange === 'function' && onOpenChange(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add

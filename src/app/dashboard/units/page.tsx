@@ -41,7 +41,9 @@ export default function UnitsPage({
 
   const handleOpenEditDialog = (unit: Unit) => {
     setSelectedUnit(unit);
-    onEditUnitOpenChange(true);
+    if (typeof onEditUnitOpenChange === 'function') {
+      onEditUnitOpenChange(true);
+    }
   };
 
 
@@ -91,7 +93,7 @@ export default function UnitsPage({
           onAddUnit={addUnit}
         >
           <button
-            onClick={() => onAddUnitOpenChange(true)}
+            onClick={() => typeof onAddUnitOpenChange === 'function' && onAddUnitOpenChange(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add

@@ -23,19 +23,23 @@ export default function AgentsPage({ open, onOpenChange }: { open: boolean, onOp
   }, []);
   
   useEffect(() => {
-    if (searchParams.get('action') === 'add') {
+    if (searchParams.get('action') === 'add' && typeof onOpenChange === 'function') {
       onOpenChange(true);
     }
   }, [searchParams, onOpenChange]);
 
   const handleOpenAddDialog = () => {
     setSelectedAgent(null);
-    onOpenChange(true);
+    if (typeof onOpenChange === 'function') {
+      onOpenChange(true);
+    }
   };
   
   const handleOpenEditDialog = (agent: Agent) => {
     setSelectedAgent(agent);
-    onOpenChange(true);
+    if (typeof onOpenChange === 'function') {
+      onOpenChange(true);
+    }
   };
 
   const addAgent = async (newAgentData: Omit<Agent, 'id' | 'totalBookings' | 'totalCommissions' | 'status'>) => {
