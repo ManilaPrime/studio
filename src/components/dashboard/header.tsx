@@ -9,13 +9,10 @@ import { getBookings } from '@/services/bookings';
 import { getExpenses } from '@/services/expenses';
 import type { Reminder, Booking, Expense } from '@/lib/types';
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-  SheetFooter
-} from "@/components/ui/sheet";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/utils';
 import { ActivityBookingIcon, ActivityPaymentIcon } from './icons';
@@ -26,7 +23,6 @@ const Header = () => {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { user } = useAuth();
 
 
@@ -114,21 +110,21 @@ const Header = () => {
           {/* Notification and Settings */}
           <div className="flex items-center space-x-2 flex-shrink-0">
             <div className="relative">
-                <Sheet open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
-                    <SheetTrigger asChild>
+                <Popover>
+                    <PopoverTrigger asChild>
                         <button className="w-9 h-9 bg-white rounded-full flex items-center justify-center relative border border-gray-300 hover:border-yellow-600 transition-colors">
-                        <span className="text-gray-600 text-lg">🔔</span>
-                        {notificationCount > 0 && (
-                            <span id="notificationBadge" className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
-                            {notificationCount > 9 ? '9+' : notificationCount}
-                            </span>
-                        )}
+                            <span className="text-gray-600 text-lg">🔔</span>
+                            {notificationCount > 0 && (
+                                <span id="notificationBadge" className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                                {notificationCount > 9 ? '9+' : notificationCount}
+                                </span>
+                            )}
                         </button>
-                    </SheetTrigger>
-                    <SheetContent side="top" variant="container" className="max-w-sm mx-auto left-0 right-0 absolute">
-                        <SheetHeader className="p-4 border-b">
-                            <SheetTitle>Recent Notifications</SheetTitle>
-                        </SheetHeader>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-screen max-w-sm p-0" align="end">
+                         <div className="p-4 border-b">
+                            <h3 className="font-semibold">Recent Notifications</h3>
+                        </div>
                         <div className="p-4 space-y-4">
                             {recentActivities.length > 0 ? (
                                 recentActivities.map((activity, index) => (
@@ -149,15 +145,15 @@ const Header = () => {
                                 </div>
                             )}
                         </div>
-                        <SheetFooter className="p-4 border-t">
+                        <div className="p-4 border-t">
                             <Button asChild variant="outline" className="w-full">
                                 <Link href="/dashboard/reminders">
                                     View All Reminders
                                 </Link>
                             </Button>
-                        </SheetFooter>
-                    </SheetContent>
-                </Sheet>
+                        </div>
+                    </PopoverContent>
+                </Popover>
             </div>
 
             <Link href="/dashboard/settings" className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-300 hover:border-yellow-600 transition-colors">
