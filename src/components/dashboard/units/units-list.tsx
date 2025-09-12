@@ -33,11 +33,9 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
   const [events, setEvents] = useState<SyncedEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [masterUrlCopied, setMasterUrlCopied] = useState(false);
-  const [baseUrl, setBaseUrl] = useState('');
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
 
   useEffect(() => {
-    // This ensures window is defined, so it runs only on the client
-    setBaseUrl(window.location.origin);
     handleSync(true); // Auto-sync on component mount silently
   }, []);
 
@@ -221,4 +219,3 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
     </div>
   );
 }
-
