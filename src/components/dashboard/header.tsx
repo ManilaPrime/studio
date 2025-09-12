@@ -129,12 +129,12 @@ const Header = () => {
                 </SheetTrigger>
                 <SheetContent 
                     side="top" 
-                    className="w-full max-w-sm mx-auto"
+                    className="w-full max-w-sm mx-auto p-6"
                     style={{ top: `${headerHeight}px` }}
                 >
                     <SheetTitle className="sr-only">Notifications</SheetTitle>
                      <div>
-                        <div className="border-b pb-4">
+                        <div>
                             <h3 className="font-semibold">Recent Notifications</h3>
                         </div>
                         <div className="py-4 space-y-4">
