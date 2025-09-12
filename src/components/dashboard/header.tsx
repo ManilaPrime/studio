@@ -128,6 +128,46 @@ const Header = () => {
                           )}
                       </button>
                   </SheetTrigger>
+                  <SheetContent 
+                      side="top" 
+                      className="w-full max-w-sm mx-auto rounded-b-lg p-6"
+                      style={{ top: `${headerHeight + 2}px`, zIndex: 40 }}
+                      showOverlay={false}
+                  >
+                      <SheetTitle className="sr-only">Notifications</SheetTitle>
+                        <div>
+                          <div>
+                              <h3 className="font-semibold mb-4">Recent Notifications</h3>
+                          </div>
+                          <div className="space-y-4">
+                              {recentActivities.length > 0 ? (
+                                  recentActivities.map((activity, index) => (
+                                      <div key={index} className="flex items-start space-x-3 p-2">
+                                          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${activity.color === 'blue' ? 'bg-blue-100' : 'bg-green-100'}`}>
+                                              <activity.icon className={`w-4 h-4 ${activity.color === 'blue' ? 'text-blue-600' : 'text-green-600'}`} />
+                                          </div>
+                                          <div className="flex-1">
+                                              <p className="text-sm font-medium text-gray-900">{activity.title}</p>
+                                              <p className="text-xs text-gray-500 truncate">{activity.description}</p>
+                                              <p className="text-xs text-gray-400 mt-1">{formatDate(activity.time)}</p>
+                                          </div>
+                                      </div>
+                                  ))
+                              ) : (
+                                  <div className="text-center py-8">
+                                      <p className="text-gray-500">No new notifications</p>
+                                  </div>
+                              )}
+                          </div>
+                          <div className="border-t pt-4 mt-4">
+                              <Button asChild variant="outline" className="w-full">
+                                  <Link href="/dashboard/reminders">
+                                      View All Reminders
+                                  </Link>
+                              </Button>
+                          </div>
+                        </div>
+                  </SheetContent>
               </Sheet>
 
               <Link href="/dashboard/settings" className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-gray-300 hover:border-yellow-600 transition-colors">
@@ -146,48 +186,6 @@ const Header = () => {
           </div>
         </div>
       </header>
-      <Sheet open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
-          <SheetContent 
-              side="top" 
-              className="w-full max-w-sm mx-auto rounded-b-lg p-6"
-              style={{ top: `${headerHeight}px`, zIndex: 100 }}
-              showOverlay={false}
-          >
-              <SheetTitle className="sr-only">Notifications</SheetTitle>
-                <div>
-                  <div>
-                      <h3 className="font-semibold mb-4">Recent Notifications</h3>
-                  </div>
-                  <div className="space-y-4">
-                      {recentActivities.length > 0 ? (
-                          recentActivities.map((activity, index) => (
-                              <div key={index} className="flex items-start space-x-3 p-2">
-                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${activity.color === 'blue' ? 'bg-blue-100' : 'bg-green-100'}`}>
-                                      <activity.icon className={`w-4 h-4 ${activity.color === 'blue' ? 'text-blue-600' : 'text-green-600'}`} />
-                                  </div>
-                                  <div className="flex-1">
-                                      <p className="text-sm font-medium text-gray-900">{activity.title}</p>
-                                      <p className="text-xs text-gray-500 truncate">{activity.description}</p>
-                                      <p className="text-xs text-gray-400 mt-1">{formatDate(activity.time)}</p>
-                                  </div>
-                              </div>
-                          ))
-                      ) : (
-                          <div className="text-center py-8">
-                              <p className="text-gray-500">No new notifications</p>
-                          </div>
-                      )}
-                  </div>
-                  <div className="border-t pt-4 mt-4">
-                      <Button asChild variant="outline" className="w-full">
-                          <Link href="/dashboard/reminders">
-                              View All Reminders
-                          </Link>
-                      </Button>
-                  </div>
-                </div>
-          </SheetContent>
-      </Sheet>
     </>
   );
 };
