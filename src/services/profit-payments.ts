@@ -3,7 +3,6 @@
 import { db } from '@/lib/firebase';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 import type { ProfitPayment } from '@/lib/types';
-import { callApi } from './utils';
 
 const paymentsCollection = collection(db, 'profitPayments');
 
