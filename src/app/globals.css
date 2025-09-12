@@ -295,4 +295,7 @@
         font-size: 10px;
         font-weight: 600;
     }
+    .contain-layout {
+      contain: layout;
+    }
 }

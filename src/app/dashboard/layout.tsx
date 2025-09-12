@@ -12,7 +12,7 @@ const HomeIcon = () => (
     xmlns="http://www.w3.org/2000/svg"
     width="24"
     height="24"
-    viewBox="0 0 24 24"
+    viewBox="0 0 24"
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
@@ -122,7 +122,7 @@ export default function DashboardLayout({
     <div className="bg-gray-50 min-h-screen">
       <div className="max-w-sm mx-auto grid grid-rows-[auto_1fr_auto] min-h-screen">
         <Header />
-        <main className="content-area overflow-y-auto">
+        <main className="content-area overflow-y-auto relative contain-layout">
             {children}
         </main>
         <BottomNav 
