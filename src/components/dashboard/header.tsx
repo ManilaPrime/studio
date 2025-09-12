@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth.tsx';
 import { getReminders } from '@/services/reminders';
@@ -131,11 +131,10 @@ const Header = () => {
                     side="top" 
                     className="w-full max-w-sm mx-auto"
                     style={{ top: `${headerHeight}px` }}
-                    showOverlay={false}
                 >
                     <SheetTitle className="sr-only">Notifications</SheetTitle>
                      <div>
-                        <div className="border-b">
+                        <div className="border-b pb-4">
                             <h3 className="font-semibold">Recent Notifications</h3>
                         </div>
                         <div className="py-4 space-y-4">
