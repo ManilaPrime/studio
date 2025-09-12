@@ -47,7 +47,7 @@ const BookingsIcon = () => (
 
 const TasksIcon = () => (
   <svg
-    xmlns="http://wwwhttp.w3.org/2000/svg"
+    xmlns="http://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -122,7 +122,11 @@ export default function DashboardLayout({
     <div className="bg-gray-50 min-h-screen">
       <div className="relative max-w-sm mx-auto grid grid-rows-[auto_1fr_auto] min-h-screen">
         <Header />
-        <main className="flex-grow content-area overflow-y-auto">{children}</main>
+        <main className="flex-grow content-area overflow-y-auto">
+          <div className="relative h-full">
+            {children}
+          </div>
+        </main>
         <BottomNav 
           navItems={navItems} 
           pathname={pathname}
