@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -25,7 +26,7 @@ const PlusIcon = () => (
 
 const BottomNav = ({ navItems, pathname, onQuickActionsOpen }: BottomNavProps) => {
   return (
-    <nav className="bottom-nav">
+    <nav className="bottom-nav relative z-10">
       <div className="flex items-center justify-around py-2">
         {navItems.slice(0, 2).map((item) => (
           <Link
