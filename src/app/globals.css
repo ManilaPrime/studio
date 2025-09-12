@@ -145,8 +145,7 @@
     }
     .mobile-header {
       background: #ffffff;
-      position: sticky;
-      top: 0;
+      position: relative;
       z-index: 100;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       border-bottom: 2px solid #FFD700;
@@ -155,16 +154,11 @@
 
     .content-area {
       background: #ffffff;
-      min-height: calc(100vh - 120px);
-      padding-bottom: 100px;
       margin-top: 0;
     }
     
     .bottom-nav {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      position: relative;
       width: 100%;
       background: #ffffff;
       border-top: 2px solid #FFD700;
