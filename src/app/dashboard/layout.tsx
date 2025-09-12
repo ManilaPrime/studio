@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import Header from '@/components/dashboard/header';
 import BottomNav from '@/components/dashboard/bottom-nav';
 import { useAuth } from '@/hooks/use-auth.tsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { QuickActions } from '@/components/dashboard/quick-actions';
 import { UIProvider, useUIContext } from '@/hooks/use-ui-context';
 
@@ -99,7 +99,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     isPayProfitOpen,
     isAddReminderOpen,
     isQuickActionsOpen,
-    setIsQuickActionsOpen
+    setIsQuickActionsOpen,
   } = useUIContext();
 
   const isAnyDialogOpen =
@@ -114,13 +114,11 @@ function Layout({ children }: { children: React.ReactNode }) {
     isAddReminderOpen ||
     isQuickActionsOpen;
 
-
   useEffect(() => {
     if (!loading && !user) {
       router.push('/');
     }
   }, [user, loading, router]);
-
 
   const navItems = [
     { href: '/dashboard', label: 'Home', icon: HomeIcon },
@@ -128,12 +126,12 @@ function Layout({ children }: { children: React.ReactNode }) {
     { href: '/dashboard/reminders', label: 'Tasks', icon: TasksIcon },
     { href: '/dashboard/more', label: 'More', icon: MoreIcon },
   ];
-  
+
   if (loading) {
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-50">
-            <p>Loading...</p>
-        </div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <p>Loading...</p>
+      </div>
     );
   }
 
@@ -143,14 +141,18 @@ function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-sm mx-auto grid grid-rows-[auto_1fr_auto] min-h-screen">
+      <div className="max-w-sm mx-auto flex flex-col min-h-screen">
         <Header />
-        <main className={`z-0 ${isAnyDialogOpen ? 'overflow-hidden' : 'overflow-y-auto'}`}>
+        <main
+          className={`flex-1 relative ${
+            isAnyDialogOpen ? 'overflow-hidden' : 'overflow-y-auto'
+          }`}
+        >
           {children}
         </main>
-        <div className="relative z-10">
-          <BottomNav 
-            navItems={navItems} 
+        <div className="relative">
+          <BottomNav
+            navItems={navItems}
             pathname={pathname}
             onQuickActionsOpen={() => setIsQuickActionsOpen(true)}
           />

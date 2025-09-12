@@ -99,7 +99,7 @@ export function EditBookingDialog({
 
   return (
       <div id="editBookingModal" className="absolute inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl p-6 w-full max-w-md max-h-full overflow-y-auto z-50" onClick={(e) => e.stopPropagation()}>
+        <div className="bg-white rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto z-50" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-800">Edit Booking</h3>
                 <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
