@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth.tsx';
 import { getReminders } from '@/services/reminders';
@@ -24,6 +25,8 @@ const Header = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const headerRef = useRef<HTMLElement>(null);
   const { user } = useAuth();
 
 
@@ -48,6 +51,10 @@ const Header = () => {
         }
     }
     fetchData();
+
+    if (headerRef.current) {
+        setHeaderHeight(headerRef.current.offsetHeight);
+    }
 
   }, [user]);
 
@@ -93,7 +100,7 @@ const Header = () => {
   
 
   return (
-    <header className="mobile-header">
+    <header className="mobile-header" ref={headerRef} id="app-header">
       {/* Main Header Section */}
       <div className="px-4 py-3 bg-yellow-400">
         <div className="flex items-center justify-between">
@@ -121,7 +128,12 @@ const Header = () => {
                         )}
                     </button>
                 </SheetTrigger>
-                <SheetContent side="top" className="w-full max-w-sm mx-auto top-full p-0">
+                <SheetContent 
+                    side="top" 
+                    className="w-full max-w-sm mx-auto p-0"
+                    style={{ top: `${headerHeight}px` }}
+                    showOverlay={false}
+                >
                     <SheetTitle className="sr-only">Notifications</SheetTitle>
                      <div className="p-4 border-b">
                         <h3 className="font-semibold">Recent Notifications</h3>
