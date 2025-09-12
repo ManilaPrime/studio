@@ -62,7 +62,7 @@ export function PayProfitDialog({
 
   return (
     <div id="payProfitModal" className="absolute inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4" onClick={() => onOpenChange(false)}>
-        <div className="bg-white rounded-xl p-6 w-full max-w-md overflow-y-auto z-50 max-h-[85vh]" onClick={(e) => e.stopPropagation()}>
+        <div className="bg-white rounded-xl p-6 w-full max-w-md overflow-y-auto z-50 max-h-full" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-800">Record Profit Payment for {investor?.name}</h3>
                 <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
