@@ -7,10 +7,9 @@ import { AddAgentDialog } from '@/components/dashboard/agents/add-agent-dialog';
 import type { Agent } from '@/lib/types';
 import { getAgents, addAgent as addAgentService, updateAgent as updateAgentService, deleteAgent as deleteAgentService } from '@/services/agents';
 
-export default function AgentsPage() {
+export default function AgentsPage({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
   const [agents, setAgents] = React.useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAddAgentOpen, setIsAddAgentOpen] = React.useState(false);
   const [selectedAgent, setSelectedAgent] = React.useState<Agent | null>(null);
   const searchParams = useSearchParams();
 
@@ -25,18 +24,18 @@ export default function AgentsPage() {
   
   useEffect(() => {
     if (searchParams.get('action') === 'add') {
-      setIsAddAgentOpen(true);
+      onOpenChange(true);
     }
-  }, [searchParams]);
+  }, [searchParams, onOpenChange]);
 
   const handleOpenAddDialog = () => {
     setSelectedAgent(null);
-    setIsAddAgentOpen(true);
+    onOpenChange(true);
   };
   
   const handleOpenEditDialog = (agent: Agent) => {
     setSelectedAgent(agent);
-    setIsAddAgentOpen(true);
+    onOpenChange(true);
   };
 
   const addAgent = async (newAgentData: Omit<Agent, 'id' | 'totalBookings' | 'totalCommissions' | 'status'>) => {
@@ -77,8 +76,8 @@ export default function AgentsPage() {
           <p className="text-sm text-gray-500">Partner agents & commissions</p>
         </div>
         <AddAgentDialog
-          open={isAddAgentOpen}
-          onOpenChange={setIsAddAgentOpen}
+          open={open}
+          onOpenChange={onOpenChange}
           onAddAgent={addAgent}
           onUpdateAgent={updateAgent}
           agent={selectedAgent}

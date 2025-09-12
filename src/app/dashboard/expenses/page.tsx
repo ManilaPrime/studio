@@ -8,11 +8,10 @@ import type { Expense, Unit } from '@/lib/types';
 import { getExpenses, addExpense as addExpenseService, updateExpense as updateExpenseService, deleteExpense as deleteExpenseService } from '@/services/expenses';
 import { getUnits } from '@/services/units';
 
-export default function ExpensesPage() {
+export default function ExpensesPage({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
   const [expenses, setExpenses] = React.useState<Expense[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAddExpenseOpen, setIsAddExpenseOpen] = React.useState(false);
   const [selectedExpense, setSelectedExpense] = React.useState<Expense | null>(null);
   const searchParams = useSearchParams();
 
@@ -29,18 +28,18 @@ export default function ExpensesPage() {
 
   useEffect(() => {
     if (searchParams.get('action') === 'add') {
-      setIsAddExpenseOpen(true);
+      onOpenChange(true);
     }
-  }, [searchParams]);
+  }, [searchParams, onOpenChange]);
 
   const handleOpenAddDialog = () => {
     setSelectedExpense(null);
-    setIsAddExpenseOpen(true);
+    onOpenChange(true);
   };
   
   const handleOpenEditDialog = (expense: Expense) => {
     setSelectedExpense(expense);
-    setIsAddExpenseOpen(true);
+    onOpenChange(true);
   };
 
   const addExpense = async (newExpenseData: Omit<Expense, 'id'>) => {
@@ -75,8 +74,8 @@ export default function ExpensesPage() {
           <p className="text-sm text-gray-500">Track all property expenses</p>
         </div>
         <AddExpenseDialog
-          open={isAddExpenseOpen}
-          onOpenChange={setIsAddExpenseOpen}
+          open={open}
+          onOpenChange={onOpenChange}
           onAddExpense={addExpense}
           onUpdateExpense={updateExpense}
           expense={selectedExpense}

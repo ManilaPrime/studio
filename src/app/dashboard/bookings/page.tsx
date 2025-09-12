@@ -11,12 +11,20 @@ import { getBookings, addBooking as addBookingService, updateBooking as updateBo
 import { getUnits } from '@/services/units';
 
 
-export default function BookingsPage() {
+export default function BookingsPage({
+  isAddBookingOpen,
+  onAddBookingOpenChange,
+  isEditBookingOpen,
+  onEditBookingOpenChange,
+}: {
+  isAddBookingOpen: boolean;
+  onAddBookingOpenChange: (open: boolean) => void;
+  isEditBookingOpen: boolean;
+  onEditBookingOpenChange: (open: boolean) => void;
+}) {
   const [bookings, setBookings] = React.useState<Booking[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAddBookingOpen, setIsAddBookingOpen] = React.useState(false);
-  const [isEditBookingOpen, setIsEditBookingOpen] = React.useState(false);
   const [selectedBooking, setSelectedBooking] = React.useState<Booking | null>(null);
   const searchParams = useSearchParams();
 
@@ -33,13 +41,13 @@ export default function BookingsPage() {
   
   useEffect(() => {
     if (searchParams.get('action') === 'add') {
-      setIsAddBookingOpen(true);
+      onAddBookingOpenChange(true);
     }
-  }, [searchParams]);
+  }, [searchParams, onAddBookingOpenChange]);
 
   const handleOpenEditDialog = (booking: Booking) => {
     setSelectedBooking(booking);
-    setIsEditBookingOpen(true);
+    onEditBookingOpenChange(true);
   };
 
   const addBooking = async (newBookingData: Omit<Booking, 'id' | 'createdAt'>) => {
@@ -80,12 +88,12 @@ export default function BookingsPage() {
         </div>
         <AddBookingDialog
           open={isAddBookingOpen}
-          onOpenChange={setIsAddBookingOpen}
+          onOpenChange={onAddBookingOpenChange}
           onAddBooking={addBooking}
           units={units}
         >
           <button
-            onClick={() => setIsAddBookingOpen(true)}
+            onClick={() => onAddBookingOpenChange(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add
@@ -102,7 +110,7 @@ export default function BookingsPage() {
         <EditBookingDialog
           key={selectedBooking.id}
           open={isEditBookingOpen}
-          onOpenChange={setIsEditBookingOpen}
+          onOpenChange={onEditBookingOpenChange}
           booking={selectedBooking}
           onUpdateBooking={updateBooking}
           units={units}

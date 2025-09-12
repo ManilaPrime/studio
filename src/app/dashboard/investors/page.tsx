@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -14,15 +13,23 @@ import { getBookings } from '@/services/bookings';
 import { getExpenses } from '@/services/expenses';
 
 
-export default function InvestorsPage() {
+export default function InvestorsPage({
+  isAddInvestorOpen,
+  onAddInvestorOpenChange,
+  isPayProfitOpen,
+  onPayProfitOpenChange,
+}: {
+  isAddInvestorOpen: boolean;
+  onAddInvestorOpenChange: (open: boolean) => void;
+  isPayProfitOpen: boolean;
+  onPayProfitOpenChange: (open: boolean) => void;
+}) {
   const [investors, setInvestors] = React.useState<Investor[]>([]);
   const [profitPayments, setProfitPayments] = React.useState<ProfitPayment[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAddInvestorOpen, setIsAddInvestorOpen] = React.useState(false);
-  const [isPayProfitOpen, setIsPayProfitOpen] = React.useState(false);
   const [selectedInvestor, setSelectedInvestor] = React.useState<Investor | null>(null);
   const searchParams = useSearchParams();
 
@@ -47,23 +54,23 @@ export default function InvestorsPage() {
 
   useEffect(() => {
     if (searchParams.get('action') === 'add') {
-      setIsAddInvestorOpen(true);
+      onAddInvestorOpenChange(true);
     }
-  }, [searchParams]);
+  }, [searchParams, onAddInvestorOpenChange]);
 
   const handleOpenAddDialog = () => {
     setSelectedInvestor(null);
-    setIsAddInvestorOpen(true);
+    onAddInvestorOpenChange(true);
   };
   
   const handleOpenEditDialog = (investor: Investor) => {
     setSelectedInvestor(investor);
-    setIsAddInvestorOpen(true);
+    onAddInvestorOpenChange(true);
   };
   
   const handleOpenPayProfitDialog = (investor: Investor) => {
     setSelectedInvestor(investor);
-    setIsPayProfitOpen(true);
+    onPayProfitOpenChange(true);
   };
 
   const addInvestor = async (newInvestorData: Omit<Investor, 'id' | 'status'>) => {
@@ -112,7 +119,7 @@ export default function InvestorsPage() {
         </div>
         <AddInvestorDialog
           open={isAddInvestorOpen}
-          onOpenChange={setIsAddInvestorOpen}
+          onOpenChange={onAddInvestorOpenChange}
           onAddInvestor={addInvestor}
           onUpdateInvestor={updateInvestor}
           investor={selectedInvestor}
@@ -138,7 +145,7 @@ export default function InvestorsPage() {
       />
       <PayProfitDialog
         open={isPayProfitOpen}
-        onOpenChange={setIsPayProfitOpen}
+        onOpenChange={onPayProfitOpenChange}
         investor={selectedInvestor}
         onRecordPayment={recordProfitPayment}
       />

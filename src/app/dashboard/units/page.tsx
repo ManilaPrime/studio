@@ -8,11 +8,19 @@ import { UnitsList } from '@/components/dashboard/units/units-list';
 import type { Unit } from '@/lib/types';
 import { getUnits, addUnit as addUnitService, updateUnit as updateUnitService, deleteUnit as deleteUnitService } from '@/services/units';
 
-export default function UnitsPage() {
+export default function UnitsPage({
+  isAddUnitOpen,
+  onAddUnitOpenChange,
+  isEditUnitOpen,
+  onEditUnitOpenChange,
+}: {
+  isAddUnitOpen: boolean;
+  onAddUnitOpenChange: (open: boolean) => void;
+  isEditUnitOpen: boolean;
+  onEditUnitOpenChange: (open: boolean) => void;
+}) {
   const [units, setUnits] = React.useState<Unit[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAddUnitOpen, setIsAddUnitOpen] = React.useState(false);
-  const [isEditUnitOpen, setIsEditUnitOpen] = React.useState(false);
   const [selectedUnit, setSelectedUnit] = React.useState<Unit | null>(null);
   const searchParams = useSearchParams();
 
@@ -27,13 +35,13 @@ export default function UnitsPage() {
 
   useEffect(() => {
     if (searchParams.get('action') === 'add') {
-      setIsAddUnitOpen(true);
+      onAddUnitOpenChange(true);
     }
-  }, [searchParams]);
+  }, [searchParams, onAddUnitOpenChange]);
 
   const handleOpenEditDialog = (unit: Unit) => {
     setSelectedUnit(unit);
-    setIsEditUnitOpen(true);
+    onEditUnitOpenChange(true);
   };
 
 
@@ -79,11 +87,11 @@ export default function UnitsPage() {
         </div>
         <AddUnitDialog 
           open={isAddUnitOpen} 
-          onOpenChange={setIsAddUnitOpen}
+          onOpenChange={onAddUnitOpenChange}
           onAddUnit={addUnit}
         >
           <button
-            onClick={() => setIsAddUnitOpen(true)}
+            onClick={() => onAddUnitOpenChange(true)}
             className="prime-button px-4 py-2 text-sm"
           >
             + Add
@@ -95,7 +103,7 @@ export default function UnitsPage() {
         <EditUnitDialog
           key={selectedUnit.id}
           open={isEditUnitOpen}
-          onOpenChange={setIsEditUnitOpen}
+          onOpenChange={onEditUnitOpenChange}
           unit={selectedUnit}
           onUpdateUnit={updateUnit}
         />
