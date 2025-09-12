@@ -11,7 +11,8 @@ export function ReportView({ report }: { report: any }) {
     const printContent = document.getElementById('report-content')?.innerHTML;
     const printWindow = window.open('', '_blank', 'height=800,width=800');
     if (printWindow) {
-        printWindow.document.write('<html><head><title>Monthly Report</title>');
+        const fileName = `${report.unit.name.replace(/ /g, '_')}_${report.month}_${report.year}`;
+        printWindow.document.write(`<html><head><title>${fileName}</title>`);
         printWindow.document.write('<script src="https://cdn.tailwindcss.com"></script>');
         printWindow.document.write('<style>body { -webkit-print-color-adjust: exact; font-family: sans-serif; }</style>');
         printWindow.document.write('</head><body class="p-8">');
