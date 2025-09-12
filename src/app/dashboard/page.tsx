@@ -39,7 +39,7 @@ export default function DashboardPage() {
 
   return (
     <div id="dashboardSection" className="section p-4">
-      <Calendar bookings={bookings} />
+      <Calendar bookings={bookings} units={units} />
       <StatsCards bookings={bookings} expenses={expenses} units={units} />
       <RecentActivity bookings={bookings} expenses={expenses} />
     </div>
