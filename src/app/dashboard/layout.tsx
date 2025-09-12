@@ -122,7 +122,7 @@ export default function DashboardLayout({
     <div className="bg-gray-50 min-h-screen">
       <div className="relative max-w-sm mx-auto grid grid-rows-[auto_1fr_auto] min-h-screen">
         <Header />
-        <main className="relative flex-grow content-area overflow-y-auto">
+        <main className="content-area overflow-y-auto">
             {children}
         </main>
         <BottomNav 
