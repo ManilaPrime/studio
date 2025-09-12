@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
@@ -21,6 +22,8 @@ interface UIContextType {
   setIsPayProfitOpen: (open: boolean) => void;
   isAddReminderOpen: boolean;
   setIsAddReminderOpen: (open: boolean) => void;
+  isQuickActionsOpen: boolean;
+  setIsQuickActionsOpen: (open: boolean) => void;
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined);
@@ -35,8 +38,9 @@ export function UIProvider({ children }: { children: ReactNode }) {
   const [isAddInvestorOpen, setIsAddInvestorOpen] = useState(false);
   const [isPayProfitOpen, setIsPayProfitOpen] = useState(false);
   const [isAddReminderOpen, setIsAddReminderOpen] = useState(false);
+  const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
 
-  // Hide all other dialogs when one opens
+
   const createSetter = (setter: (open: boolean) => void) => (open: boolean) => {
     if (open) {
       setIsAddUnitOpen(false);
@@ -48,6 +52,7 @@ export function UIProvider({ children }: { children: ReactNode }) {
       setIsAddInvestorOpen(false);
       setIsPayProfitOpen(false);
       setIsAddReminderOpen(false);
+      setIsQuickActionsOpen(false);
     }
     setter(open);
   };
@@ -71,6 +76,8 @@ export function UIProvider({ children }: { children: ReactNode }) {
     setIsPayProfitOpen: createSetter(setIsPayProfitOpen),
     isAddReminderOpen,
     setIsAddReminderOpen: createSetter(setIsAddReminderOpen),
+    isQuickActionsOpen,
+    setIsQuickActionsOpen: createSetter(setIsQuickActionsOpen),
   };
 
   return <UIContext.Provider value={value}>{children}</UIContext.Provider>;

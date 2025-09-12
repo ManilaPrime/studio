@@ -98,6 +98,8 @@ function Layout({ children }: { children: React.ReactNode }) {
     isAddInvestorOpen,
     isPayProfitOpen,
     isAddReminderOpen,
+    isQuickActionsOpen,
+    setIsQuickActionsOpen
   } = useUIContext();
 
   const isAnyDialogOpen =
@@ -109,9 +111,9 @@ function Layout({ children }: { children: React.ReactNode }) {
     isAddExpenseOpen ||
     isAddInvestorOpen ||
     isPayProfitOpen ||
-    isAddReminderOpen;
+    isAddReminderOpen ||
+    isQuickActionsOpen;
 
-  const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -143,7 +145,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     <div className="bg-gray-50 min-h-screen">
       <div className="max-w-sm mx-auto grid grid-rows-[auto_1fr_auto] min-h-screen">
         <Header />
-        <main className="relative overflow-y-auto">
+        <main className={`relative ${isAnyDialogOpen ? 'overflow-hidden' : 'overflow-y-auto'}`}>
           {children}
         </main>
         <BottomNav 
