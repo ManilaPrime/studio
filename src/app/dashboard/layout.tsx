@@ -140,28 +140,26 @@ function Layout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-sm mx-auto flex flex-col min-h-screen">
-        <Header />
-        <main
-          className={`flex-1 relative ${
-            isAnyDialogOpen ? 'overflow-hidden' : 'overflow-y-auto'
-          }`}
-        >
-          {children}
-        </main>
-        <div className="relative">
-          <BottomNav
-            navItems={navItems}
-            pathname={pathname}
-            onQuickActionsOpen={() => setIsQuickActionsOpen(true)}
-          />
-        </div>
-        <QuickActions
-          open={isQuickActionsOpen}
-          onOpenChange={setIsQuickActionsOpen}
+    <div className="bg-gray-50 h-screen max-w-sm mx-auto grid grid-rows-[auto_1fr_auto]">
+      <Header />
+      <main
+        className={`relative ${
+          isAnyDialogOpen ? 'overflow-hidden' : 'overflow-y-auto'
+        }`}
+      >
+        {children}
+      </main>
+      <div className="relative z-10">
+        <BottomNav
+          navItems={navItems}
+          pathname={pathname}
+          onQuickActionsOpen={() => setIsQuickActionsOpen(true)}
         />
       </div>
+      <QuickActions
+        open={isQuickActionsOpen}
+        onOpenChange={setIsQuickActionsOpen}
+      />
     </div>
   );
 }
