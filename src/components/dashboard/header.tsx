@@ -135,7 +135,7 @@ const Header = () => {
                     showOverlay={false}
                 >
                     <SheetTitle className="sr-only">Notifications</SheetTitle>
-                     <div className="p-4 border-b">
+                     <div className="p-6 border-b">
                         <h3 className="font-semibold">Recent Notifications</h3>
                     </div>
                     <div className="p-4 space-y-4">
