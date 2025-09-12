@@ -40,7 +40,7 @@ export default function BookingsPage({
   }, []);
   
   useEffect(() => {
-    if (searchParams.get('action') === 'add') {
+    if (searchParams.get('action') === 'add' && typeof onAddBookingOpenChange === 'function') {
       onAddBookingOpenChange(true);
     }
   }, [searchParams, onAddBookingOpenChange]);

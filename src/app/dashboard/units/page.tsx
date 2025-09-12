@@ -34,7 +34,7 @@ export default function UnitsPage({
   }, []);
 
   useEffect(() => {
-    if (searchParams.get('action') === 'add') {
+    if (searchParams.get('action') === 'add' && typeof onAddUnitOpenChange === 'function') {
       onAddUnitOpenChange(true);
     }
   }, [searchParams, onAddUnitOpenChange]);
