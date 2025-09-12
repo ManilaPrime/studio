@@ -11,6 +11,7 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
+  SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/utils';
@@ -121,6 +122,7 @@ const Header = () => {
                     </button>
                 </SheetTrigger>
                 <SheetContent side="top" className="w-full max-w-sm mx-auto top-full p-0">
+                    <SheetTitle className="sr-only">Notifications</SheetTitle>
                      <div className="p-4 border-b">
                         <h3 className="font-semibold">Recent Notifications</h3>
                     </div>
