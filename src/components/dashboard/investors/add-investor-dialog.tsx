@@ -1,6 +1,7 @@
+
 'use client';
 
-import type { Investor } from '@/lib/types';
+import type { Investor, Unit } from '@/lib/types';
 import { useEffect, useState } from 'react';
 
 export function AddInvestorDialog({
@@ -10,6 +11,7 @@ export function AddInvestorDialog({
   investor,
   onAddInvestor,
   onUpdateInvestor,
+  units,
 }: {
   children?: React.ReactNode;
   open: boolean;
@@ -17,6 +19,7 @@ export function AddInvestorDialog({
   investor?: Investor | null;
   onAddInvestor: (data: Omit<Investor, 'id' | 'status'>) => void;
   onUpdateInvestor: (investor: Investor) => void;
+  units: Unit[];
 }) {
 
   const [name, setName] = useState('');
@@ -25,6 +28,7 @@ export function AddInvestorDialog({
   const [investmentAmount, setInvestmentAmount] = useState(0);
   const [sharePercentage, setSharePercentage] = useState(0);
   const [joinDate, setJoinDate] = useState('');
+  const [unitId, setUnitId] = useState<string | undefined>(undefined);
 
 
   useEffect(() => {
@@ -36,6 +40,7 @@ export function AddInvestorDialog({
         setInvestmentAmount(investor.investmentAmount);
         setSharePercentage(investor.sharePercentage);
         setJoinDate(investor.joinDate);
+        setUnitId(investor.unitId);
       } else {
         // Reset form for new investor
         setName('');
@@ -44,6 +49,7 @@ export function AddInvestorDialog({
         setInvestmentAmount(0);
         setSharePercentage(0);
         setJoinDate(new Date().toISOString().split('T')[0]);
+        setUnitId(undefined);
       }
     }
   }, [open, investor]);
@@ -58,6 +64,7 @@ export function AddInvestorDialog({
         investmentAmount,
         sharePercentage,
         joinDate,
+        unitId,
     };
 
     if (investor) {
@@ -77,7 +84,7 @@ export function AddInvestorDialog({
     <>
       {children}
       <div id="addInvestorModal" className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl p-6 w-full max-w-md">
+        <div className="bg-white rounded-xl p-6 w-full max-w-md max-h-screen overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-800">{investor ? 'Edit' : 'Add New'} Investor</h3>
                 <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
@@ -99,6 +106,16 @@ export function AddInvestorDialog({
                 <div>
                     <label htmlFor='investorPhone' className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
                     <input type="tel" id="investorPhone" className="prime-input" value={phone} onChange={e=>setPhone(e.target.value)} required />
+                </div>
+
+                <div>
+                    <label htmlFor="investorUnit" className="block text-sm font-medium text-gray-700 mb-1">Associated Unit</label>
+                    <select id="investorUnit" className="prime-input" value={unitId} onChange={e=>setUnitId(e.target.value)}>
+                        <option value="">Select Unit</option>
+                        {units.map(unit => (
+                            <option key={unit.id} value={unit.id}>{unit.name}</option>
+                        ))}
+                    </select>
                 </div>
                 
                 <div>

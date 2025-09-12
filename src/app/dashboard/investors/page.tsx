@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -5,14 +6,20 @@ import { useSearchParams } from 'next/navigation';
 import { InvestorsList } from '@/components/dashboard/investors/investors-list';
 import { AddInvestorDialog } from '@/components/dashboard/investors/add-investor-dialog';
 import { PayProfitDialog } from '@/components/dashboard/investors/pay-profit-dialog';
-import type { Investor, ProfitPayment } from '@/lib/types';
+import type { Investor, ProfitPayment, Unit, Booking, Expense } from '@/lib/types';
 import { getInvestors, addInvestor as addInvestorService, updateInvestor as updateInvestorService, deleteInvestor as deleteInvestorService } from '@/services/investors';
 import { getProfitPayments, addProfitPayment as addProfitPaymentService } from '@/services/profit-payments';
+import { getUnits } from '@/services/units';
+import { getBookings } from '@/services/bookings';
+import { getExpenses } from '@/services/expenses';
 
 
 export default function InvestorsPage() {
   const [investors, setInvestors] = React.useState<Investor[]>([]);
   const [profitPayments, setProfitPayments] = React.useState<ProfitPayment[]>([]);
+  const [units, setUnits] = useState<Unit[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddInvestorOpen, setIsAddInvestorOpen] = React.useState(false);
   const [isPayProfitOpen, setIsPayProfitOpen] = React.useState(false);
@@ -21,10 +28,18 @@ export default function InvestorsPage() {
 
   useEffect(() => {
     async function fetchData() {
-        const investorsData = await getInvestors();
-        const paymentsData = await getProfitPayments();
+        const [investorsData, paymentsData, unitsData, bookingsData, expensesData] = await Promise.all([
+          getInvestors(),
+          getProfitPayments(),
+          getUnits(),
+          getBookings(),
+          getExpenses()
+        ]);
         setInvestors(investorsData);
         setProfitPayments(paymentsData);
+        setUnits(unitsData);
+        setBookings(bookingsData);
+        setExpenses(expensesData);
         setLoading(false);
     }
     fetchData();
@@ -101,6 +116,7 @@ export default function InvestorsPage() {
           onAddInvestor={addInvestor}
           onUpdateInvestor={updateInvestor}
           investor={selectedInvestor}
+          units={units}
         >
           <button
             onClick={handleOpenAddDialog}
@@ -113,6 +129,9 @@ export default function InvestorsPage() {
       <InvestorsList 
         investors={investors} 
         profitPayments={profitPayments}
+        units={units}
+        bookings={bookings}
+        expenses={expenses}
         onEdit={handleOpenEditDialog} 
         onDelete={deleteInvestor}
         onPayProfit={handleOpenPayProfitDialog}

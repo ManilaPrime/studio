@@ -1,11 +1,16 @@
+
 'use client';
 
-import type { Investor, ProfitPayment } from '@/lib/types';
+import type { Investor, ProfitPayment, Unit, Booking, Expense } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
+import { useMemo } from 'react';
 
 interface InvestorsListProps {
   investors: Investor[];
   profitPayments: ProfitPayment[];
+  units: Unit[];
+  bookings: Booking[];
+  expenses: Expense[];
   onEdit: (investor: Investor) => void;
   onDelete: (investorId: string) => void;
   onPayProfit: (investor: Investor) => void;
@@ -14,6 +19,9 @@ interface InvestorsListProps {
 export function InvestorsList({ 
     investors, 
     profitPayments, 
+    units,
+    bookings,
+    expenses,
     onEdit, 
     onDelete, 
     onPayProfit 
@@ -25,12 +33,49 @@ export function InvestorsList({
     );
   }
 
+  const getUnitPerformance = useMemo(() => {
+    const performance: { [unitId: string]: { revenue: number, expenses: number, net: number } } = {};
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    units.forEach(unit => {
+      const unitBookings = bookings.filter(b => b.unitId === unit.id);
+      const unitExpenses = expenses.filter(e => e.unitId === unit.id);
+
+      const revenue = unitBookings
+        .filter(b => {
+          const bookingDate = new Date(b.checkinDate);
+          return bookingDate.getMonth() === currentMonth && bookingDate.getFullYear() === currentYear;
+        })
+        .reduce((sum, b) => sum + b.totalAmount, 0);
+      
+      const expenseAmount = unitExpenses
+        .filter(e => {
+          const expenseDate = new Date(e.date);
+          return expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear;
+        })
+        .reduce((sum, e) => sum + e.amount, 0);
+      
+      performance[unit.id!] = {
+        revenue,
+        expenses: expenseAmount,
+        net: revenue - expenseAmount
+      };
+    });
+    return performance;
+  }, [units, bookings, expenses]);
+
+
   return (
     <div className="space-y-4">
       {investors.map((investor) => {
+        const unit = investor.unitId ? units.find(u => u.id === investor.unitId) : null;
+        const unitPerformance = unit ? getUnitPerformance[unit.id!] : { net: 0 };
+        
         const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
-        const monthlyProfit = 32500; // This should be calculated from actual revenue and expenses
+        const monthlyProfit = unitPerformance?.net ?? 0;
         const investorShare = (monthlyProfit * investor.sharePercentage) / 100;
+        
         const currentPayment = profitPayments.find(
           (p) => p.investorId === investor.id && p.month === currentMonth
         );
@@ -72,6 +117,9 @@ export function InvestorsList({
                   </p>
                   <p>
                     <strong>Share:</strong> {investor.sharePercentage}%
+                  </p>
+                  <p>
+                    <strong>Unit:</strong> {unit?.name ?? 'N/A'}
                   </p>
                 </div>
                 <div>

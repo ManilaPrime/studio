@@ -1,3 +1,4 @@
+
 export type Unit = {
   id?: string;
   name: string;
@@ -52,6 +53,7 @@ export type Investor = {
     sharePercentage: number;
     joinDate: string;
     status: 'active' | 'inactive';
+    unitId?: string;
 };
 
 export type Agent = {
