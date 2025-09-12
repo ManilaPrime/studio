@@ -74,8 +74,8 @@ export function AddAgentDialog({
   return (
     <>
       {children}
-      <div id="addAgentModal" className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-xl p-6 w-full max-w-md max-h-screen overflow-y-auto">
+      <div id="addAgentModal" className="absolute inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
+        <div className="bg-white rounded-xl p-6 w-full max-w-md max-h-screen overflow-y-auto z-50">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-800">{agent ? 'Edit' : 'Add New'} Agent</h3>
                 <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
