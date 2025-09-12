@@ -113,10 +113,10 @@ const Header = () => {
           
           {/* Notification and Settings */}
           <div className="flex items-center space-x-2 flex-shrink-0">
-            <div className="pointer-events-none">
+            <div style={{ pointerEvents: 'none' }}>
               <Sheet open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
                 <SheetTrigger asChild>
-                    <button onClick={() => setIsNotificationsOpen(!isNotificationsOpen)} className="pointer-events-auto w-9 h-9 bg-white rounded-full flex items-center justify-center relative border border-gray-300 hover:border-yellow-600 transition-colors">
+                    <button onClick={() => setIsNotificationsOpen(!isNotificationsOpen)} style={{ pointerEvents: 'auto' }} className="w-9 h-9 bg-white rounded-full flex items-center justify-center relative border border-gray-300 hover:border-yellow-600 transition-colors">
                       <span className="text-gray-600 text-lg">🔔</span>
                       {notificationCount > 0 && (
                         <span id="notificationBadge" className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
@@ -125,7 +125,7 @@ const Header = () => {
                       )}
                     </button>
                 </SheetTrigger>
-                <SheetContent style={{pointerEvents: "auto"}} side="top" variant="container" className="p-0">
+                <SheetContent style={{ pointerEvents: 'auto' }} side="top" variant="container" className="max-w-sm mx-auto left-0 right-0">
                   <SheetHeader className="p-4 border-b">
                     <SheetTitle>Recent Notifications</SheetTitle>
                   </SheetHeader>
