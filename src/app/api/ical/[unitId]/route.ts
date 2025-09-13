@@ -4,6 +4,8 @@ import {collection, query, where, getDocs} from 'firebase/firestore';
 import {db} from '@/lib/firebase';
 import type {Booking} from '@/lib/types';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   request: Request,
   {params}: {params: {unitId: string}}
