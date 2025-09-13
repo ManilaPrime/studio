@@ -10,7 +10,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "ionic:build": "npm run build",
+    "ionic:build": "npm run build:mobile",
+    "build:mobile": "next build && next export",
     "cap:sync": "npx cap sync android",
     "cap:open": "npx cap open android"
   },
