@@ -6,6 +6,7 @@ import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { getUnit } from '@/services/units';
 import { CalendarService } from '@/services/calendar';
+import { callApi }from '@/services/utils';
 
 async function getExistingBookingUIDs(unitId: string, uidsToFetch: string[]): Promise<string[]> {
     if (uidsToFetch.length === 0) {
@@ -76,11 +77,10 @@ async function createBookingFromEvent(event: SyncedEvent, unit: Unit): Promise<v
 
 
 export async function syncCalendars(unitCalendars: Unit['calendars'], unitId: string): Promise<SyncedEvent[]> {
-    // When running in a static build (like for mobile), we can't execute server-side logic.
-    // This check prevents errors during the mobile build process by disabling sync.
+    // When running in a static build (like for mobile), we need to call the API on the Vercel server.
     if (process.env.BUILD_TARGET === 'mobile') {
-        console.log("Calendar sync is disabled in native mobile app builds.");
-        return [];
+        console.log("Running in mobile build, calling API endpoint for sync.");
+        return callApi('sync', { unitCalendars, unitId });
     }
 
     const unit = await getUnit(unitId);
@@ -122,3 +122,4 @@ export async function syncCalendars(unitCalendars: Unit['calendars'], unitId: st
     
     return allEvents;
 }
+

@@ -16,31 +16,36 @@ export async function callApi(endpoint: string, body: any) {
     // For local development, it will use the local Next.js server.
     const isNative = isNativePlatform();
     const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
 
-    // The backend URL is the Vercel URL if running native or if SITE_URL is not set.
-    // During local dev, siteUrl will be http://localhost:9002 and will be used.
-    // On Vercel, siteUrl is not set, so it correctly uses relative paths for API calls.
-    const baseUrl = isNative ? vercelUrl : siteUrl;
+    // The backend URL is the Vercel URL if running native.
+    // During local dev, it falls back to the relative path, assuming the same host.
+    const baseUrl = isNative ? vercelUrl : '';
 
     if (isNative && !baseUrl) {
-      throw new Error("NEXT_PUBLIC_VERCEL_URL is not set. The native app cannot connect to the backend.");
+      console.error("NEXT_PUBLIC_VERCEL_URL is not set. The native app cannot connect to the backend.");
+      // You might want to throw an error or show a message to the user.
+      throw new Error("Application is not configured to connect to the server. Please contact support.");
     }
     
     // Construct the full API URL. If baseUrl is empty (e.g. on Vercel server), it will make a relative request.
     const apiUrl = `${baseUrl}/api/${endpoint}`;
 
-    const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-    });
+    try {
+      const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+      });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || `API call to ${endpoint} failed`);
+      if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || `API call to ${endpoint} failed`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error(`API call to ${endpoint} failed:`, error);
+      throw error;
     }
-    return response.json();
 }
