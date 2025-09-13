@@ -12,8 +12,8 @@
     "typecheck": "tsc --noEmit",
     "ionic:build": "npm run build:mobile",
     "build:mobile": "next build && next export",
-    "cap:sync": "npx cap sync android",
-    "cap:open": "npx cap open android"
+    "cap:sync": "cap sync android",
+    "cap:open": "cap open android"
   },
   "dependencies": {
     "@capacitor/android": "^6.1.1",
