@@ -12,7 +12,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "ionic:build": "npm run build:mobile",
-    "build:mobile": "mv next.config.ts next.config.main.ts && mv next.config.mobile.ts next.config.ts && next build; mv next.config.ts next.config.mobile.ts && mv next.config.main.ts next.config.ts",
+    "build:mobile": "move next.config.ts next.config.main.ts && move next.config.mobile.ts next.config.ts && next build && move next.config.ts next.config.mobile.ts && move next.config.main.ts next.config.ts",
     "cap:sync": "npx cap sync android",
     "cap:open": "npx cap open android"
   },
