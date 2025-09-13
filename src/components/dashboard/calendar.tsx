@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import type { Booking, Unit } from '@/lib/types';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface CalendarProps {
   bookings: Booking[];
@@ -109,12 +110,12 @@ const Calendar = ({ bookings, units }: CalendarProps) => {
         <h4 id="currentMonth" className="text-base font-bold text-black professional-title">
             {monthNames[currentMonth]} {currentYear}
         </h4>
-        <div className="flex items-center">
-            <button onClick={previousMonth} className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 shadow-sm border">
-                <span className="text-base text-black font-bold">‹</span>
+        <div className="flex items-center space-x-1">
+            <button onClick={previousMonth} className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors">
+                <ChevronLeft className="w-5 h-5 text-gray-600" />
             </button>
-            <button onClick={nextMonth} className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 shadow-sm border ml-2">
-                <span className="text-base text-black font-bold">›</span>
+            <button onClick={nextMonth} className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100 transition-colors">
+                <ChevronRight className="w-5 h-5 text-gray-600" />
             </button>
         </div>
       </div>
