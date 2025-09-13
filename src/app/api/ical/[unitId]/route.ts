@@ -6,6 +6,12 @@ import type {Booking} from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
+// This function tells Next.js that this route has no static paths to generate,
+// effectively excluding it from static builds while keeping it for server-side rendering.
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function GET(
   request: Request,
   {params}: {params: {unitId: string}}

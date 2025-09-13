@@ -4,6 +4,12 @@ import { syncCalendars as syncCalendarsAction } from '@/app/actions/sync-calenda
 
 export const dynamic = 'force-dynamic';
 
+// This function tells Next.js that this route has no static paths to generate,
+// effectively excluding it from static builds while keeping it for server-side rendering.
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function POST(request: Request) {
   try {
     const { unitCalendars, unitId } = await request.json();
