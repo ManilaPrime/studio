@@ -2,7 +2,8 @@
 'use client';
 
 import { useAuth } from '@/hooks/use-auth.tsx';
-import { LogOut } from 'lucide-react';
+import { LogOut, Wifi, KeyRound } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
 export default function SettingsPage() {
@@ -53,11 +54,25 @@ export default function SettingsPage() {
         </div>
 
         <div className="prime-card p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Application Settings</h3>
+            <div className="space-y-3">
+              <Link href="/dashboard/settings/receipt" className="block no-underline">
+                <div className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                    <Wifi className="w-5 h-5 text-gray-600" />
+                    <span className="font-semibold text-gray-800">Receipt Settings</span>
+                </div>
+              </Link>
+            </div>
+        </div>
+
+
+        <div className="prime-card p-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Security Settings</h3>
             <div className="space-y-4">
                 <div>
-                    <button onClick={handlePasswordReset} className="prime-button w-full py-2">
-                        Change Password
+                    <button onClick={handlePasswordReset} className="w-full prime-button py-2 flex items-center justify-center space-x-2">
+                        <KeyRound className="w-4 h-4" />
+                        <span>Change Password</span>
                     </button>
                     {resetMessage && <p className="text-green-600 text-sm mt-2">{resetMessage}</p>}
                     {resetError && <p className="text-red-600 text-sm mt-2">{resetError}</p>}

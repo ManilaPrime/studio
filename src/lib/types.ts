@@ -5,6 +5,8 @@ export type Unit = {
   type: string;
   rate: number;
   maxOccupancy: number;
+  baseOccupancy: number; // New field for base occupancy
+  extraGuestFee: number; // New field for extra guest fee
   status: 'available' | 'occupied' | 'maintenance';
   description: string;
   calendars: {
@@ -112,4 +114,14 @@ export type SyncedEvent = {
   start: string;
   end: string;
   platform: Platform;
+};
+
+export type ReceiptSettings = {
+    id?: string;
+    wifiNetwork: string;
+    wifiPassword?: string;
+    contactEmail: string;
+    contactPhone?: string;
+    checkinTime: string;
+    checkoutTime: string;
 };

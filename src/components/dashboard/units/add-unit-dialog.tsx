@@ -44,7 +44,9 @@ export function AddUnitDialog({
       name: formData.get('unitName') as string,
       type: unitType,
       rate: parseInt(formData.get('unitRate') as string),
+      baseOccupancy: parseInt(formData.get('baseOccupancy') as string),
       maxOccupancy: parseInt(formData.get('maxOccupancy') as string),
+      extraGuestFee: parseInt(formData.get('extraGuestFee') as string),
       description: formData.get('unitDescription') as string,
       calendars: {
         airbnb: formData.get('airbnbUrl') as string,
@@ -86,27 +88,25 @@ export function AddUnitDialog({
               </SelectContent>
             </Select>
           </div>
-          <div>
-            <Label htmlFor="unitRate">Nightly Rate (₱)</Label>
-            <Input
-              id="unitRate"
-              name="unitRate"
-              type="number"
-              min="0"
-              step="100"
-              required
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="unitRate">Nightly Rate (₱)</Label>
+              <Input id="unitRate" name="unitRate" type="number" min="0" step="100" required />
+            </div>
+             <div>
+              <Label htmlFor="extraGuestFee">Extra Guest Fee (₱)</Label>
+              <Input id="extraGuestFee" name="extraGuestFee" type="number" min="0" step="50" defaultValue="500" required />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="maxOccupancy">Maximum Occupancy</Label>
-            <Input
-              id="maxOccupancy"
-              name="maxOccupancy"
-              type="number"
-              min="1"
-              defaultValue="4"
-              required
-            />
+           <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="baseOccupancy">Base Occupancy</Label>
+              <Input id="baseOccupancy" name="baseOccupancy" type="number" min="1" defaultValue="2" required />
+            </div>
+            <div>
+              <Label htmlFor="maxOccupancy">Max Occupancy</Label>
+              <Input id="maxOccupancy" name="maxOccupancy" type="number" min="1" defaultValue="4" required />
+            </div>
           </div>
           <div>
             <Label htmlFor="unitDescription">Description</Label>

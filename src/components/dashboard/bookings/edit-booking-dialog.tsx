@@ -62,8 +62,6 @@ export function EditBookingDialog({
       setCheckoutDate(booking.checkoutDate);
       setAdults(booking.adults);
       setChildren(booking.children);
-      setNightlyRate(booking.nightlyRate);
-      setTotalAmount(booking.totalAmount);
       setPaymentStatus(booking.paymentStatus);
       setSpecialRequests(booking.specialRequests);
     }
@@ -78,16 +76,22 @@ export function EditBookingDialog({
         const nights = Math.ceil(
           (checkout.getTime() - checkin.getTime()) / (1000 * 60 * 60 * 24)
         );
+        
+        const totalGuests = adults + children;
+        const extraGuests = Math.max(0, totalGuests - (unit.baseOccupancy || 2));
+        const extraGuestCharge = extraGuests * (unit.extraGuestFee || 0);
+
         if (nights > 0) {
-          setNightlyRate(unit.rate);
-          setTotalAmount(unit.rate * nights);
+          const totalNightlyRate = unit.rate + extraGuestCharge;
+          setNightlyRate(totalNightlyRate);
+          setTotalAmount(totalNightlyRate * nights);
         } else {
-          setNightlyRate(0);
-          setTotalAmount(0);
+          setNightlyRate(booking?.nightlyRate || 0);
+          setTotalAmount(booking?.totalAmount || 0);
         }
       }
     }
-  }, [unitId, checkinDate, checkoutDate, units]);
+  }, [unitId, checkinDate, checkoutDate, adults, children, units, booking]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -112,6 +116,8 @@ export function EditBookingDialog({
     onUpdateBooking(updatedBooking);
     onOpenChange(false);
   };
+  
+  const unit = units.find(u => u.id === unitId);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -127,41 +133,20 @@ export function EditBookingDialog({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="guestFirstName">First Name</Label>
-              <Input
-                id="guestFirstName"
-                value={guestFirstName}
-                onChange={(e) => setGuestFirstName(e.target.value)}
-                required
-              />
+              <Input id="guestFirstName" value={guestFirstName} onChange={(e) => setGuestFirstName(e.target.value)} required />
             </div>
             <div>
               <Label htmlFor="guestLastName">Last Name</Label>
-              <Input
-                id="guestLastName"
-                value={guestLastName}
-                onChange={(e) => setGuestLastName(e.target.value)}
-                required
-              />
+              <Input id="guestLastName" value={guestLastName} onChange={(e) => setGuestLastName(e.target.value)} required />
             </div>
           </div>
           <div>
             <Label htmlFor="guestPhone">Phone</Label>
-            <Input
-              id="guestPhone"
-              type="tel"
-              value={guestPhone}
-              onChange={(e) => setGuestPhone(e.target.value)}
-              required
-            />
+            <Input id="guestPhone" type="tel" value={guestPhone} onChange={(e) => setGuestPhone(e.target.value)} required />
           </div>
           <div>
             <Label htmlFor="guestEmail">Email</Label>
-            <Input
-              id="guestEmail"
-              type="email"
-              value={guestEmail}
-              onChange={(e) => setGuestEmail(e.target.value)}
-            />
+            <Input id="guestEmail" type="email" value={guestEmail} onChange={(e) => setGuestEmail(e.target.value)} />
           </div>
           <div>
             <Label htmlFor="bookingUnit">Unit</Label>
@@ -181,77 +166,41 @@ export function EditBookingDialog({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="checkinDate">Check-in</Label>
-              <Input
-                id="checkinDate"
-                type="date"
-                value={checkinDate}
-                onChange={(e) => setCheckinDate(e.target.value)}
-                required
-              />
+              <Input id="checkinDate" type="date" value={checkinDate} onChange={(e) => setCheckinDate(e.target.value)} required />
             </div>
             <div>
               <Label htmlFor="checkoutDate">Check-out</Label>
-              <Input
-                id="checkoutDate"
-                type="date"
-                value={checkoutDate}
-                onChange={(e) => setCheckoutDate(e.target.value)}
-                required
-                min={checkinDate}
-              />
+              <Input id="checkoutDate" type="date" value={checkoutDate} onChange={(e) => setCheckoutDate(e.target.value)} required min={checkinDate} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="adults">Adults</Label>
-              <Input
-                id="adults"
-                type="number"
-                min="1"
-                value={adults}
-                onChange={(e) => setAdults(parseInt(e.target.value))}
-                required
-              />
+              <Input id="adults" type="number" min="1" value={adults} onChange={(e) => setAdults(parseInt(e.target.value))} required />
             </div>
             <div>
               <Label htmlFor="children">Children</Label>
-              <Input
-                id="children"
-                type="number"
-                min="0"
-                value={children}
-                onChange={(e) => setChildren(parseInt(e.target.value))}
-              />
+              <Input id="children" type="number" min="0" value={children} onChange={(e) => setChildren(parseInt(e.target.value))} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="nightlyRate">Nightly Rate</Label>
-              <Input
-                id="nightlyRate"
-                value={`₱${nightlyRate.toLocaleString()}`}
-                readOnly
-                className="bg-muted"
-              />
+              <Input id="nightlyRate" value={`₱${nightlyRate.toLocaleString()}`} readOnly className="bg-muted"/>
+               {unit && (adults + children > unit.baseOccupancy) &&
+                    <p className="text-xs text-muted-foreground mt-1">
+                        Base ₱{unit.rate} + ₱{unit.extraGuestFee * (adults + children - unit.baseOccupancy)} fee
+                    </p>
+                }
             </div>
             <div>
               <Label htmlFor="totalAmount">Total Amount</Label>
-              <Input
-                id="totalAmount"
-                value={`₱${totalAmount.toLocaleString()}`}
-                readOnly
-                className="bg-muted"
-              />
+              <Input id="totalAmount" value={`₱${totalAmount.toLocaleString()}`} readOnly className="bg-muted" />
             </div>
           </div>
           <div>
             <Label htmlFor="paymentStatus">Payment Status</Label>
-            <Select
-              value={paymentStatus}
-              onValueChange={(v) =>
-                setPaymentStatus(v as 'pending' | 'partial' | 'paid')
-              }
-            >
+            <Select value={paymentStatus} onValueChange={(v) => setPaymentStatus(v as 'pending' | 'partial' | 'paid')}>
               <SelectTrigger id="paymentStatus">
                 <SelectValue placeholder="Select Status" />
               </SelectTrigger>
@@ -264,12 +213,7 @@ export function EditBookingDialog({
           </div>
           <div>
             <Label htmlFor="specialRequests">Special Requests</Label>
-            <Textarea
-              id="specialRequests"
-              value={specialRequests}
-              onChange={(e) => setSpecialRequests(e.target.value)}
-              placeholder="Any special requests or notes..."
-            />
+            <Textarea id="specialRequests" value={specialRequests} onChange={(e) => setSpecialRequests(e.target.value)} placeholder="Any special requests or notes..."/>
           </div>
           <DialogFooter>
             <Button type="submit">Save Changes</Button>

@@ -43,6 +43,8 @@ export function AddBookingDialog({
   );
   const [checkinDate, setCheckinDate] = useState('');
   const [checkoutDate, setCheckoutDate] = useState('');
+  const [adults, setAdults] = useState(2);
+  const [numChildren, setChildren] = useState(0);
 
   useEffect(() => {
     if (selectedUnitId && checkinDate && checkoutDate) {
@@ -53,9 +55,15 @@ export function AddBookingDialog({
         const nights = Math.ceil(
           (checkout.getTime() - checkin.getTime()) / (1000 * 60 * 60 * 24)
         );
+
+        const totalGuests = adults + numChildren;
+        const extraGuests = Math.max(0, totalGuests - (unit.baseOccupancy || 2));
+        const extraGuestCharge = extraGuests * (unit.extraGuestFee || 0);
+
         if (nights > 0) {
-          setNightlyRate(unit.rate);
-          setTotalAmount(unit.rate * nights);
+          const totalNightlyRate = unit.rate + extraGuestCharge;
+          setNightlyRate(totalNightlyRate);
+          setTotalAmount(totalNightlyRate * nights);
         } else {
           setNightlyRate(0);
           setTotalAmount(0);
@@ -65,7 +73,7 @@ export function AddBookingDialog({
       setNightlyRate(0);
       setTotalAmount(0);
     }
-  }, [selectedUnitId, checkinDate, checkoutDate, units]);
+  }, [selectedUnitId, checkinDate, checkoutDate, adults, numChildren, units]);
 
   useEffect(() => {
     if (open) {
@@ -73,6 +81,8 @@ export function AddBookingDialog({
       setNightlyRate(0);
       setTotalAmount(0);
       setSelectedUnitId(undefined);
+      setAdults(2);
+      setChildren(0);
       const today = new Date().toISOString().split('T')[0];
       setCheckinDate(today);
       const tomorrow = new Date(today);
@@ -101,8 +111,8 @@ export function AddBookingDialog({
       unitId: formData.get('bookingUnit') as string,
       checkinDate: formData.get('checkinDate') as string,
       checkoutDate: formData.get('checkoutDate') as string,
-      adults: parseInt(formData.get('adults') as string),
-      children: parseInt(formData.get('children') as string),
+      adults: adults,
+      children: numChildren,
       nightlyRate: nightlyRate,
       totalAmount: totalAmount,
       paymentStatus: formData.get('paymentStatus') as
@@ -114,6 +124,8 @@ export function AddBookingDialog({
     onAddBooking(newBooking);
     onOpenChange(false);
   };
+
+  const unit = units.find(u => u.id === selectedUnitId);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -190,44 +202,26 @@ export function AddBookingDialog({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="adults">Adults</Label>
-              <Input
-                name="adults"
-                type="number"
-                id="adults"
-                min="1"
-                defaultValue="2"
-                required
-              />
+              <Input name="adults" type="number" id="adults" min="1" value={adults} onChange={e => setAdults(parseInt(e.target.value))} required />
             </div>
             <div>
               <Label htmlFor="children">Children</Label>
-              <Input
-                name="children"
-                type="number"
-                id="children"
-                min="0"
-                defaultValue="0"
-              />
+              <Input name="children" type="number" id="children" min="0" value={numChildren} onChange={e => setChildren(parseInt(e.target.value))} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="nightlyRate">Nightly Rate</Label>
-              <Input
-                id="nightlyRate"
-                value={`₱${nightlyRate.toLocaleString()}`}
-                readOnly
-                className="bg-muted"
-              />
+                <Label htmlFor="nightlyRate">Nightly Rate</Label>
+                <Input id="nightlyRate" value={`₱${nightlyRate.toLocaleString()}`} readOnly className="bg-muted" />
+                 {unit && (adults + numChildren > unit.baseOccupancy) &&
+                    <p className="text-xs text-muted-foreground mt-1">
+                        Base rate ₱{unit.rate} + ₱{unit.extraGuestFee * (adults + numChildren - unit.baseOccupancy)} extra guest fee
+                    </p>
+                }
             </div>
             <div>
               <Label htmlFor="totalAmount">Total Amount</Label>
-              <Input
-                id="totalAmount"
-                value={`₱${totalAmount.toLocaleString()}`}
-                readOnly
-                className="bg-muted"
-              />
+              <Input id="totalAmount" value={`₱${totalAmount.toLocaleString()}`} readOnly className="bg-muted"/>
             </div>
           </div>
           <div>

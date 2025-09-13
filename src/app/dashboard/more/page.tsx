@@ -7,6 +7,7 @@ import {
   Users,
   Handshake,
   CircleDollarSign,
+  Receipt,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -29,6 +30,11 @@ const managementItems = [
 const analyticsItems = [
     { label: 'Reports', icon: LineChart, href: '/dashboard/reports' },
 ];
+
+const settingsItems = [
+    { label: 'Receipt Settings', icon: Receipt, href: '/dashboard/settings/receipt' },
+];
+
 
 export default function MorePage() {
   const router = useRouter();
@@ -57,6 +63,16 @@ export default function MorePage() {
 
         <h3 className="text-sm font-semibold text-gray-500 px-2 mt-8">Analytics</h3>
         {analyticsItems.map((item) => (
+            <Link key={item.href} href={item.href} className="block prime-card p-0 no-underline hover:border-prime-yellow">
+                <div className="flex items-center space-x-4 p-4">
+                    <item.icon className="w-6 h-6 text-gray-600" />
+                    <span className="font-semibold text-gray-800">{item.label}</span>
+                </div>
+            </Link>
+        ))}
+
+        <h3 className="text-sm font-semibold text-gray-500 px-2 mt-8">Settings</h3>
+        {settingsItems.map((item) => (
             <Link key={item.href} href={item.href} className="block prime-card p-0 no-underline hover:border-prime-yellow">
                 <div className="flex items-center space-x-4 p-4">
                     <item.icon className="w-6 h-6 text-gray-600" />
