@@ -40,11 +40,11 @@ export default function Home() {
           
           <form id="loginForm" className="space-y-4" onSubmit={handleLogin}>
               <div>
-                  <input type="email" id="loginEmail" name="loginEmail" className="prime-input" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                  <input type="email" id="loginEmail" name="loginEmail" className="prime-input" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
               </div>
               
               <div>
-                  <input type="password" id="loginPassword" name="loginPassword" className="prime-input" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                  <input type="password" id="loginPassword" name="loginPassword" className="prime-input" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
               </div>
 
               <div className="flex items-center justify-between text-sm">
