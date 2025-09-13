@@ -36,10 +36,11 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
   const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
+    // Dynamically determine the base URL.
     // This will be the Vercel URL when deployed, or localhost during development.
-    const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:9002';
-    setBaseUrl(vercelUrl ? `https://${vercelUrl}` : siteUrl);
+    if (typeof window !== 'undefined') {
+      setBaseUrl(window.location.origin);
+    }
     
     handleSync(true); // Auto-sync on component mount silently
   }, []);
@@ -226,3 +227,4 @@ function UnitCard({ unit, onEdit, onDelete }: { unit: Unit, onEdit: (unit: Unit)
     </div>
   );
 }
+
