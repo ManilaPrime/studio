@@ -171,14 +171,14 @@ export function AddExpenseDialog({
               Unit
             </Label>
             <Select
-              value={unitId ?? ''}
-              onValueChange={(v) => setUnitId(v ? v : null)}
+              value={unitId ?? 'all'}
+              onValueChange={(v) => setUnitId(v === 'all' ? null : v)}
             >
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="All Units" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Units</SelectItem>
+                <SelectItem value="all">All Units</SelectItem>
                 {units.map((unit) => (
                   <SelectItem key={unit.id} value={unit.id!}>
                     {unit.name}
