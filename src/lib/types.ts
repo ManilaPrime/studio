@@ -14,6 +14,8 @@ export type Unit = {
     bookingcom: string;
     direct: string;
   };
+  wifiNetwork?: string;
+  wifiPassword?: string;
 };
 
 export type Booking = {

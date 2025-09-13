@@ -48,6 +48,8 @@ export function AddUnitDialog({
       maxOccupancy: parseInt(formData.get('maxOccupancy') as string),
       extraGuestFee: parseInt(formData.get('extraGuestFee') as string),
       description: formData.get('unitDescription') as string,
+      wifiNetwork: formData.get('wifiNetwork') as string,
+      wifiPassword: formData.get('wifiPassword') as string,
       calendars: {
         airbnb: formData.get('airbnbUrl') as string,
         bookingcom: formData.get('bookingcomUrl') as string,
@@ -115,6 +117,22 @@ export function AddUnitDialog({
               name="unitDescription"
               placeholder="Unit features and amenities..."
             />
+          </div>
+           <div className="border-t pt-4 mt-2">
+             <h4 className="font-semibold text-foreground mb-1">Unit Specific Details</h4>
+             <p className="text-sm text-muted-foreground mb-3">
+               This information will appear on the guest's booking receipt.
+             </p>
+             <div className="grid grid-cols-2 gap-4">
+              <div>
+                  <Label htmlFor="wifiNetwork">WiFi Network</Label>
+                  <Input id="wifiNetwork" name="wifiNetwork" placeholder="e.g. Unit 101 WiFi"/>
+              </div>
+              <div>
+                  <Label htmlFor="wifiPassword">WiFi Password</Label>
+                  <Input id="wifiPassword" name="wifiPassword" placeholder="e.g. Password123"/>
+              </div>
+            </div>
           </div>
           <div className="border-t pt-4 mt-2">
             <h4 className="font-semibold text-foreground mb-1">Calendar iCal Links</h4>

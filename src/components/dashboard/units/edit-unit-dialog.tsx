@@ -40,6 +40,8 @@ export function EditUnitDialog({
   const [maxOccupancy, setMaxOccupancy] = useState(0);
   const [extraGuestFee, setExtraGuestFee] = useState(0);
   const [description, setDescription] = useState('');
+  const [wifiNetwork, setWifiNetwork] = useState('');
+  const [wifiPassword, setWifiPassword] = useState('');
   const [airbnbUrl, setAirbnbUrl] = useState('');
   const [bookingcomUrl, setBookingcomUrl] = useState('');
   const [directUrl, setDirectUrl] = useState('');
@@ -53,6 +55,8 @@ export function EditUnitDialog({
       setMaxOccupancy(unit.maxOccupancy);
       setExtraGuestFee(unit.extraGuestFee || 500);
       setDescription(unit.description);
+      setWifiNetwork(unit.wifiNetwork || '');
+      setWifiPassword(unit.wifiPassword || '');
       setAirbnbUrl(unit.calendars.airbnb);
       setBookingcomUrl(unit.calendars.bookingcom);
       setDirectUrl(unit.calendars.direct);
@@ -72,6 +76,8 @@ export function EditUnitDialog({
       maxOccupancy,
       extraGuestFee,
       description,
+      wifiNetwork,
+      wifiPassword,
       calendars: {
         airbnb: airbnbUrl,
         bookingcom: bookingcomUrl,
@@ -134,6 +140,22 @@ export function EditUnitDialog({
           <div>
             <Label htmlFor="unitDescription">Description</Label>
             <Textarea id="unitDescription" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Unit features and amenities..." />
+          </div>
+           <div className="border-t pt-4 mt-2">
+             <h4 className="font-semibold text-foreground mb-1">Unit Specific Details</h4>
+             <p className="text-sm text-muted-foreground mb-3">
+               This information will appear on the guest's booking receipt.
+             </p>
+             <div className="grid grid-cols-2 gap-4">
+              <div>
+                  <Label htmlFor="wifiNetwork">WiFi Network</Label>
+                  <Input id="wifiNetwork" value={wifiNetwork} onChange={(e) => setWifiNetwork(e.target.value)} placeholder="e.g. Unit 101 WiFi"/>
+              </div>
+              <div>
+                  <Label htmlFor="wifiPassword">WiFi Password</Label>
+                  <Input id="wifiPassword" value={wifiPassword} onChange={(e) => setWifiPassword(e.target.value)} placeholder="e.g. Password123"/>
+              </div>
+            </div>
           </div>
           <div className="border-t pt-4 mt-2">
             <h4 className="font-semibold text-foreground mb-1">

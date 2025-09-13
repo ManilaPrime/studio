@@ -59,6 +59,9 @@ export function BookingReceiptDialog({
     paid: 'bg-green-100 text-green-800',
   };
 
+  const wifiNetwork = unit?.wifiNetwork || settings?.wifiNetwork;
+  const wifiPassword = unit?.wifiPassword || settings?.wifiPassword;
+
   const receiptContent = (
     <div id="receiptContent" className="space-y-4 p-4">
         {loading ? (
@@ -106,12 +109,12 @@ export function BookingReceiptDialog({
                     </div>
                 </div>
                 
-                {settings?.wifiNetwork && (
+                {wifiNetwork && (
                     <div className="mb-4 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
                         <h5 className="font-semibold text-gray-800 mb-2">📶 WiFi Access</h5>
                         <div className="text-sm space-y-1">
-                            <p><strong>Network:</strong> {settings.wifiNetwork}</p>
-                            <p><strong>Password:</strong> <span className="font-mono bg-white px-2 py-1 rounded border">{settings.wifiPassword || 'No password'}</span></p>
+                            <p><strong>Network:</strong> {wifiNetwork}</p>
+                            <p><strong>Password:</strong> <span className="font-mono bg-white px-2 py-1 rounded border">{wifiPassword || 'No password'}</span></p>
                             <p className="text-xs text-gray-600 mt-2">Please connect to our complimentary WiFi during your stay</p>
                         </div>
                     </div>
