@@ -95,7 +95,7 @@ export function AddInvestorDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{investor ? 'Edit' : 'Add New'} Investor</DialogTitle>
         </DialogHeader>

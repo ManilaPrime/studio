@@ -96,7 +96,7 @@ export function AddExpenseDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{expense ? 'Edit' : 'Add New'} Expense</DialogTitle>
         </DialogHeader>
