@@ -26,7 +26,7 @@ const nextConfig = {
     if (isMobileBuild) {
       // Ignore all API routes and server-side files in mobile build
       config.module.rules.push({
-        test: /(\/app\/api\/|sync-calendars\.ts|services\/discord\.ts|services\/calendar\.ts)/,
+        test: /(\/app\/api\/|\/actions\/|sync-calendars\.ts|services\/discord\.ts|services\/calendar\.ts)/,
         loader: 'ignore-loader',
       });
 
