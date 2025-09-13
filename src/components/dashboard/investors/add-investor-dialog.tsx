@@ -151,7 +151,6 @@ export function AddInvestorDialog({
                 <SelectValue placeholder="Select Unit" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Select Unit</SelectItem>
                 {units.map((unit) => (
                   <SelectItem key={unit.id} value={unit.id!}>
                     {unit.name}
