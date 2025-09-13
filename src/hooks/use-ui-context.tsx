@@ -40,44 +40,27 @@ export function UIProvider({ children }: { children: ReactNode }) {
   const [isAddReminderOpen, setIsAddReminderOpen] = useState(false);
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
 
-
-  const createSetter = (setter: (open: boolean) => void) => (open: boolean) => {
-    if (open) {
-      setIsAddUnitOpen(false);
-      setIsEditUnitOpen(false);
-      setIsAddBookingOpen(false);
-      setIsEditBookingOpen(false);
-      setIsAddAgentOpen(false);
-      setIsAddExpenseOpen(false);
-      setIsAddInvestorOpen(false);
-      setIsPayProfitOpen(false);
-      setIsAddReminderOpen(false);
-      setIsQuickActionsOpen(false);
-    }
-    setter(open);
-  };
-  
   const value = {
     isAddUnitOpen,
-    setIsAddUnitOpen: createSetter(setIsAddUnitOpen),
+    setIsAddUnitOpen,
     isEditUnitOpen,
-    setIsEditUnitOpen: createSetter(setIsEditUnitOpen),
+    setIsEditUnitOpen,
     isAddBookingOpen,
-    setIsAddBookingOpen: createSetter(setIsAddBookingOpen),
+    setIsAddBookingOpen,
     isEditBookingOpen,
-    setIsEditBookingOpen: createSetter(setIsEditBookingOpen),
+    setIsEditBookingOpen,
     isAddAgentOpen,
-    setIsAddAgentOpen: createSetter(setIsAddAgentOpen),
+    setIsAddAgentOpen,
     isAddExpenseOpen,
-    setIsAddExpenseOpen: createSetter(setIsAddExpenseOpen),
+    setIsAddExpenseOpen,
     isAddInvestorOpen,
-    setIsAddInvestorOpen: createSetter(setIsAddInvestorOpen),
+    setIsAddInvestorOpen,
     isPayProfitOpen,
-    setIsPayProfitOpen: createSetter(setIsPayProfitOpen),
+    setIsPayProfitOpen,
     isAddReminderOpen,
-    setIsAddReminderOpen: createSetter(setIsAddReminderOpen),
+    setIsAddReminderOpen,
     isQuickActionsOpen,
-    setIsQuickActionsOpen: createSetter(setIsQuickActionsOpen),
+    setIsQuickActionsOpen,
   };
 
   return <UIContext.Provider value={value}>{children}</UIContext.Provider>;
