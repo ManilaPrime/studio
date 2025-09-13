@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -74,7 +75,7 @@ const SheetContent = React.forwardRef<
     {showOverlay && <SheetOverlay />}
     <SheetPrimitive.Content
       ref={ref}
-      className={cn(sheetVariants({ side }), className)}
+      className={cn(sheetVariants({ side }), "sm:max-w-full", className)}
       {...props}
     >
       {children}
