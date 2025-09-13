@@ -12,7 +12,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "ionic:build": "npm run build:mobile",
-    "build:mobile": "next build -c next.config.mobile.ts",
+    "build:mobile": "npx cross-env BUILD_TARGET=mobile next build",
     "cap:sync": "npx cap sync android",
     "cap:open": "npx cap open android"
   },
@@ -45,6 +45,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cross-env": "^7.0.3",
     "date-fns": "^3.6.0",
     "dotenv": "^16.5.0",
     "embla-carousel-react": "^8.6.0",
@@ -67,6 +68,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^6.1.1",
+    "@types/cross-env": "^7.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

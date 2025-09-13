@@ -29,11 +29,11 @@ const nextConfig: NextConfig = {
   },
   // Exclude the api directory from the build for static export
   webpack: (config) => {
-    config.module.rules.push({
-      test: /\/app\/api\//,
-      loader: 'ignore-loader',
-    });
-
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@/app/api': false,
+      '@/app/actions/sync-calendars': false,
+    };
     return config;
   },
 };
