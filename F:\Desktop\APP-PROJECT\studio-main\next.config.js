@@ -1,13 +1,11 @@
 /** @type {import('next').NextConfig} */
+const isMobileBuild = process.env.BUILD_TARGET === 'mobile';
 
-let nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  images: {
+const nextConfig = {
+  output: isMobileBuild ? 'export' : undefined,
+  typescript: { ignoreBuildErrors: true },
+  eslint: { ignoreDuringBuilds: true },
+  images: { 
     remotePatterns: [
       {
         protocol: 'https',
@@ -22,35 +20,23 @@ let nextConfig = {
         pathname: '/**',
       },
     ],
+    unoptimized: true
+  },
+  webpack: (config) => {
+    if (isMobileBuild) {
+      // Ignore all API routes and server-side files in mobile build
+      config.module.rules.push({
+        test: /(\/app\/api\/|sync-calendars\.ts|services\/discord\.ts|services\/calendar\.ts)/,
+        loader: 'ignore-loader',
+      });
+
+      // Prevent server-only packages from being bundled
+      config.resolve.alias['node-ical'] = false;
+      config.resolve.alias['firebase-admin'] = false;
+      config.resolve.alias['firebase-functions'] = false;
+    }
+    return config;
   },
 };
-
-// Check if the build target is for mobile (Capacitor)
-if (process.env.BUILD_TARGET === 'mobile') {
-  console.log('--- Applying mobile build configuration for static export ---');
-  nextConfig = {
-    ...nextConfig,
-    output: 'export',
-    // For a static export, we must disable image optimization.
-    images: {
-        ...nextConfig.images,
-        unoptimized: true,
-    },
-    // Exclude server-side code from the static export by aliasing them to false.
-    // This tells Webpack to treat these imports as empty modules on the client-side.
-    webpack: (config, { isServer }) => {
-      if (!isServer) {
-        config.resolve.alias = {
-          ...config.resolve.alias,
-          '@/app/api': false,
-          '@/app/actions/sync-calendars.ts': false,
-          'node-ical': false,
-        };
-      }
-      
-      return config;
-    },
-  };
-}
 
 module.exports = nextConfig;
