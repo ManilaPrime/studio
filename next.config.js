@@ -1,17 +1,8 @@
 /** @type {import('next').NextConfig} */
 
-const mobileConfig = {
-  output: 'export',
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\/app\/api\//,
-      loader: 'ignore-loader',
-    });
-    return config;
-  },
-};
+const isMobile = process.env.BUILD_TARGET === 'mobile';
 
-let nextConfig = {
+const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -35,10 +26,17 @@ let nextConfig = {
       },
     ],
   },
+  // Apply mobile-specific settings
+  ...(isMobile && {
+    output: 'export',
+    webpack: (config) => {
+      config.module.rules.push({
+        test: /\/app\/api\//,
+        loader: 'ignore-loader',
+      });
+      return config;
+    },
+  }),
 };
-
-if (process.env.BUILD_TARGET === 'mobile') {
-  nextConfig = { ...nextConfig, ...mobileConfig };
-}
 
 module.exports = nextConfig;
