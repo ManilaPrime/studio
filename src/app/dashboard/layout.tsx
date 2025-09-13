@@ -140,7 +140,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="bg-gray-50 h-screen max-w-sm mx-auto grid grid-rows-[auto_1fr_auto] overflow-hidden">
+    <div className="bg-gray-50 h-screen mx-auto grid grid-rows-[auto_1fr_auto] overflow-hidden">
       <Header />
       <main
         className={`relative ${
