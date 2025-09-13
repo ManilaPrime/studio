@@ -131,7 +131,7 @@ const Header = () => {
                   </SheetTrigger>
                   <SheetContent 
                       side="top" 
-                      className="w-full max-w-sm mx-auto rounded-b-lg p-6"
+                      className="w-full max-w-sm mx-auto rounded-b-lg p-6 max-h-[70vh] overflow-y-auto"
                       style={{ top: `${headerHeight + 12}px` }}
                       showOverlay={false}
                   >
