@@ -3,6 +3,25 @@
 
 import type { Expense, Unit } from '@/lib/types';
 import { useEffect, useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
 export function AddExpenseDialog({
   children,
@@ -11,7 +30,7 @@ export function AddExpenseDialog({
   expense,
   onAddExpense,
   onUpdateExpense,
-  units
+  units,
 }: {
   children?: React.ReactNode;
   open: boolean;
@@ -21,7 +40,6 @@ export function AddExpenseDialog({
   onUpdateExpense: (expense: Expense) => void;
   units: Unit[];
 }) {
-
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<Expense['category']>('other');
   const [amount, setAmount] = useState(0);
@@ -29,7 +47,6 @@ export function AddExpenseDialog({
   const [unitId, setUnitId] = useState<string | null>(null);
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState<Expense['status']>('paid');
-
 
   useEffect(() => {
     if (open) {
@@ -56,7 +73,7 @@ export function AddExpenseDialog({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const expenseData = {
       title,
       category,
@@ -75,85 +92,137 @@ export function AddExpenseDialog({
 
     onOpenChange(false);
   };
-  
-  if (!open) {
-    return children || null;
-  }
 
   return (
-    <>
-    {children}
-    <div id="addExpenseModal" className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4" onClick={() => onOpenChange(false)}>
-        <div className="bg-white rounded-xl p-6 w-full max-w-md overflow-y-auto z-50 max-h-full" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-800">{expense ? 'Edit' : 'Add New'} Expense</h3>
-                <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
-                    <span className="text-2xl">×</span>
-                </button>
-            </div>
-            
-            <form id="expenseForm" className="space-y-4" onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="expenseTitle" className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                    <input type="text" id="expenseTitle" className="prime-input" value={title} onChange={e=>setTitle(e.target.value)} required />
-                </div>
-                
-                <div>
-                    <label htmlFor="expenseCategory" className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <select id="expenseCategory" className="prime-input" value={category} onChange={e=>setCategory(e.target.value as Expense['category'])} required>
-                        <option value="utilities">Utilities</option>
-                        <option value="maintenance">Maintenance</option>
-                        <option value="cleaning">Cleaning</option>
-                        <option value="supplies">Supplies</option>
-                        <option value="insurance">Insurance</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label htmlFor="expenseAmount" className="block text-sm font-medium text-gray-700 mb-1">Amount (₱)</label>
-                    <input type="number" id="expenseAmount" min="0" step="0.01" className="prime-input" value={amount} onChange={e=>setAmount(parseFloat(e.target.value))} required />
-                </div>
-                
-                <div>
-                    <label htmlFor="expenseDate" className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                    <input type="date" id="expenseDate" className="prime-input" value={date} onChange={e=>setDate(e.target.value)} required />
-                </div>
-                
-                <div>
-                    <label htmlFor="expenseUnit" className="block text-sm font-medium text-gray-700 mb-1">Unit (Optional)</label>
-                    <select id="expenseUnit" className="prime-input" value={unitId ?? ''} onChange={e=>setUnitId(e.target.value ? e.target.value : null)}>
-                        <option value="">All Units</option>
-                        {units.map(unit => (
-                            <option key={unit.id} value={String(unit.id)}>{unit.name}</option>
-                        ))}
-                    </select>
-                </div>
-                
-                <div>
-                    <label htmlFor="expenseStatus" className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select id="expenseStatus" className="prime-input" value={status} onChange={e=>setStatus(e.target.value as Expense['status'])} required>
-                        <option value="paid">Paid</option>
-                        <option value="unpaid">Unpaid</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label htmlFor="expenseDescription" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                    <textarea id="expenseDescription" rows={3} className="prime-input" placeholder="Additional details..." value={description} onChange={e=>setDescription(e.target.value)}></textarea>
-                </div>
-                
-                <div className="flex space-x-3 pt-2">
-                    <button type="button" onClick={() => onOpenChange(false)} className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
-                        Cancel
-                    </button>
-                    <button type="submit" className="w-full prime-button py-3">
-                        {expense ? 'Save Changes' : 'Add Expense'}
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    </>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {children && <DialogTrigger asChild>{children}</DialogTrigger>}
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>{expense ? 'Edit' : 'Add New'} Expense</DialogTitle>
+        </DialogHeader>
+        <form
+          id="expenseForm"
+          className="grid gap-4 py-4"
+          onSubmit={handleSubmit}
+        >
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="expenseTitle" className="text-right">
+              Title
+            </Label>
+            <Input
+              id="expenseTitle"
+              className="col-span-3"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="expenseCategory" className="text-right">
+              Category
+            </Label>
+            <Select
+              value={category}
+              onValueChange={(v) => setCategory(v as Expense['category'])}
+            >
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="utilities">Utilities</SelectItem>
+                <SelectItem value="maintenance">Maintenance</SelectItem>
+                <SelectItem value="cleaning">Cleaning</SelectItem>
+                <SelectItem value="supplies">Supplies</SelectItem>
+                <SelectItem value="insurance">Insurance</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="expenseAmount" className="text-right">
+              Amount (₱)
+            </Label>
+            <Input
+              id="expenseAmount"
+              type="number"
+              min="0"
+              step="0.01"
+              className="col-span-3"
+              value={amount}
+              onChange={(e) => setAmount(parseFloat(e.target.value))}
+              required
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="expenseDate" className="text-right">
+              Date
+            </Label>
+            <Input
+              id="expenseDate"
+              type="date"
+              className="col-span-3"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="expenseUnit" className="text-right">
+              Unit
+            </Label>
+            <Select
+              value={unitId ?? ''}
+              onValueChange={(v) => setUnitId(v ? v : null)}
+            >
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="All Units" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All Units</SelectItem>
+                {units.map((unit) => (
+                  <SelectItem key={unit.id} value={unit.id!}>
+                    {unit.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="expenseStatus" className="text-right">
+              Status
+            </Label>
+            <Select
+              value={status}
+              onValueChange={(v) => setStatus(v as Expense['status'])}
+            >
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="paid">Paid</SelectItem>
+                <SelectItem value="unpaid">Unpaid</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="expenseDescription" className="text-right">
+              Description
+            </Label>
+            <Textarea
+              id="expenseDescription"
+              className="col-span-3"
+              placeholder="Additional details..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          <DialogFooter>
+            <Button type="submit">
+              {expense ? 'Save Changes' : 'Add Expense'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

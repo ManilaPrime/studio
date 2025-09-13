@@ -3,6 +3,24 @@
 
 import type { Investor, Unit } from '@/lib/types';
 import { useEffect, useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export function AddInvestorDialog({
   children,
@@ -21,7 +39,6 @@ export function AddInvestorDialog({
   onUpdateInvestor: (investor: Investor) => void;
   units: Unit[];
 }) {
-
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -29,7 +46,6 @@ export function AddInvestorDialog({
   const [sharePercentage, setSharePercentage] = useState(0);
   const [joinDate, setJoinDate] = useState('');
   const [unitId, setUnitId] = useState<string | undefined>(undefined);
-
 
   useEffect(() => {
     if (open) {
@@ -56,15 +72,15 @@ export function AddInvestorDialog({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const investorData = {
-        name,
-        email,
-        phone,
-        investmentAmount,
-        sharePercentage,
-        joinDate,
-        unitId,
+      name,
+      email,
+      phone,
+      investmentAmount,
+      sharePercentage,
+      joinDate,
+      unitId,
     };
 
     if (investor) {
@@ -75,75 +91,125 @@ export function AddInvestorDialog({
 
     onOpenChange(false);
   };
-  
-  if (!open) {
-    return children || null;
-  }
 
   return (
-    <>
-      {children}
-      <div id="addInvestorModal" className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4" onClick={() => onOpenChange(false)}>
-        <div className="bg-white rounded-xl p-6 w-full max-w-md overflow-y-auto z-50 max-h-full" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-800">{investor ? 'Edit' : 'Add New'} Investor</h3>
-                <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
-                    <span className="text-2xl">×</span>
-                </button>
-            </div>
-            
-            <form id="investorForm" className="space-y-4" onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor='investorName' className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                    <input type="text" id="investorName" className="prime-input" value={name} onChange={e=>setName(e.target.value)} required />
-                </div>
-                
-                <div>
-                    <label htmlFor='investorEmail' className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" id="investorEmail" className="prime-input" value={email} onChange={e=>setEmail(e.target.value)} required />
-                </div>
-                
-                <div>
-                    <label htmlFor='investorPhone' className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                    <input type="tel" id="investorPhone" className="prime-input" value={phone} onChange={e=>setPhone(e.target.value)} required />
-                </div>
-
-                <div>
-                    <label htmlFor="investorUnit" className="block text-sm font-medium text-gray-700 mb-1">Associated Unit</label>
-                    <select id="investorUnit" className="prime-input" value={unitId} onChange={e=>setUnitId(e.target.value)}>
-                        <option value="">Select Unit</option>
-                        {units.map(unit => (
-                            <option key={unit.id} value={unit.id}>{unit.name}</option>
-                        ))}
-                    </select>
-                </div>
-                
-                <div>
-                    <label htmlFor='investorAmount' className="block text-sm font-medium text-gray-700 mb-1">Investment Amount (₱)</label>
-                    <input type="number" id="investorAmount" min="0" className="prime-input" value={investmentAmount} onChange={e=>setInvestmentAmount(parseFloat(e.target.value))} required />
-                </div>
-                
-                <div>
-                    <label htmlFor='investorShare' className="block text-sm font-medium text-gray-700 mb-1">Share Percentage (%)</label>
-                    <input type="number" id="investorShare" min="0" max="100" step="0.1" className="prime-input" value={sharePercentage} onChange={e=>setSharePercentage(parseFloat(e.target.value))} required />
-                </div>
-                
-                <div>
-                    <label htmlFor='investorJoinDate' className="block text-sm font-medium text-gray-700 mb-1">Join Date</label>
-                    <input type="date" id="investorJoinDate" className="prime-input" value={joinDate} onChange={e=>setJoinDate(e.target.value)} required />
-                </div>
-                
-                <div className="flex space-x-3 pt-2">
-                    <button type="button" onClick={() => onOpenChange(false)} className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
-                        Cancel
-                    </button>
-                    <button type="submit" className="w-full prime-button py-3">
-                       {investor ? 'Save Changes' : 'Add Investor'}
-                    </button>
-                </div>
-            </form>
-        </div>
-      </div>
-    </>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {children && <DialogTrigger asChild>{children}</DialogTrigger>}
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>{investor ? 'Edit' : 'Add New'} Investor</DialogTitle>
+        </DialogHeader>
+        <form
+          id="investorForm"
+          className="grid gap-4 py-4"
+          onSubmit={handleSubmit}
+        >
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="investorName" className="text-right">
+              Full Name
+            </Label>
+            <Input
+              id="investorName"
+              className="col-span-3"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="investorEmail" className="text-right">
+              Email
+            </Label>
+            <Input
+              id="investorEmail"
+              type="email"
+              className="col-span-3"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="investorPhone" className="text-right">
+              Phone
+            </Label>
+            <Input
+              id="investorPhone"
+              type="tel"
+              className="col-span-3"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="investorUnit" className="text-right">
+              Unit
+            </Label>
+            <Select value={unitId} onValueChange={setUnitId}>
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select Unit" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Select Unit</SelectItem>
+                {units.map((unit) => (
+                  <SelectItem key={unit.id} value={unit.id!}>
+                    {unit.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="investorAmount" className="text-right">
+              Investment (₱)
+            </Label>
+            <Input
+              id="investorAmount"
+              type="number"
+              min="0"
+              className="col-span-3"
+              value={investmentAmount}
+              onChange={(e) => setInvestmentAmount(parseFloat(e.target.value))}
+              required
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="investorShare" className="text-right">
+              Share (%)
+            </Label>
+            <Input
+              id="investorShare"
+              type="number"
+              min="0"
+              max="100"
+              step="0.1"
+              className="col-span-3"
+              value={sharePercentage}
+              onChange={(e) => setSharePercentage(parseFloat(e.target.value))}
+              required
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="investorJoinDate" className="text-right">
+              Join Date
+            </Label>
+            <Input
+              id="investorJoinDate"
+              type="date"
+              className="col-span-3"
+              value={joinDate}
+              onChange={(e) => setJoinDate(e.target.value)}
+              required
+            />
+          </div>
+          <DialogFooter>
+            <Button type="submit">
+              {investor ? 'Save Changes' : 'Add Investor'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -2,7 +2,26 @@
 'use client';
 
 import type { Reminder } from '@/lib/types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
 export function AddReminderDialog({
   children,
@@ -15,106 +34,146 @@ export function AddReminderDialog({
   onOpenChange: (open: boolean) => void;
   onAddReminder: (newReminder: Omit<Reminder, 'id' | 'createdAt' | 'status'>) => void;
 }) {
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [category, setCategory] = useState<Reminder['category']>('other');
+    const [priority, setPriority] = useState<Reminder['priority']>('medium');
+    const [dueDate, setDueDate] = useState('');
+    const [dueTime, setDueTime] = useState('');
+
   useEffect(() => {
     if (open) {
       const today = new Date().toISOString().split('T')[0];
-      const dateInput = document.getElementById(
-        'reminderDate'
-      ) as HTMLInputElement;
-      if (dateInput) {
-        dateInput.min = today;
-        dateInput.value = today;
-      }
+      setDueDate(today);
+      setTitle('');
+      setDescription('');
+      setCategory('other');
+      setPriority('medium');
+      setDueTime('');
     }
   }, [open]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
     const newReminderData = {
-      title: formData.get('reminderTitle') as string,
-      description: formData.get('reminderDescription') as string,
-      category: formData.get('reminderCategory') as Reminder['category'],
-      priority: formData.get('reminderPriority') as Reminder['priority'],
-      dueDate: formData.get('reminderDate') as string,
-      dueTime: formData.get('reminderTime') as string,
+      title,
+      description,
+      category,
+      priority,
+      dueDate,
+      dueTime,
     };
     onAddReminder(newReminderData);
     onOpenChange(false);
   };
-  
-  if (!open) {
-    return children || null;
-  }
 
   return (
-    <>
-      {children}
-      <div id="addReminderModal" className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4" onClick={() => onOpenChange(false)}>
-        <div className="bg-white rounded-xl p-6 w-full max-w-md overflow-y-auto z-50 max-h-full" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-800">Add New Reminder</h3>
-                <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
-                    <span className="text-2xl">×</span>
-                </button>
-            </div>
-            
-            <form id="reminderForm" className="space-y-4" onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="reminderTitle" className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                    <input type="text" name="reminderTitle" id="reminderTitle" className="prime-input" required />
-                </div>
-                
-                <div>
-                    <label htmlFor="reminderDescription" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                    <textarea name="reminderDescription" id="reminderDescription" rows={3} className="prime-input" placeholder="Additional details..."></textarea>
-                </div>
-                
-                <div>
-                    <label htmlFor="reminderCategory" className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <select name="reminderCategory" id="reminderCategory" className="prime-input" required>
-                        <option value="">Select Category</option>
-                        <option value="payment">Payment</option>
-                        <option value="maintenance">Maintenance</option>
-                        <option value="cleaning">Cleaning</option>
-                        <option value="booking">Booking</option>
-                        <option value="inspection">Inspection</option>
-                        <option value="meeting">Meeting</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label htmlFor="reminderPriority" className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                    <select name="reminderPriority" id="reminderPriority" className="prime-input" defaultValue="medium" required>
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                    </select>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="reminderDate" className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
-                        <input name="reminderDate" id="reminderDate" type="date" className="prime-input" required />
-                    </div>
-                    <div>
-                        <label htmlFor="reminderTime" className="block text-sm font-medium text-gray-700 mb-1">Due Time</label>
-                        <input name="reminderTime" id="reminderTime" type="time" className="prime-input" />
-                    </div>
-                </div>
-                
-                <div className="flex space-x-3 pt-2">
-                    <button type="button" onClick={() => onOpenChange(false)} className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
-                        Cancel
-                    </button>
-                    <button type="submit" className="w-full prime-button py-3">
-                        Add Reminder
-                    </button>
-                </div>
-            </form>
-        </div>
-      </div>
-    </>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {children && <DialogTrigger asChild>{children}</DialogTrigger>}
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add New Reminder</DialogTitle>
+        </DialogHeader>
+        <form
+          id="reminderForm"
+          className="grid gap-4 py-4"
+          onSubmit={handleSubmit}
+        >
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="reminderTitle" className="text-right">
+              Title
+            </Label>
+            <Input
+              id="reminderTitle"
+              className="col-span-3"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="reminderDescription" className="text-right">
+              Description
+            </Label>
+            <Textarea
+              id="reminderDescription"
+              className="col-span-3"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Additional details..."
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="reminderCategory" className="text-right">
+              Category
+            </Label>
+            <Select
+              value={category}
+              onValueChange={(v) => setCategory(v as Reminder['category'])}
+            >
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="payment">Payment</SelectItem>
+                <SelectItem value="maintenance">Maintenance</SelectItem>
+                <SelectItem value="cleaning">Cleaning</SelectItem>
+                <SelectItem value="booking">Booking</SelectItem>
+                <SelectItem value="inspection">Inspection</SelectItem>
+                <SelectItem value="meeting">Meeting</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="reminderPriority" className="text-right">
+              Priority
+            </Label>
+            <Select
+              value={priority}
+              onValueChange={(v) => setPriority(v as Reminder['priority'])}
+            >
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select Priority" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="low">Low</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="high">High</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="reminderDate" className="text-right">
+              Due Date
+            </Label>
+            <Input
+              id="reminderDate"
+              type="date"
+              className="col-span-3"
+              value={dueDate}
+              min={new Date().toISOString().split('T')[0]}
+              onChange={(e) => setDueDate(e.target.value)}
+              required
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="reminderTime" className="text-right">
+              Time
+            </Label>
+            <Input
+              id="reminderTime"
+              type="time"
+              className="col-span-3"
+              value={dueTime}
+              onChange={(e) => setDueTime(e.target.value)}
+            />
+          </div>
+          <DialogFooter>
+            <Button type="submit">Add Reminder</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

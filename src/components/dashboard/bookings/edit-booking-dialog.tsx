@@ -3,13 +3,31 @@
 
 import type { Booking, Unit } from '@/lib/types';
 import { useState, useEffect } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
 export function EditBookingDialog({
   open,
   onOpenChange,
   booking,
   onUpdateBooking,
-  units
+  units,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -28,24 +46,26 @@ export function EditBookingDialog({
   const [children, setChildren] = useState(0);
   const [nightlyRate, setNightlyRate] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
-  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'partial' | 'paid'>('pending');
+  const [paymentStatus, setPaymentStatus] = useState<
+    'pending' | 'partial' | 'paid'
+  >('pending');
   const [specialRequests, setSpecialRequests] = useState('');
 
   useEffect(() => {
     if (booking) {
-        setGuestFirstName(booking.guestFirstName);
-        setGuestLastName(booking.guestLastName);
-        setGuestPhone(booking.guestPhone);
-        setGuestEmail(booking.guestEmail);
-        setUnitId(booking.unitId);
-        setCheckinDate(booking.checkinDate);
-        setCheckoutDate(booking.checkoutDate);
-        setAdults(booking.adults);
-        setChildren(booking.children);
-        setNightlyRate(booking.nightlyRate);
-        setTotalAmount(booking.totalAmount);
-        setPaymentStatus(booking.paymentStatus);
-        setSpecialRequests(booking.specialRequests);
+      setGuestFirstName(booking.guestFirstName);
+      setGuestLastName(booking.guestLastName);
+      setGuestPhone(booking.guestPhone);
+      setGuestEmail(booking.guestEmail);
+      setUnitId(booking.unitId);
+      setCheckinDate(booking.checkinDate);
+      setCheckoutDate(booking.checkoutDate);
+      setAdults(booking.adults);
+      setChildren(booking.children);
+      setNightlyRate(booking.nightlyRate);
+      setTotalAmount(booking.totalAmount);
+      setPaymentStatus(booking.paymentStatus);
+      setSpecialRequests(booking.specialRequests);
     }
   }, [booking]);
 
@@ -93,108 +113,169 @@ export function EditBookingDialog({
     onOpenChange(false);
   };
 
-  if (!open) {
-    return null;
-  }
-
   return (
-      <div id="editBookingModal" className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4" onClick={() => onOpenChange(false)}>
-        <div className="bg-white rounded-xl w-full max-w-md overflow-y-auto z-50 p-6 max-h-full" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-800">Edit Booking</h3>
-                <button onClick={() => onOpenChange(false)} className="text-gray-500 hover:text-gray-700">
-                    <span className="text-2xl">×</span>
-                </button>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Edit Booking</DialogTitle>
+        </DialogHeader>
+        <form
+          id="editBookingForm"
+          className="grid gap-4 py-4"
+          onSubmit={handleSubmit}
+        >
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="guestFirstName">First Name</Label>
+              <Input
+                id="guestFirstName"
+                value={guestFirstName}
+                onChange={(e) => setGuestFirstName(e.target.value)}
+                required
+              />
             </div>
-            
-            <form id="editBookingForm" className="space-y-4" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="guestFirstName" className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                        <input name="guestFirstName" type="text" id="guestFirstName" className="prime-input" required value={guestFirstName} onChange={e => setGuestFirstName(e.target.value)} />
-                    </div>
-                    <div>
-                        <label htmlFor="guestLastName" className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                        <input name="guestLastName" type="text" id="guestLastName" className="prime-input" required value={guestLastName} onChange={e => setGuestLastName(e.target.value)} />
-                    </div>
-                </div>
-                
-                <div>
-                    <label htmlFor="guestPhone" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                    <input name="guestPhone" type="tel" id="guestPhone" className="prime-input" required value={guestPhone} onChange={e => setGuestPhone(e.target.value)} />
-                </div>
-                
-                <div>
-                    <label htmlFor="guestEmail" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input name="guestEmail" type="email" id="guestEmail" className="prime-input" value={guestEmail} onChange={e => setGuestEmail(e.target.value)} />
-                </div>
-                
-                <div>
-                    <label htmlFor="bookingUnit" className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
-                    <select name="bookingUnit" id="bookingUnit" className="prime-input" required value={unitId} onChange={(e) => setUnitId(e.target.value)}>
-                        <option value="">Select Unit</option>
-                         {units.map(unit => (
-                            <option key={unit.id} value={unit.id}>{unit.name} - ₱{unit.rate}/night</option>
-                        ))}
-                    </select>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="checkinDate" className="block text-sm font-medium text-gray-700 mb-1">Check-in Date</label>                        <input name="checkinDate" type="date" id="checkinDate" className="prime-input" required value={checkinDate} onChange={(e) => setCheckinDate(e.target.value)} />
-                    </div>
-                    <div>
-                        <label htmlFor="checkoutDate" className="block text-sm font-medium text-gray-700 mb-1">Check-out Date</label>
-                        <input name="checkoutDate" type="date" id="checkoutDate" className="prime-input" required value={checkoutDate} onChange={(e) => setCheckoutDate(e.target.value)} />
-                    </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="adults" className="block text-sm font-medium text-gray-700 mb-1">Adults</label>
-                        <input name="adults" type="number" id="adults" min="1" className="prime-input" required value={adults} onChange={e => setAdults(parseInt(e.target.value))} />
-                    </div>
-                    <div>
-                        <label htmlFor="children" className="block text-sm font-medium text-gray-700 mb-1">Children</label>
-                        <input name="children" type="number" id="children" min="0" className="prime-input" value={children} onChange={e => setChildren(parseInt(e.target.value))} />
-                    </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="nightlyRate" className="block text-sm font-medium text-gray-700 mb-1">Nightly Rate</label>
-                        <input name="nightlyRate" type="text" id="nightlyRate" className="prime-input bg-gray-100" value={`₱${nightlyRate.toLocaleString()}`} readOnly />
-                    </div>
-                    <div>
-                        <label htmlFor="totalAmount" className="block text-sm font-medium text-gray-700 mb-1">Total Amount</label>
-                        <input name="totalAmount" type="text" id="totalAmount" className="prime-input bg-gray-100" value={`₱${totalAmount.toLocaleString()}`} readOnly />
-                    </div>
-                </div>
-                
-                <div>
-                    <label htmlFor="paymentStatus" className="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
-                    <select name="paymentStatus" id="paymentStatus" className="prime-input" value={paymentStatus} onChange={e => setPaymentStatus(e.target.value as 'pending' | 'partial' | 'paid')}>
-                        <option value="pending">Pending</option>
-                        <option value="partial">Partial</option>
-                        <option value="paid">Paid</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label htmlFor="specialRequests" className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
-                    <textarea name="specialRequests" id="specialRequests" rows={3} className="prime-input" placeholder="Any special requests or notes..." value={specialRequests} onChange={e => setSpecialRequests(e.target.value)}></textarea>
-                </div>
-                
-                <div className="flex space-x-3 pt-2">
-                    <button type="button" onClick={() => onOpenChange(false)} className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
-                        Cancel
-                    </button>
-                    <button type="submit" className="w-full prime-button py-3">
-                        Save Changes
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+            <div>
+              <Label htmlFor="guestLastName">Last Name</Label>
+              <Input
+                id="guestLastName"
+                value={guestLastName}
+                onChange={(e) => setGuestLastName(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="guestPhone">Phone</Label>
+            <Input
+              id="guestPhone"
+              type="tel"
+              value={guestPhone}
+              onChange={(e) => setGuestPhone(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <Label htmlFor="guestEmail">Email</Label>
+            <Input
+              id="guestEmail"
+              type="email"
+              value={guestEmail}
+              onChange={(e) => setGuestEmail(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="bookingUnit">Unit</Label>
+            <Select required value={unitId} onValueChange={setUnitId}>
+              <SelectTrigger id="bookingUnit">
+                <SelectValue placeholder="Select Unit" />
+              </SelectTrigger>
+              <SelectContent>
+                {units.map((unit) => (
+                  <SelectItem key={unit.id} value={unit.id!}>
+                    {unit.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="checkinDate">Check-in</Label>
+              <Input
+                id="checkinDate"
+                type="date"
+                value={checkinDate}
+                onChange={(e) => setCheckinDate(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="checkoutDate">Check-out</Label>
+              <Input
+                id="checkoutDate"
+                type="date"
+                value={checkoutDate}
+                onChange={(e) => setCheckoutDate(e.target.value)}
+                required
+                min={checkinDate}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="adults">Adults</Label>
+              <Input
+                id="adults"
+                type="number"
+                min="1"
+                value={adults}
+                onChange={(e) => setAdults(parseInt(e.target.value))}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="children">Children</Label>
+              <Input
+                id="children"
+                type="number"
+                min="0"
+                value={children}
+                onChange={(e) => setChildren(parseInt(e.target.value))}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="nightlyRate">Nightly Rate</Label>
+              <Input
+                id="nightlyRate"
+                value={`₱${nightlyRate.toLocaleString()}`}
+                readOnly
+                className="bg-muted"
+              />
+            </div>
+            <div>
+              <Label htmlFor="totalAmount">Total Amount</Label>
+              <Input
+                id="totalAmount"
+                value={`₱${totalAmount.toLocaleString()}`}
+                readOnly
+                className="bg-muted"
+              />
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="paymentStatus">Payment Status</Label>
+            <Select
+              value={paymentStatus}
+              onValueChange={(v) =>
+                setPaymentStatus(v as 'pending' | 'partial' | 'paid')
+              }
+            >
+              <SelectTrigger id="paymentStatus">
+                <SelectValue placeholder="Select Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="partial">Partial</SelectItem>
+                <SelectItem value="paid">Paid</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="specialRequests">Special Requests</Label>
+            <Textarea
+              id="specialRequests"
+              value={specialRequests}
+              onChange={(e) => setSpecialRequests(e.target.value)}
+              placeholder="Any special requests or notes..."
+            />
+          </div>
+          <DialogFooter>
+            <Button type="submit">Save Changes</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
