@@ -1,10 +1,18 @@
 
 import type {NextConfig} from 'next';
-// @ts-ignore
-import mobileConfig from './next.config.mobile.ts';
+
+const mobileConfig: Partial<NextConfig> = {
+  output: 'export',
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\/app\/api\//,
+      loader: 'ignore-loader',
+    });
+    return config;
+  },
+};
 
 let nextConfig: NextConfig = {
-  /* config options here */
   typescript: {
     ignoreBuildErrors: true,
   },
