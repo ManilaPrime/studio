@@ -12,7 +12,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "ionic:build": "npm run build:mobile",
-    "build:mobile": "next build && next export",
+    "build:mobile": "next build -c src/next.mobile.config.ts",
     "cap:sync": "npx cap sync android",
     "cap:open": "npx cap open android"
   },
@@ -72,6 +72,7 @@
     "@types/react-dom": "^18",
     "firebase-tools": "^13.15.0",
     "genkit-cli": "^1.14.2",
+    "ignore-loader": "^0.1.2",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"

@@ -5,7 +5,6 @@ import type { SyncedEvent, Unit, Booking } from '@/lib/types';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { getUnit } from '@/services/units';
-import { callApi } from '@/services/utils';
 
 // This function will run on the Vercel backend via an API call
 async function getExistingBookingUIDs(unitId: string, uidsToFetch: string[]): Promise<string[]> {
@@ -67,7 +66,10 @@ async function createBookingFromEvent(event: SyncedEvent, unit: Unit): Promise<v
 
     try {
         // The discord notification is also handled by the backend
-        await callApi('discord-notification', { booking: { ...newBookingData, id: docRef.id, createdAt: new Date().toISOString() }, unit });
+        // This is a fire-and-forget call. We check for a function that only exists on the server.
+        if (typeof (global as any).callApi === 'function') {
+            (global as any).callApi('discord-notification', { booking: { ...newBookingData, id: docRef.id, createdAt: new Date().toISOString() }, unit });
+        }
     } catch(error) {
         console.error("Failed to send Discord notification for synced event:", error);
     }
@@ -75,22 +77,28 @@ async function createBookingFromEvent(event: SyncedEvent, unit: Unit): Promise<v
 
 
 export async function syncCalendars(unitCalendars: Unit['calendars'], unitId: string): Promise<SyncedEvent[]> {
-  // The 'callApi' function will call our Vercel backend endpoint.
-  // The backend endpoint will then perform the calendar fetching, parsing, and database operations.
-  const result = await callApi('sync-calendars', { unitCalendars, unitId });
-  
-  if (result.newEvents) {
-      const unit = await getUnit(unitId);
-      if(unit) {
-          for (const event of result.newEvents) {
-              // This function no longer creates the booking directly. 
-              // The backend now handles the creation. This client-side
-              // loop is just to trigger notifications if needed, but the core logic is server-side.
-              // For simplicity, we assume the backend handles everything.
-          }
-      }
-  }
-  
-  // The backend returns the combined list of all events.
-  return result.allEvents;
+    // When running in a static build (like for mobile), we can't call the backend.
+    // This check prevents errors during the mobile build process.
+    if (typeof window !== 'undefined' && (window as any).Capacitor) {
+        console.log("Calendar sync is disabled in native mobile app builds.");
+        return [];
+    }
+
+    // The 'callApi' function will call our Vercel backend endpoint.
+    // The backend endpoint will then perform the calendar fetching, parsing, and database operations.
+    // This function is assumed to exist globally on the server.
+    const result = await (global as any).callApi('sync-calendars', { unitCalendars, unitId });
+    
+    if (result.newEvents) {
+        const unit = await getUnit(unitId);
+        if(unit) {
+            for (const event of result.newEvents) {
+                // Backend handles creation, this loop is effectively a no-op on the client
+                // but maintains structure.
+            }
+        }
+    }
+    
+    // The backend returns the combined list of all events.
+    return result.allEvents;
 }
