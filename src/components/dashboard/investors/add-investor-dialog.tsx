@@ -80,7 +80,7 @@ export function AddInvestorDialog({
       investmentAmount,
       sharePercentage,
       joinDate,
-      unitId,
+      unitId: unitId || undefined,
     };
 
     if (investor) {
@@ -146,7 +146,7 @@ export function AddInvestorDialog({
             <Label htmlFor="investorUnit" className="text-right">
               Unit
             </Label>
-            <Select value={unitId} onValueChange={setUnitId}>
+            <Select value={unitId} onValueChange={(value) => setUnitId(value === '' ? undefined : value)}>
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select Unit" />
               </SelectTrigger>
