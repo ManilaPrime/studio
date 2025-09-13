@@ -1,6 +1,9 @@
-import type {NextConfig} from 'next';
 
-const nextConfig: NextConfig = {
+import type {NextConfig} from 'next';
+// @ts-ignore
+import mobileConfig from './next.config.mobile.ts';
+
+let nextConfig: NextConfig = {
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,
@@ -26,5 +29,9 @@ const nextConfig: NextConfig = {
     ],
   },
 };
+
+if (process.env.BUILD_TARGET === 'mobile') {
+  nextConfig = { ...nextConfig, ...mobileConfig };
+}
 
 export default nextConfig;
