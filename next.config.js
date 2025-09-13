@@ -2,7 +2,7 @@
 
 const isMobile = process.env.BUILD_TARGET === 'mobile';
 
-const nextConfig = {
+const defaultConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -12,31 +12,18 @@ const nextConfig = {
   images: {
     unoptimized: true,
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**',
-      },
+      { protocol: 'https', hostname: 'placehold.co', pathname: '/**' },
+      { protocol: 'https', hostname: 'picsum.photos', pathname: '/**' },
     ],
   },
-  // Apply mobile-specific settings
-  ...(isMobile && {
-    output: 'export',
-    webpack: (config) => {
-      config.module.rules.push({
-        test: /\/app\/api\//,
-        loader: 'ignore-loader',
-      });
-      return config;
-    },
-  }),
 };
 
-module.exports = nextConfig;
+const mobileConfig = {
+  ...defaultConfig,
+  output: 'export',
+  // Exclude API routes from the mobile build by modifying page extensions.
+  // This prevents Next.js from trying to process them during a static export.
+  pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
+};
+
+module.exports = isMobile ? mobileConfig : defaultConfig;
