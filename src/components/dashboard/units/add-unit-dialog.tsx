@@ -40,7 +40,7 @@ export function AddUnitDialog({
   return (
     <>
     {children}
-    <div id="addUnitModal" className="absolute inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4" onClick={() => onOpenChange(false)}>
+    <div id="addUnitModal" className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4" onClick={() => onOpenChange(false)}>
         <div className="bg-white rounded-xl w-full max-w-md overflow-y-auto z-50 p-6 max-h-full" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-800">Add New Unit</h3>
