@@ -12,7 +12,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "ionic:build": "npm run build:mobile",
-    "build:mobile": "npx cross-env BUILD_TARGET=mobile next build",
+    "build:mobile": "cross-env BUILD_TARGET=mobile next build",
     "cap:sync": "npx cap sync android",
     "cap:open": "npx cap open android"
   },
