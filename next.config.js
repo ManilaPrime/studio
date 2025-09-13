@@ -1,7 +1,6 @@
+/** @type {import('next').NextConfig} */
 
-import type {NextConfig} from 'next';
-
-const mobileConfig: Partial<NextConfig> = {
+const mobileConfig = {
   output: 'export',
   webpack: (config) => {
     config.module.rules.push({
@@ -12,7 +11,7 @@ const mobileConfig: Partial<NextConfig> = {
   },
 };
 
-let nextConfig: NextConfig = {
+let nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -42,4 +41,4 @@ if (process.env.BUILD_TARGET === 'mobile') {
   nextConfig = { ...nextConfig, ...mobileConfig };
 }
 
-export default nextConfig;
+module.exports = nextConfig;
