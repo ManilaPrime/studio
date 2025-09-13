@@ -28,18 +28,10 @@ const nextConfig: NextConfig = {
     ],
   },
   // Exclude the api directory from the build for static export
-  webpack: (config, { isServer }) => {
-    // This is the correct way to ignore a directory during the build.
-    if (!isServer) {
-        config.externals = {
-            ...config.externals,
-            '@/app/api': 'empty',
-        };
-    }
-    
+  webpack: (config) => {
     config.module.rules.push({
-        test: /\/app\/api\//,
-        loader: 'ignore-loader',
+      test: /\/app\/api\//,
+      loader: 'ignore-loader',
     });
 
     return config;

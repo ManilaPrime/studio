@@ -1,7 +1,7 @@
 
 import type {NextConfig} from 'next';
 // @ts-ignore
-import mobileConfig from './next.config.mobile.js';
+import mobileConfig from './next.config.mobile.ts';
 
 let nextConfig: NextConfig = {
   /* config options here */
