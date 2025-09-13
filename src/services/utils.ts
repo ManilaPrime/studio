@@ -1,6 +1,10 @@
 
 'use client';
 
+// This file is currently not used because all API-like calls
+// have been consolidated into server actions to support Capacitor builds.
+// It is kept for potential future use if a different architecture is needed.
+
 function isNativePlatform() {
   // Check if the Capacitor global object is available on the window
   return typeof window !== 'undefined' && !!(window as any).Capacitor;

@@ -1,12 +1,12 @@
 
 'use server';
 
-import type { SyncedEvent, Unit, Booking } from '@/lib/types';
+import type { SyncedEvent, Unit, Booking, Platform } from '@/lib/types';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { getUnit } from '@/services/units';
+import { CalendarService } from '@/services/calendar';
 
-// This function will run on the Vercel backend via an API call
 async function getExistingBookingUIDs(unitId: string, uidsToFetch: string[]): Promise<string[]> {
     if (uidsToFetch.length === 0) {
         return [];
@@ -38,7 +38,6 @@ async function getExistingBookingUIDs(unitId: string, uidsToFetch: string[]): Pr
     return Array.from(existingUIDs);
 }
 
-// This function will run on the Vercel backend via an API call
 async function createBookingFromEvent(event: SyncedEvent, unit: Unit): Promise<void> {
     const bookingsCollection = collection(db, 'bookings');
     
@@ -77,28 +76,49 @@ async function createBookingFromEvent(event: SyncedEvent, unit: Unit): Promise<v
 
 
 export async function syncCalendars(unitCalendars: Unit['calendars'], unitId: string): Promise<SyncedEvent[]> {
-    // When running in a static build (like for mobile), we can't call the backend.
-    // This check prevents errors during the mobile build process.
-    if (typeof window !== 'undefined' && (window as any).Capacitor) {
+    // When running in a static build (like for mobile), we can't execute server-side logic.
+    // This check prevents errors during the mobile build process by disabling sync.
+    if (process.env.BUILD_TARGET === 'mobile') {
         console.log("Calendar sync is disabled in native mobile app builds.");
         return [];
     }
 
-    // The 'callApi' function will call our Vercel backend endpoint.
-    // The backend endpoint will then perform the calendar fetching, parsing, and database operations.
-    // This function is assumed to exist globally on the server.
-    const result = await (global as any).callApi('sync-calendars', { unitCalendars, unitId });
-    
-    if (result.newEvents) {
-        const unit = await getUnit(unitId);
-        if(unit) {
-            for (const event of result.newEvents) {
-                // Backend handles creation, this loop is effectively a no-op on the client
-                // but maintains structure.
+    const unit = await getUnit(unitId);
+    if(!unit) {
+        throw new Error("Unit not found");
+    }
+
+    let allEvents: SyncedEvent[] = [];
+    const calendarPromises: Promise<void>[] = [];
+
+    const processCalendar = async (url: string, platform: Platform) => {
+        if (url) {
+            try {
+                const events = await CalendarService.fetchAndParseCalendar(url);
+                const platformEvents: SyncedEvent[] = events.map(e => ({...e, platform}));
+                allEvents.push(...platformEvents);
+            } catch (error) {
+                console.error(`Error processing calendar for ${platform}:`, error);
+                // Continue with other calendars even if one fails
             }
         }
+    };
+
+    calendarPromises.push(processCalendar(unitCalendars.airbnb, 'Airbnb'));
+    calendarPromises.push(processCalendar(unitCalendars.bookingcom, 'Booking.com'));
+    calendarPromises.push(processCalendar(unitCalendars.direct, 'Direct'));
+
+    await Promise.all(calendarPromises);
+    
+    // Deduplicate UIDs and check against existing bookings
+    const uidsToFetch = [...new Set(allEvents.map(e => e.uid))];
+    const existingUIDs = await getExistingBookingUIDs(unitId, uidsToFetch);
+    const newEvents = allEvents.filter(event => !existingUIDs.includes(event.uid));
+
+    // Create bookings for new, non-existing events
+    for (const event of newEvents) {
+        await createBookingFromEvent(event, unit);
     }
     
-    // The backend returns the combined list of all events.
-    return result.allEvents;
+    return allEvents;
 }

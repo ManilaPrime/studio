@@ -1,3 +1,4 @@
+
 import ical from 'node-ical';
 import type { SyncedEvent } from '@/lib/types';
 
@@ -23,7 +24,8 @@ export class CalendarService {
       return parsedEvents;
     } catch (error) {
       console.error('Error fetching or parsing iCal data:', error);
-      throw new Error('Could not process calendar data.');
+      // Don't throw an error for a single failed calendar, just return empty
+      return [];
     }
   }
 }
