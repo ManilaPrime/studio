@@ -67,9 +67,7 @@ async function createBookingFromEvent(event: SyncedEvent, unit: Unit): Promise<v
     try {
         // The discord notification is also handled by the backend
         // This is a fire-and-forget call. We check for a function that only exists on the server.
-        if (typeof (global as any).callApi === 'function') {
-            (global as any).callApi('discord-notification', { booking: { ...newBookingData, id: docRef.id, createdAt: new Date().toISOString() }, unit });
-        }
+        await callApi('discord-notification', { booking: { ...newBookingData, id: docRef.id, createdAt: new Date().toISOString() }, unit });
     } catch(error) {
         console.error("Failed to send Discord notification for synced event:", error);
     }
@@ -77,12 +75,6 @@ async function createBookingFromEvent(event: SyncedEvent, unit: Unit): Promise<v
 
 
 export async function syncCalendars(unitCalendars: Unit['calendars'], unitId: string): Promise<SyncedEvent[]> {
-    // When running in a static build (like for mobile), we need to call the API on the Vercel server.
-    if (process.env.BUILD_TARGET === 'mobile') {
-        console.log("Running in mobile build, calling API endpoint for sync.");
-        return callApi('sync', { unitCalendars, unitId });
-    }
-
     const unit = await getUnit(unitId);
     if(!unit) {
         throw new Error("Unit not found");
@@ -122,5 +114,3 @@ export async function syncCalendars(unitCalendars: Unit['calendars'], unitId: st
     
     return allEvents;
 }
-
-

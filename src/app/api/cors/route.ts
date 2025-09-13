@@ -26,7 +26,11 @@ function runMiddleware(req: Request, res: NextResponse, fn: Function) {
 // Handler for OPTIONS requests (part of CORS preflight)
 export async function OPTIONS(request: Request) {
     const response = new NextResponse(null, { status: 204 });
-    await runMiddleware(request, response, cors);
+    try {
+        await runMiddleware(request, response, cors);
+    } catch (error) {
+        console.error("CORS options error:", error);
+    }
     return response;
 }
 
@@ -47,11 +51,17 @@ export async function POST(request: Request) {
     // Route the request based on the action
     switch (action) {
       case 'sync':
-        const { unitCalendars, unitId } = payload;
-        if (!unitCalendars || !unitId) {
-          return NextResponse.json({ message: 'Missing unitCalendars or unitId for sync' }, { status: 400 });
+        // The 'sync' action from mobile now needs to call the serverless function directly.
+        // We re-route it through the /api/sync endpoint.
+        const syncResponse = await fetch(`${request.nextUrl.origin}/api/sync`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        result = await syncResponse.json();
+        if (!syncResponse.ok) {
+            throw new Error(result.message || 'Sync action failed');
         }
-        result = await syncCalendarsAction(unitCalendars, unitId);
         break;
       
       case 'discord-notification':

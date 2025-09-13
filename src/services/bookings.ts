@@ -23,7 +23,7 @@ export async function addBooking(bookingData: Omit<Booking, 'id'>): Promise<stri
         const unit = await getUnit(bookingData.unitId);
         if (unit) {
             // This is a fire-and-forget call to the backend.
-            callApi('discord-notification', { booking: { ...bookingData, id: docRef.id }, unit });
+            await callApi('discord-notification', { booking: { ...bookingData, id: docRef.id, createdAt: new Date().toISOString() }, unit });
         }
     } catch (error) {
         console.error("Failed to send Discord notification via backend:", error);
